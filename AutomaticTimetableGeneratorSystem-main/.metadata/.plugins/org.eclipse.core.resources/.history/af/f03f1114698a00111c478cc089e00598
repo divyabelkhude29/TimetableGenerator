@@ -1,0 +1,334 @@
+package com.timetable.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+
+import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
+
+import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.timetable.jwt.JwtAuthenticationEntryPoint;
+import com.timetable.jwt.JwtFilter;
+import com.timetable.security.CustomUserDetailsService;
+
+@Configuration
+@EnableMethodSecurity
+public class SecurityConfig {
+
+    private final JwtFilter jwtFilter;
+
+    private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+
+    private final CustomUserDetailsService userDetailsService;
+
+    private final PasswordEncoder passwordEncoder;
+
+
+    public SecurityConfig(
+            JwtFilter jwtFilter,
+            JwtAuthenticationEntryPoint authenticationEntryPoint,
+            CustomUserDetailsService userDetailsService,
+            PasswordEncoder passwordEncoder) {
+
+        this.jwtFilter = jwtFilter;
+
+        this.authenticationEntryPoint =
+                authenticationEntryPoint;
+
+        this.userDetailsService =
+                userDetailsService;
+
+        this.passwordEncoder =
+                passwordEncoder;
+    }
+
+
+    /**
+     * ============================================================
+     * AUTHENTICATION PROVIDER
+     * ============================================================
+     *
+     * Used for username/password authentication during login.
+     */
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+
+        DaoAuthenticationProvider provider =
+                new DaoAuthenticationProvider();
+
+        provider.setUserDetailsService(
+                userDetailsService);
+
+        provider.setPasswordEncoder(
+                passwordEncoder);
+
+        return provider;
+    }
+
+
+    /**
+     * ============================================================
+     * AUTHENTICATION MANAGER
+     * ============================================================
+     */
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration configuration)
+            throws Exception {
+
+        return configuration.getAuthenticationManager();
+    }
+
+
+    /**
+     * ============================================================
+     * SECURITY FILTER CHAIN
+     * ============================================================
+     */
+    @Bean
+    public SecurityFilterChain securityFilterChain(
+            HttpSecurity http)
+            throws Exception {
+
+        http
+
+                /*
+                 * ------------------------------------------------
+                 * DISABLE CSRF
+                 * ------------------------------------------------
+                 */
+                .csrf(csrf ->
+                        csrf.disable())
+
+
+                /*
+                 * ------------------------------------------------
+                 * ENABLE CORS
+                 * ------------------------------------------------
+                 */
+                .cors(Customizer.withDefaults())
+
+
+                /*
+                 * ------------------------------------------------
+                 * STATELESS SESSION
+                 * ------------------------------------------------
+                 *
+                 * We are using JWT authentication.
+                 * No HTTP session is maintained.
+                 */
+                .sessionManagement(session ->
+                        session.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS))
+
+
+                /*
+                 * ------------------------------------------------
+                 * EXCEPTION HANDLING
+                 * ------------------------------------------------
+                 */
+                .exceptionHandling(exception ->
+                        exception.authenticationEntryPoint(
+                                authenticationEntryPoint))
+
+
+                /*
+                 * ------------------------------------------------
+                 * AUTHENTICATION PROVIDER
+                 * ------------------------------------------------
+                 */
+                .authenticationProvider(
+                        authenticationProvider())
+
+
+                /*
+                 * ------------------------------------------------
+                 * URL AUTHORIZATION
+                 * ------------------------------------------------
+                 */
+                .authorizeHttpRequests(auth -> auth)
+
+
+                /*
+                 * =================================================
+                 * PUBLIC AUTHENTICATION APIs
+                 * =================================================
+                 *
+                 * IMPORTANT:
+                 *
+                 * Your Postman request is:
+                 *
+                 * POST /api/auth/register
+                 *
+                 * Therefore /api/auth/** MUST be permitted.
+                 *
+                 * Login and registration do not require JWT.
+                 */
+                .requestMatchers(
+                        "/api/auth/login",
+                        "/api/auth/register"
+                )
+                .permitAll()
+
+
+                /*
+                 * =================================================
+                 * SWAGGER / OPENAPI
+                 * =================================================
+                 */
+                .requestMatchers(
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/v3/api-docs/**",
+                        "/swagger-resources/**",
+                        "/webjars/**"
+                )
+                .permitAll()
+
+
+                /*
+                 * =================================================
+                 * USER MANAGEMENT
+                 * =================================================
+                 *
+                 * ADMIN only.
+                 */
+                .requestMatchers(
+                        "/api/users/**"
+                )
+                .hasRole("ADMIN")
+
+
+                /*
+                 * =================================================
+                 * STUDENT MANAGEMENT
+                 * =================================================
+                 *
+                 * ADMIN and STUDENT.
+                 */
+                .requestMatchers(
+                        "/api/students/**"
+                )
+                .hasAnyRole(
+                        "ADMIN",
+                        "STUDENT"
+                )
+
+
+                /*
+                 * =================================================
+                 * FACULTY MANAGEMENT
+                 * =================================================
+                 *
+                 * ADMIN and FACULTY.
+                 */
+                .requestMatchers(
+                        "/api/faculties/**"
+                )
+                .hasAnyRole(
+                        "ADMIN",
+                        "FACULTY"
+                )
+
+
+                /*
+                 * =================================================
+                 * ACADEMIC MASTER MODULES
+                 * =================================================
+                 *
+                 * ADMIN only.
+                 */
+                .requestMatchers(
+
+                        "/api/departments/**",
+
+                        "/api/courses/**",
+
+                        "/api/academic-years/**",
+
+                        "/api/semesters/**",
+
+                        "/api/subjects/**",
+
+                        "/api/working-days/**",
+
+                        "/api/time-slots/**",
+
+                        "/api/academic-sections/**",
+
+                        "/api/faculty-subject-allocation/**",
+
+                        "/api/faculty-availability/**",
+
+                        "/api/subject-workloads/**",
+
+                        "/api/holidays/**",
+
+                        "/api/timetable-constraints/**",
+
+                        "/api/reports/**"
+
+                )
+                .hasRole("ADMIN")
+
+
+                /*
+                 * =================================================
+                 * TIMETABLE
+                 * =================================================
+                 *
+                 * Any authenticated user can access timetable.
+                 *
+                 * More specific role restrictions can be
+                 * added later if required.
+                 */
+                .requestMatchers(
+                        "/api/timetables/**"
+                )
+                .authenticated()
+
+
+                /*
+                 * =================================================
+                 * EVERYTHING ELSE
+                 * =================================================
+                 *
+                 * All other endpoints require authentication.
+                 */
+                .anyRequest()
+                .authenticated();
+
+
+        /*
+         * =========================================================
+         * JWT FILTER
+         * =========================================================
+         *
+         * JWT filter executes before Spring's standard username
+         * and password authentication filter.
+         */
+        http.addFilterBefore(
+                jwtFilter,
+                UsernamePasswordAuthenticationFilter.class
+        );
+
+
+        /*
+         * Return configured security chain.
+         */
+        return http.build();
+    }
+
+}

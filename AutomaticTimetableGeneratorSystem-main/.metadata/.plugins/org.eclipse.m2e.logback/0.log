@@ -1,0 +1,53 @@
+2026-07-28 14:53:03,508 [Worker-5: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is up-to-date. Trying to read.
+2026-07-28 14:53:20,158 [Worker-1: Update Maven projects configuration] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update started
+2026-07-28 14:53:25,878 [Worker-1: Update Maven projects configuration] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.timetable:timetable-backend:0.0.1-SNAPSHOT @ C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\pom.xml.
+2026-07-28 14:53:36,740 [Worker-1: Update Maven projects configuration] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /timetable-backend/src/main/java
+2026-07-28 14:53:36,746 [Worker-9: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update started
+2026-07-28 14:53:36,746 [Worker-1: Update Maven projects configuration] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /timetable-backend/src/main/resources
+2026-07-28 14:53:37,802 [Worker-9: Updating Maven Project] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.eclipse.m2e.jdt.JarLifecycleMapping lifecycle mapping for MavenProject: com.timetable:timetable-backend:0.0.1-SNAPSHOT @ C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\pom.xml.
+2026-07-28 14:53:41,470 [Worker-9: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /timetable-backend/src/main/java
+2026-07-28 14:53:41,472 [Worker-9: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /timetable-backend/src/main/resources
+2026-07-28 14:53:41,482 [Worker-9: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /timetable-backend/src/main/resources
+2026-07-28 14:53:41,498 [Worker-9: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /timetable-backend/src/test/java
+2026-07-28 14:53:41,501 [Worker-9: Updating Maven Project] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /timetable-backend/src/test/resources
+2026-07-28 14:53:44,537 [Worker-9: Updating Maven Project] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update completed for 1 poms: local refresh takes 0.00 sec, refresh facades takes 4.00 sec, update config takes 1.00 sec 
+2026-07-28 14:53:44,551 [Worker-1: Update Maven projects configuration] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /timetable-backend/src/main/resources
+2026-07-28 14:53:44,561 [Worker-1: Update Maven projects configuration] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding source folder /timetable-backend/src/test/java
+2026-07-28 14:53:44,563 [Worker-1: Update Maven projects configuration] INFO  o.e.m.j.i.AbstractJavaProjectConfigurator - Adding resource folder /timetable-backend/src/test/resources
+2026-07-28 14:53:49,519 [Worker-1: Update Maven projects configuration] INFO  o.e.m.c.i.p.ProjectConfigurationManager - Update completed for 1 poms: local refresh takes 0.00 sec, refresh facades takes 13.00 sec, update config takes 15.00 sec 
+2026-07-28 14:53:52,175 [Worker-18: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 14:53:52,210 [Worker-18: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 14:53:52,224 [Worker-18: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 14:58:18,626 [Worker-18: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 14:58:18,639 [Worker-18: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 14:58:18,643 [Worker-18: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 14:59:31,573 [Worker-31: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 14:59:31,577 [Worker-31: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 14:59:31,581 [Worker-31: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 15:05:55,355 [Worker-34: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 15:05:56,110 [Worker-34: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 15:05:56,167 [Worker-34: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 15:06:55,148 [Worker-32: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 15:06:55,529 [Worker-32: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 15:06:55,676 [Worker-32: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 15:10:54,795 [Worker-42: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 15:10:55,948 [Worker-42: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 15:10:56,016 [Worker-42: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 15:11:07,287 [Worker-41: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 15:11:07,320 [Worker-41: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 15:11:07,462 [Worker-41: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 15:11:16,979 [Worker-44: Launching timetable-backend - TimetableBackendApplication] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 15:11:16,991 [Worker-44: Launching timetable-backend - TimetableBackendApplication] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 15:11:16,995 [Worker-44: Launching timetable-backend - TimetableBackendApplication] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 15:14:28,997 [Worker-46: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 15:14:29,019 [Worker-46: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 15:14:29,030 [Worker-46: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 15:15:34,904 [Worker-46: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 15:15:34,959 [Worker-46: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 15:15:34,966 [Worker-46: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 15:22:04,678 [Worker-52: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 15:22:04,846 [Worker-52: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 15:22:04,882 [Worker-52: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
+2026-07-28 15:28:19,918 [Worker-49: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 1 resource from src\main\resources to target\classes
+2026-07-28 15:28:20,030 [Worker-49: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - Copying 0 resource from src\main\resources to target\classes
+2026-07-28 15:28:20,085 [Worker-49: Building] INFO  o.a.m.s.f.DefaultMavenResourcesFiltering - skip non existing resourceDirectory C:\Users\LENOVO\Downloads\AutomaticTimetableGeneratorSystem-main\AutomaticTimetableGeneratorSystem-main\timetable-backend\src\test\resources
