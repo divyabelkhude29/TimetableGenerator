@@ -4,113 +4,103 @@ const BASE_URL = "/subjects";
 
 const subjectService = {
 
-  // Get All Subjects
-  getAllSubjects: async () => {
+    getAllSubjects: async () => {
 
-    const response = await api.get(BASE_URL);
+        const response = await api.get(BASE_URL);
 
-    return response.data;
+        return response.data;
 
-  },
+    },
 
-  // Get Subject By Id
-  getSubjectById: async (id) => {
+    getSubjectById: async (id) => {
 
-    const response = await api.get(`${BASE_URL}/${id}`);
+        const response = await api.get(`${BASE_URL}/${id}`);
 
-    return response.data;
+        return response.data;
 
-  },
+    },
 
-  // Create Subject
-  createSubject: async (subject) => {
+    createSubject: async (subject) => {
 
-    const response = await api.post(
-      BASE_URL,
-      subject
-    );
+        const response = await api.post(
+            BASE_URL,
+            subject
+        );
 
-    return response.data;
+        return response.data;
 
-  },
+    },
 
-  // Update Subject
-  updateSubject: async (id, subject) => {
+    updateSubject: async (id, subject) => {
 
-    const response = await api.put(
-      `${BASE_URL}/${id}`,
-      subject
-    );
+        const response = await api.put(
+            `${BASE_URL}/${id}`,
+            subject
+        );
 
-    return response.data;
+        return response.data;
 
-  },
+    },
 
-  // Delete Subject
-  deleteSubject: async (id) => {
+    deleteSubject: async (id) => {
 
-    const response = await api.delete(
-      `${BASE_URL}/${id}`
-    );
+        const response = await api.delete(
+            `${BASE_URL}/${id}`
+        );
 
-    return response.data;
+        return response.data;
 
-  },
+    },
 
-  // Get Subject By Code
-  getSubjectByCode: async (subjectCode) => {
+    getSubjectByCode: async (subjectCode) => {
 
-    const response = await api.get(
-      `${BASE_URL}/code/${subjectCode}`
-    );
+        const response = await api.get(
+            `${BASE_URL}/code/${subjectCode}`
+        );
 
-    return response.data;
+        return response.data;
 
-  },
+    },
 
-  // Get Subjects By Department
-  getSubjectsByDepartment: async (departmentId) => {
+    getSubjectsByDepartment: async (departmentId) => {
 
-    const response = await api.get(
-      `${BASE_URL}/department/${departmentId}`
-    );
+        const response = await api.get(
+            `${BASE_URL}/department/${departmentId}`
+        );
 
-    return response.data;
+        return response.data;
 
-  },
+    },
 
-  // Get Subjects By Course
-  getSubjectsByCourse: async (courseId) => {
+    getSubjectsByCourse: async (courseId) => {
 
-    const response = await api.get(
-      `${BASE_URL}/course/${courseId}`
-    );
+        const response = await api.get(
+            `${BASE_URL}/course/${courseId}`
+        );
 
-    return response.data;
+        return response.data;
 
-  },
+    },
 
-  // Get Subjects By Semester
-  getSubjectsBySemester: async (semesterId) => {
+    getSubjectsBySemester: async (semesterId) => {
 
-    const response = await api.get(
-      `${BASE_URL}/semester/${semesterId}`
-    );
+        const response = await api.get(
+            `${BASE_URL}/semester/${semesterId}`
+        );
 
-    return response.data;
+        return response.data;
 
-  },
+    },
 
-  // Get Subjects By Faculty
-  getSubjectsByFaculty: async (facultyId) => {
+    getSubjectsByFaculty: async (facultyId) => {
 
-    const response = await api.get(
-      `${BASE_URL}/faculty/${facultyId}`
-    );
+        const response = await api.get(
+            `${BASE_URL}/faculty/${facultyId}`
+        );
 
-    return response.data;
+        return response.data;
 
-  }
+    }
 
 };
 

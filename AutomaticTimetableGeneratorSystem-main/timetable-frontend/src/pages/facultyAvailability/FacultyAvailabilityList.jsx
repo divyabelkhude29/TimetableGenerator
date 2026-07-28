@@ -7,28 +7,52 @@ import {
   Alert,
   TextField,
   InputAdornment,
+  Button,
 } from "@mui/material";
 
+import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
-import FacultyAvailabilityTable from "../../components/facultyAvailability/FacultyAvailabilityTable";
-import FacultyAvailabilityForm from "../../components/facultyAvailability/FacultyAvailabilityForm";
-import facultyAvailabilityService from "../../services/facultyAvailabilityService";
+
+import FacultyAvailabilityTable
+  from "../../components/facultyAvailability/FacultyAvailabilityTable";
+
+import FacultyAvailabilityForm
+  from "../../components/facultyAvailability/FacultyAvailabilityForm";
+
+import facultyAvailabilityService
+  from "../../services/facultyAvailabilityService";
+
 
 const FacultyAvailabilityList = () => {
 
-  const [availabilityList, setAvailabilityList] = useState([]);
+  // =====================================================
+  // STATE
+  // =====================================================
 
-  const [loading, setLoading] = useState(true);
+  const [availabilityList, setAvailabilityList] =
+    useState([]);
 
-  const [error, setError] = useState("");
+  const [loading, setLoading] =
+    useState(true);
 
-  const [open, setOpen] = useState(false);
+  const [error, setError] =
+    useState("");
 
-  const [selectedAvailability, setSelectedAvailability] = useState(null);
+  const [open, setOpen] =
+    useState(false);
 
-  const [search, setSearch] = useState("");
+  const [selectedAvailability, setSelectedAvailability] =
+    useState(null);
+
+  const [search, setSearch] =
+    useState("");
+
+
+  // =====================================================
+  // LOAD FACULTY AVAILABILITY
+  // =====================================================
 
   const loadAvailability = async () => {
 
@@ -36,16 +60,73 @@ const FacultyAvailabilityList = () => {
 
       setLoading(true);
 
-      const response =
-        await facultyAvailabilityService.getAllAvailability();
+      setError("");
 
-      setAvailabilityList(response);
+      const response =
+        await facultyAvailabilityService
+          .getAllAvailability();
+
+      console.log(
+        "Faculty Availability Response:",
+        response
+      );
+
+      /*
+       * Supports:
+       *
+       * [
+       *   {...}
+       * ]
+       *
+       * OR
+       *
+       * {
+       *   data: [...]
+       * }
+       *
+       * OR
+       *
+       * {
+       *   content: [...]
+       * }
+       */
+
+      let data = [];
+
+      if (Array.isArray(response)) {
+
+        data = response;
+
+      } else if (
+        Array.isArray(response?.data)
+      ) {
+
+        data = response.data;
+
+      } else if (
+        Array.isArray(response?.content)
+      ) {
+
+        data = response.content;
+
+      }
+
+      setAvailabilityList(data);
 
     } catch (error) {
 
-      console.error(error);
+      console.error(
+        "Load Faculty Availability Error:",
+        error
+      );
 
-      setError("Unable to load Faculty Availability.");
+      setAvailabilityList([]);
+
+      setError(
+        error?.response?.data?.message ||
+        error?.response?.data?.error ||
+        "Unable to load Faculty Availability."
+      );
 
     } finally {
 
@@ -55,33 +136,107 @@ const FacultyAvailabilityList = () => {
 
   };
 
+
+  // =====================================================
+  // INITIAL LOAD
+  // =====================================================
+
   useEffect(() => {
 
     loadAvailability();
 
   }, []);
 
+
+  // =====================================================
+  // SEARCH FILTER
+  // =====================================================
+
   const filteredAvailability = useMemo(() => {
 
-    const keyword = search.toLowerCase();
+    const keyword =
+      search.trim().toLowerCase();
 
-    return availabilityList.filter((item) =>
+    if (!keyword) {
 
-      item.facultyCode?.toLowerCase().includes(keyword) ||
+      return availabilityList;
 
-      item.facultyName?.toLowerCase().includes(keyword) ||
+    }
 
-      item.dayOfWeek?.toLowerCase().includes(keyword) ||
+    return availabilityList.filter(
+      (item) => {
 
-      item.startTime?.toLowerCase().includes(keyword) ||
+        const facultyCode =
+          String(
+            item.facultyCode ||
+            item.faculty?.facultyCode ||
+            ""
+          ).toLowerCase();
 
-      item.endTime?.toLowerCase().includes(keyword)
+        const facultyName =
+          String(
+            item.facultyName ||
+            (
+              item.faculty
+                ? `${item.faculty.firstName || ""} ${item.faculty.lastName || ""}`
+                : ""
+            ) ||
+            ""
+          ).toLowerCase();
 
+        const dayOfWeek =
+          String(
+            item.dayOfWeek ||
+            ""
+          ).toLowerCase();
+
+        const startTime =
+          String(
+            item.startTime ||
+            item.timeSlot?.startTime ||
+            ""
+          ).toLowerCase();
+
+        const endTime =
+          String(
+            item.endTime ||
+            item.timeSlot?.endTime ||
+            ""
+          ).toLowerCase();
+
+
+        return (
+
+          facultyCode.includes(keyword) ||
+
+          facultyName.includes(keyword) ||
+
+          dayOfWeek.includes(keyword) ||
+
+          startTime.includes(keyword) ||
+
+          endTime.includes(keyword)
+
+        );
+
+      }
     );
 
-  }, [availabilityList, search]);
+  }, [
+    availabilityList,
+    search
+  ]);
+
+
+  // =====================================================
+  // ADD
+  // =====================================================
 
   const handleAdd = () => {
+
+    console.log(
+      "Opening Add Faculty Availability Form"
+    );
 
     setSelectedAvailability(null);
 
@@ -89,13 +244,32 @@ const FacultyAvailabilityList = () => {
 
   };
 
-  const handleEdit = (availability) => {
 
-    setSelectedAvailability(availability);
+  // =====================================================
+  // EDIT
+  // =====================================================
+
+  const handleEdit = (
+    availability
+  ) => {
+
+    console.log(
+      "Editing Faculty Availability:",
+      availability
+    );
+
+    setSelectedAvailability(
+      availability
+    );
 
     setOpen(true);
 
   };
+
+
+  // =====================================================
+  // CLOSE FORM
+  // =====================================================
 
   const handleClose = () => {
 
@@ -105,70 +279,181 @@ const FacultyAvailabilityList = () => {
 
   };
 
+
+  // =====================================================
+  // RENDER
+  // =====================================================
+
   return (
 
     <DashboardLayout>
+
+      {/* =================================================
+          PAGE HEADER
+      ================================================= */}
 
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         mb={3}
+        gap={2}
+        flexWrap="wrap"
       >
 
         <Typography
           variant="h4"
           fontWeight="bold"
         >
+
           Faculty Availability Management
+
         </Typography>
 
+
+        {/* =================================================
+            ADD BUTTON
+        ================================================= */}
+
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddIcon />}
+          onClick={handleAdd}
+          sx={{
+            minWidth: 180,
+            height: 45,
+            borderRadius: 2,
+            fontWeight: "bold",
+            textTransform: "none",
+          }}
+        >
+
+          Add Availability
+
+        </Button>
+
       </Box>
+
+
+      {/* =================================================
+          SEARCH
+      ================================================= */}
 
       <TextField
         fullWidth
         placeholder="Search by Faculty Code, Faculty Name, Day or Time Slot..."
         value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        sx={{ mb: 3 }}
+        onChange={(e) =>
+          setSearch(e.target.value)
+        }
+        sx={{
+          mb: 3
+        }}
         InputProps={{
           startAdornment: (
-            <InputAdornment position="start">
+
+            <InputAdornment
+              position="start"
+            >
+
               <SearchIcon />
+
             </InputAdornment>
+
           ),
         }}
       />
 
+
+      {/* =================================================
+          ERROR
+      ================================================= */}
+
       {error && (
+
         <Alert
           severity="error"
-          sx={{ mb: 2 }}
+          sx={{
+            mb: 2
+          }}
+          onClose={() =>
+            setError("")
+          }
         >
+
           {error}
+
         </Alert>
+
       )}
 
+
+      {/* =================================================
+          LOADING
+      ================================================= */}
+
       {loading ? (
+
         <Box
           display="flex"
           justifyContent="center"
+          alignItems="center"
           mt={5}
+          minHeight={200}
         >
+
           <CircularProgress />
+
         </Box>
-      ) : (        <FacultyAvailabilityTable
-          availabilityList={filteredAvailability}
-          onEdit={handleEdit}
-          reload={loadAvailability}
+
+      ) : (
+
+        /* =================================================
+           TABLE
+        ================================================= */
+
+        <FacultyAvailabilityTable
+
+          availabilityList={
+            filteredAvailability
+          }
+
+          onEdit={
+            handleEdit
+          }
+
+          reload={
+            loadAvailability
+          }
+
         />
+
       )}
 
+
+      {/* =================================================
+          ADD / EDIT FORM
+      ================================================= */}
+
       <FacultyAvailabilityForm
-        open={open}
-        onClose={handleClose}
-        availability={selectedAvailability}
-        reload={loadAvailability}
+
+        open={
+          open
+        }
+
+        onClose={
+          handleClose
+        }
+
+        availability={
+          selectedAvailability
+        }
+
+        reload={
+          loadAvailability
+        }
+
       />
 
     </DashboardLayout>
@@ -176,5 +461,6 @@ const FacultyAvailabilityList = () => {
   );
 
 };
+
 
 export default FacultyAvailabilityList;

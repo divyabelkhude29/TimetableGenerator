@@ -6,9 +6,11 @@ import {
     CircularProgress,
     Alert,
     TextField,
-    InputAdornment
+    InputAdornment,
+    Button
 } from "@mui/material";
 
+import AddIcon from "@mui/icons-material/Add";
 import SearchIcon from "@mui/icons-material/Search";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
@@ -16,6 +18,16 @@ import HolidayTable from "../../components/holidays/HolidayTable";
 import HolidayForm from "../../components/holidays/HolidayForm";
 
 import holidayService from "../../services/holidayService";
+
+
+const initialFormData = {
+    holidayName: "",
+    holidayDate: "",
+    holidayType: "",
+    description: "",
+    active: true
+};
+
 
 const HolidayList = () => {
 
@@ -32,29 +44,48 @@ const HolidayList = () => {
     const [search, setSearch] = useState("");
 
     const [formData, setFormData] = useState({
-        holidayName: "",
-        holidayDate: "",
-        holidayType: "",
-        description: "",
-        active: true
+        ...initialFormData
     });
 
+    const [saving, setSaving] = useState(false);
+
+
+    /*
+     * Load all holidays
+     */
     const loadHolidays = async () => {
 
         try {
 
             setLoading(true);
 
+            setError("");
+
             const response =
                 await holidayService.getAllHolidays();
 
-            setHolidays(response);
+            /*
+             * Make sure response is an array.
+             */
+            const holidayList =
+                Array.isArray(response)
+                    ? response
+                    : response?.content || [];
+
+            setHolidays(holidayList);
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Unable to load holidays:",
+                error
+            );
 
-            setError("Unable to load holidays.");
+            setError(
+                error?.response?.data?.message ||
+                error?.response?.data?.error ||
+                "Unable to load holidays."
+            );
 
         } finally {
 
@@ -64,111 +95,248 @@ const HolidayList = () => {
 
     };
 
+
+    /*
+     * Load holidays when page opens
+     */
     useEffect(() => {
 
         loadHolidays();
 
     }, []);
 
+
+    /*
+     * Search filter
+     */
     const filteredHolidays = useMemo(() => {
 
-        const keyword = search.toLowerCase();
+        const keyword =
+            search.trim().toLowerCase();
 
-        return holidays.filter((holiday) =>
+        if (!keyword) {
 
-            holiday.holidayName?.toLowerCase().includes(keyword) ||
+            return holidays;
 
-            holiday.holidayType?.toLowerCase().includes(keyword) ||
+        }
 
-            holiday.description?.toLowerCase().includes(keyword)
+        return holidays.filter(
+            (holiday) =>
+
+                holiday.holidayName
+                    ?.toLowerCase()
+                    .includes(keyword) ||
+
+                holiday.holidayType
+                    ?.toLowerCase()
+                    .includes(keyword) ||
+
+                holiday.description
+                    ?.toLowerCase()
+                    .includes(keyword) ||
+
+                holiday.holidayDate
+                    ?.toString()
+                    .toLowerCase()
+                    .includes(keyword)
 
         );
 
-    }, [holidays, search]);
+    }, [
+        holidays,
+        search
+    ]);
 
+
+    /*
+     * ADD HOLIDAY
+     */
     const handleAdd = () => {
 
         setSelectedHoliday(null);
 
         setFormData({
-
-            holidayName: "",
-            holidayDate: "",
-            holidayType: "",
-            description: "",
-            active: true
-
+            ...initialFormData
         });
+
+        setError("");
 
         setOpen(true);
 
     };
 
+
+    /*
+     * EDIT HOLIDAY
+     */
     const handleEdit = (holiday) => {
 
         setSelectedHoliday(holiday);
 
         setFormData({
 
-            holidayName: holiday.holidayName,
-            holidayDate: holiday.holidayDate,
-            holidayType: holiday.holidayType,
-            description: holiday.description,
-            active: holiday.active
+            holidayName:
+                holiday.holidayName || "",
+
+            holidayDate:
+                holiday.holidayDate || "",
+
+            holidayType:
+                holiday.holidayType || "",
+
+            description:
+                holiday.description || "",
+
+            active:
+                holiday.active ??
+                true
 
         });
+
+        setError("");
 
         setOpen(true);
 
     };
 
+
+    /*
+     * CLOSE FORM
+     */
     const handleClose = () => {
+
+        if (saving) {
+
+            return;
+
+        }
 
         setOpen(false);
 
         setSelectedHoliday(null);
 
+        setFormData({
+            ...initialFormData
+        });
+
     };
 
+
+    /*
+     * SAVE / UPDATE HOLIDAY
+     */
     const handleSave = async () => {
 
         try {
 
+            setSaving(true);
+
+            setError("");
+
+
+            /*
+             * Prepare payload
+             */
+            const payload = {
+
+                holidayName:
+                    formData.holidayName.trim(),
+
+                holidayDate:
+                    formData.holidayDate,
+
+                holidayType:
+                    formData.holidayType,
+
+                description:
+                    formData.description?.trim() || "",
+
+                active:
+                    formData.active
+
+            };
+
+
+            /*
+             * UPDATE
+             */
             if (selectedHoliday) {
 
                 await holidayService.updateHoliday(
 
                     selectedHoliday.holidayId,
 
-                    formData
-
-                );
-
-            } else {
-
-                await holidayService.createHoliday(
-
-                    formData
+                    payload
 
                 );
 
             }
 
-            handleClose();
+            /*
+             * CREATE / ADD
+             */
+            else {
 
-            loadHolidays();
+                await holidayService.createHoliday(
+
+                    payload
+
+                );
+
+            }
+
+
+            /*
+             * Close dialog
+             */
+            setOpen(false);
+
+            setSelectedHoliday(null);
+
+            setFormData({
+                ...initialFormData
+            });
+
+
+            /*
+             * Reload table
+             */
+            await loadHolidays();
+
 
         } catch (error) {
 
-            console.error(error);
+            console.error(
+                "Holiday save error:",
+                error
+            );
+
+            setError(
+
+                error?.response?.data?.message ||
+
+                error?.response?.data?.error ||
+
+                error?.message ||
+
+                "Unable to save holiday."
+
+            );
+
+        } finally {
+
+            setSaving(false);
 
         }
 
     };
 
+
     return (
 
         <DashboardLayout>
+
+            {/* ================= HEADER ================= */}
 
             <Box
 
@@ -194,7 +362,33 @@ const HolidayList = () => {
 
                 </Typography>
 
+
+                {/* ================= ADD BUTTON ================= */}
+
+                <Button
+
+                    variant="contained"
+
+                    color="primary"
+
+                    startIcon={
+                        <AddIcon />
+                    }
+
+                    onClick={
+                        handleAdd
+                    }
+
+                >
+
+                    Add Holiday
+
+                </Button>
+
             </Box>
+
+
+            {/* ================= SEARCH ================= */}
 
             <TextField
 
@@ -205,16 +399,22 @@ const HolidayList = () => {
                 value={search}
 
                 onChange={(e) =>
-                    setSearch(e.target.value)
+                    setSearch(
+                        e.target.value
+                    )
                 }
 
-                sx={{ mb: 3 }}
+                sx={{
+                    mb: 3
+                }}
 
                 InputProps={{
 
                     startAdornment: (
 
-                        <InputAdornment position="start">
+                        <InputAdornment
+                            position="start"
+                        >
 
                             <SearchIcon />
 
@@ -226,73 +426,106 @@ const HolidayList = () => {
 
             />
 
-            {
 
-                error && (
+            {/* ================= ERROR ================= */}
 
-                    <Alert
+            {error && (
 
-                        severity="error"
+                <Alert
 
-                        sx={{ mb: 2 }}
+                    severity="error"
 
-                    >
+                    sx={{
+                        mb: 2
+                    }}
 
-                        {error}
+                    onClose={() =>
+                        setError("")
+                    }
 
-                    </Alert>
+                >
 
-                )
+                    {error}
 
-            }
+                </Alert>
 
-            {
+            )}
 
-                loading ? (
 
-                    <Box
+            {/* ================= TABLE ================= */}
 
-                        display="flex"
+            {loading ? (
 
-                        justifyContent="center"
+                <Box
 
-                        mt={5}
+                    display="flex"
 
-                    >
+                    justifyContent="center"
 
-                        <CircularProgress />
+                    alignItems="center"
 
-                    </Box>
+                    mt={5}
 
-                ) : (
+                >
 
-                    <HolidayTable
+                    <CircularProgress />
 
-                        holidays={filteredHolidays}
+                </Box>
 
-                        onEdit={handleEdit}
+            ) : (
 
-                        reload={loadHolidays}
+                <HolidayTable
 
-                    />
+                    holidays={
+                        filteredHolidays
+                    }
 
-                )
+                    onEdit={
+                        handleEdit
+                    }
 
-            }
+                    reload={
+                        loadHolidays
+                    }
+
+                />
+
+            )}
+
+
+            {/* ================= FORM ================= */}
 
             <HolidayForm
 
-                open={open}
+                open={
+                    open
+                }
 
-                editing={Boolean(selectedHoliday)}
+                editing={
+                    Boolean(
+                        selectedHoliday
+                    )
+                }
 
-                formData={formData}
+                formData={
+                    formData
+                }
 
-                setFormData={setFormData}
+                setFormData={
+                    setFormData
+                }
 
-                onSave={handleSave}
+                onSave={
+                    handleSave
+                }
 
-                onClose={handleClose}
+                onClose={
+                    handleClose
+                }
+
+                saving={
+                    saving
+                }
 
             />
 
@@ -301,5 +534,6 @@ const HolidayList = () => {
     );
 
 };
+
 
 export default HolidayList;

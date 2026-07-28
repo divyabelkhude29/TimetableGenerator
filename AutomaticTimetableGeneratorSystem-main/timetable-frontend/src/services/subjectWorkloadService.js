@@ -4,7 +4,9 @@ const BASE_URL = "/subject-workloads";
 
 const subjectWorkloadService = {
 
-    // Get All Subject Workloads
+    // ==============================
+    // GET ALL SUBJECT WORKLOADS
+    // ==============================
     getAllSubjectWorkloads: async () => {
 
         const response = await api.get(BASE_URL);
@@ -13,7 +15,10 @@ const subjectWorkloadService = {
 
     },
 
-    // Get Subject Workload By Id
+
+    // ==============================
+    // GET SUBJECT WORKLOAD BY ID
+    // ==============================
     getSubjectWorkloadById: async (id) => {
 
         const response = await api.get(
@@ -24,7 +29,10 @@ const subjectWorkloadService = {
 
     },
 
-    // Get Subject Workload By Allocation
+
+    // ==============================
+    // GET BY ALLOCATION
+    // ==============================
     getSubjectWorkloadByAllocation: async (allocationId) => {
 
         const response = await api.get(
@@ -35,7 +43,10 @@ const subjectWorkloadService = {
 
     },
 
-    // Create
+
+    // ==============================
+    // CREATE SUBJECT WORKLOAD
+    // ==============================
     saveSubjectWorkload: async (data) => {
 
         const response = await api.post(
@@ -47,8 +58,14 @@ const subjectWorkloadService = {
 
     },
 
-    // Update
-    updateSubjectWorkload: async (id, data) => {
+
+    // ==============================
+    // UPDATE SUBJECT WORKLOAD
+    // ==============================
+    updateSubjectWorkload: async (
+        id,
+        data
+    ) => {
 
         const response = await api.put(
             `${BASE_URL}/${id}`,
@@ -59,7 +76,10 @@ const subjectWorkloadService = {
 
     },
 
-    // Delete
+
+    // ==============================
+    // DELETE SUBJECT WORKLOAD
+    // ==============================
     deleteSubjectWorkload: async (id) => {
 
         const response = await api.delete(

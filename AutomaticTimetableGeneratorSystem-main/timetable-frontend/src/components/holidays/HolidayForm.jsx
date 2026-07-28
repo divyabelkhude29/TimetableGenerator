@@ -10,30 +10,53 @@ import {
     TextField,
     MenuItem,
     FormControlLabel,
-    Switch
+    Switch,
+    Alert
 } from "@mui/material";
 
+
 const HOLIDAY_TYPES = [
+
     "NATIONAL",
+
     "STATE",
+
     "COLLEGE",
+
     "FESTIVAL",
+
     "OTHER"
+
 ];
 
-export default function HolidayForm({
+
+const HolidayForm = ({
 
     open,
+
     editing,
+
     formData,
+
     setFormData,
+
     onSave,
-    onClose
 
-}) {
+    onClose,
 
-    const [errors, setErrors] = useState({});
+    saving = false
 
+}) => {
+
+
+    const [errors, setErrors] =
+        useState({});
+
+
+    /*
+     * Clear validation
+     * when dialog closes
+     */
     useEffect(() => {
 
         if (!open) {
@@ -42,56 +65,142 @@ export default function HolidayForm({
 
         }
 
-    }, [open]);
+    }, [
+        open
+    ]);
 
-    const handleChange = (event) => {
 
-        const { name, value, checked, type } = event.target;
+    /*
+     * Handle input changes
+     */
+    const handleChange = (
+        event
+    ) => {
 
-        setFormData({
+        const {
 
-            ...formData,
+            name,
 
-            [name]:
-                type === "checkbox"
-                    ? checked
-                    : value
+            value,
 
-        });
+            checked,
+
+            type
+
+        } = event.target;
+
+
+        setFormData(
+
+            previous => ({
+
+                ...previous,
+
+                [name]:
+
+                    type === "checkbox"
+
+                        ? checked
+
+                        : value
+
+            })
+
+        );
+
+
+        /*
+         * Remove field error
+         */
+        setErrors(
+
+            previous => ({
+
+                ...previous,
+
+                [name]: ""
+
+            })
+
+        );
 
     };
 
+
+    /*
+     * Validate form
+     */
     const validate = () => {
 
-        let temp = {};
+        const temp = {};
 
-        if (!formData.holidayName?.trim()) {
 
-            temp.holidayName = "Holiday Name is required.";
+        /*
+         * Holiday name
+         */
+        if (
+            !formData.holidayName?.trim()
+        ) {
 
-        }
-
-        if (!formData.holidayDate) {
-
-            temp.holidayDate = "Holiday Date is required.";
-
-        }
-
-        if (!formData.holidayType) {
-
-            temp.holidayType = "Holiday Type is required.";
+            temp.holidayName =
+                "Holiday Name is required.";
 
         }
 
-        setErrors(temp);
 
-        return Object.keys(temp).length === 0;
+        /*
+         * Holiday date
+         */
+        if (
+            !formData.holidayDate
+        ) {
+
+            temp.holidayDate =
+                "Holiday Date is required.";
+
+        }
+
+
+        /*
+         * Holiday type
+         */
+        if (
+            !formData.holidayType
+        ) {
+
+            temp.holidayType =
+                "Holiday Type is required.";
+
+        }
+
+
+        setErrors(
+            temp
+        );
+
+
+        return (
+            Object.keys(temp).length === 0
+        );
 
     };
 
+
+    /*
+     * Submit
+     */
     const handleSubmit = () => {
 
-        if (validate()) {
+        if (saving) {
+
+            return;
+
+        }
+
+
+        if (
+            validate()
+        ) {
 
             onSave();
 
@@ -99,13 +208,25 @@ export default function HolidayForm({
 
     };
 
+
     return (
 
         <Dialog
-            open={open}
-            onClose={onClose}
+
+            open={
+                open
+            }
+
+            onClose={
+                saving
+                    ? undefined
+                    : onClose
+            }
+
             fullWidth
+
             maxWidth="md"
+
         >
 
             <DialogTitle>
@@ -122,18 +243,55 @@ export default function HolidayForm({
 
             </DialogTitle>
 
+
             <DialogContent>
 
+
+                {/* ================= ERROR ================= */}
+
+                {Object.keys(errors).length > 0 && (
+
+                    <Alert
+
+                        severity="error"
+
+                        sx={{
+                            mt: 2,
+                            mb: 1
+                        }}
+
+                    >
+
+                        Please fill in all required fields.
+
+                    </Alert>
+
+                )}
+
+
                 <Grid
+
                     container
+
                     spacing={3}
-                    sx={{ mt: 1 }}
+
+                    sx={{
+                        mt: 1
+                    }}
+
                 >
 
+
+                    {/* ================= HOLIDAY NAME ================= */}
+
                     <Grid
+
                         item
+
                         xs={12}
+
                         md={6}
+
                     >
 
                         <TextField
@@ -144,22 +302,39 @@ export default function HolidayForm({
 
                             name="holidayName"
 
-                            value={formData.holidayName}
+                            value={
+                                formData.holidayName
+                            }
 
-                            onChange={handleChange}
+                            onChange={
+                                handleChange
+                            }
 
-                            error={!!errors.holidayName}
+                            error={
+                                !!errors.holidayName
+                            }
 
-                            helperText={errors.holidayName}
+                            helperText={
+                                errors.holidayName
+                            }
+
+                            required
 
                         />
 
                     </Grid>
 
+
+                    {/* ================= HOLIDAY DATE ================= */}
+
                     <Grid
+
                         item
+
                         xs={12}
+
                         md={6}
+
                     >
 
                         <TextField
@@ -172,26 +347,43 @@ export default function HolidayForm({
 
                             name="holidayDate"
 
-                            value={formData.holidayDate}
+                            value={
+                                formData.holidayDate
+                            }
 
-                            onChange={handleChange}
+                            onChange={
+                                handleChange
+                            }
 
-                            error={!!errors.holidayDate}
+                            error={
+                                !!errors.holidayDate
+                            }
 
-                            helperText={errors.holidayDate}
+                            helperText={
+                                errors.holidayDate
+                            }
 
                             InputLabelProps={{
                                 shrink: true
                             }}
 
+                            required
+
                         />
 
                     </Grid>
 
+
+                    {/* ================= HOLIDAY TYPE ================= */}
+
                     <Grid
+
                         item
+
                         xs={12}
+
                         md={6}
+
                     >
 
                         <TextField
@@ -204,30 +396,58 @@ export default function HolidayForm({
 
                             name="holidayType"
 
-                            value={formData.holidayType}
+                            value={
+                                formData.holidayType
+                            }
 
-                            onChange={handleChange}
+                            onChange={
+                                handleChange
+                            }
 
-                            error={!!errors.holidayType}
+                            error={
+                                !!errors.holidayType
+                            }
 
-                            helperText={errors.holidayType}
+                            helperText={
+                                errors.holidayType
+                            }
+
+                            required
 
                         >
 
+                            <MenuItem value="">
+
+                                Select Holiday Type
+
+                            </MenuItem>
+
+
                             {
 
-                                HOLIDAY_TYPES.map((type) => (
+                                HOLIDAY_TYPES.map(
 
-                                    <MenuItem
-                                        key={type}
-                                        value={type}
-                                    >
+                                    (type) => (
 
-                                        {type}
+                                        <MenuItem
 
-                                    </MenuItem>
+                                            key={
+                                                type
+                                            }
 
-                                ))
+                                            value={
+                                                type
+                                            }
+
+                                        >
+
+                                            {type}
+
+                                        </MenuItem>
+
+                                    )
+
+                                )
 
                             }
 
@@ -235,10 +455,17 @@ export default function HolidayForm({
 
                     </Grid>
 
+
+                    {/* ================= ACTIVE ================= */}
+
                     <Grid
+
                         item
+
                         xs={12}
+
                         md={6}
+
                     >
 
                         <FormControlLabel
@@ -247,9 +474,13 @@ export default function HolidayForm({
 
                                 <Switch
 
-                                    checked={formData.active}
+                                    checked={
+                                        formData.active
+                                    }
 
-                                    onChange={handleChange}
+                                    onChange={
+                                        handleChange
+                                    }
 
                                     name="active"
 
@@ -263,9 +494,15 @@ export default function HolidayForm({
 
                     </Grid>
 
+
+                    {/* ================= DESCRIPTION ================= */}
+
                     <Grid
+
                         item
+
                         xs={12}
+
                     >
 
                         <TextField
@@ -280,43 +517,72 @@ export default function HolidayForm({
 
                             name="description"
 
-                            value={formData.description}
+                            value={
+                                formData.description
+                            }
 
-                            onChange={handleChange}
+                            onChange={
+                                handleChange
+                            }
+
+                            placeholder="Enter holiday description"
 
                         />
 
                     </Grid>
 
+
                 </Grid>
 
             </DialogContent>
 
+
+            {/* ================= BUTTONS ================= */}
+
             <DialogActions>
 
                 <Button
-                    onClick={onClose}
+
+                    onClick={
+                        onClose
+                    }
+
+                    disabled={
+                        saving
+                    }
+
                 >
 
                     Cancel
 
                 </Button>
 
+
                 <Button
 
                     variant="contained"
 
-                    onClick={handleSubmit}
+                    onClick={
+                        handleSubmit
+                    }
+
+                    disabled={
+                        saving
+                    }
 
                 >
 
                     {
 
-                        editing
+                        saving
 
-                            ? "Update"
+                            ? "Saving..."
 
-                            : "Save"
+                            : editing
+
+                                ? "Update"
+
+                                : "Save"
 
                     }
 
@@ -328,4 +594,7 @@ export default function HolidayForm({
 
     );
 
-}
+};
+
+
+export default HolidayForm;

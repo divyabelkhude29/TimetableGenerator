@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
     Paper,
@@ -20,50 +20,128 @@ import {
     DialogTitle,
     DialogContent,
     DialogActions,
-    Button
+    Button,
+    CircularProgress
 } from "@mui/material";
 
+
 import SearchIcon from "@mui/icons-material/Search";
+
 import EditIcon from "@mui/icons-material/Edit";
+
 import DeleteIcon from "@mui/icons-material/Delete";
 
-import holidayService from "../../services/holidayService";
+
+import holidayService
+    from "../../services/holidayService";
+
 
 const HolidayTable = ({
 
     holidays = [],
+
     onEdit,
+
     reload
 
 }) => {
 
-    const [page, setPage] = useState(0);
 
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [page, setPage] =
+        useState(0);
 
-    const [search, setSearch] = useState("");
 
-    const [deleteOpen, setDeleteOpen] = useState(false);
+    const [rowsPerPage, setRowsPerPage] =
+        useState(10);
 
-    const [selectedId, setSelectedId] = useState(null);
 
-    const filteredData = useMemo(() => {
+    const [search, setSearch] =
+        useState("");
 
-        const keyword = search.toLowerCase();
 
-        return holidays.filter((holiday) =>
+    const [deleteOpen, setDeleteOpen] =
+        useState(false);
 
-            holiday.holidayName?.toLowerCase().includes(keyword) ||
 
-            holiday.holidayType?.toLowerCase().includes(keyword) ||
+    const [selectedId, setSelectedId] =
+        useState(null);
 
-            holiday.description?.toLowerCase().includes(keyword)
 
-        );
+    const [deleting, setDeleting] =
+        useState(false);
 
-    }, [holidays, search]);
 
-    const openDeleteDialog = (id) => {
+    /*
+     * Filter table data
+     */
+    const filteredData =
+        useMemo(() => {
+
+            const keyword =
+                search
+                    .trim()
+                    .toLowerCase();
+
+
+            if (!keyword) {
+
+                return holidays;
+
+            }
+
+
+            return holidays.filter(
+
+                (holiday) =>
+
+                    holiday.holidayName
+                        ?.toLowerCase()
+                        .includes(keyword) ||
+
+                    holiday.holidayType
+                        ?.toLowerCase()
+                        .includes(keyword) ||
+
+                    holiday.description
+                        ?.toLowerCase()
+                        .includes(keyword) ||
+
+                    holiday.holidayDate
+                        ?.toString()
+                        .toLowerCase()
+                        .includes(keyword)
+
+            );
+
+        }, [
+
+            holidays,
+
+            search
+
+        ]);
+
+
+    /*
+     * Reset page when search changes
+     */
+    useEffect(() => {
+
+        setPage(0);
+
+    }, [
+
+        search
+
+    ]);
+
+
+    /*
+     * Open delete confirmation
+     */
+    const openDeleteDialog = (
+        id
+    ) => {
 
         setSelectedId(id);
 
@@ -71,27 +149,93 @@ const HolidayTable = ({
 
     };
 
-    const handleDelete = async () => {
 
-        try {
+    /*
+     * Close delete dialog
+     */
+    const closeDeleteDialog = () => {
 
-            await holidayService.deleteHoliday(selectedId);
+        if (deleting) {
 
-            reload();
-
-        } catch (error) {
-
-            console.error(error);
+            return;
 
         }
 
         setDeleteOpen(false);
 
+        setSelectedId(null);
+
     };
+
+
+    /*
+     * Delete holiday
+     */
+    const handleDelete = async () => {
+
+        if (!selectedId) {
+
+            return;
+
+        }
+
+
+        try {
+
+            setDeleting(true);
+
+
+            await holidayService.deleteHoliday(
+
+                selectedId
+
+            );
+
+
+            /*
+             * Reload table
+             */
+            await reload();
+
+
+            setDeleteOpen(false);
+
+            setSelectedId(null);
+
+
+        } catch (error) {
+
+            console.error(
+
+                "Delete holiday error:",
+
+                error
+
+            );
+
+        } finally {
+
+            setDeleting(false);
+
+        }
+
+    };
+
 
     return (
 
-        <Paper sx={{ mt: 2 }}>
+        <Paper
+
+            elevation={3}
+
+            sx={{
+                mt: 2
+            }}
+
+        >
+
+
+            {/* ================= TABLE HEADER ================= */}
 
             <Box
 
@@ -105,6 +249,7 @@ const HolidayTable = ({
 
             >
 
+
                 <Typography
 
                     variant="h6"
@@ -117,21 +262,36 @@ const HolidayTable = ({
 
                 </Typography>
 
+
                 <TextField
 
                     size="small"
 
                     placeholder="Search Holiday..."
 
-                    value={search}
+                    value={
+                        search
+                    }
 
-                    onChange={(e) => setSearch(e.target.value)}
+                    onChange={
+
+                        (e) =>
+
+                            setSearch(
+                                e.target.value
+                            )
+
+                    }
 
                     InputProps={{
 
                         startAdornment: (
 
-                            <InputAdornment position="start">
+                            <InputAdornment
+
+                                position="start"
+
+                            >
 
                                 <SearchIcon />
 
@@ -143,15 +303,21 @@ const HolidayTable = ({
 
                 />
 
+
             </Box>
+
+
+            {/* ================= TABLE ================= */}
 
             <TableContainer>
 
                 <Table>
 
+
                     <TableHead>
 
                         <TableRow>
+
 
                             <TableCell>
 
@@ -159,11 +325,13 @@ const HolidayTable = ({
 
                             </TableCell>
 
+
                             <TableCell>
 
                                 <b>Name</b>
 
                             </TableCell>
+
 
                             <TableCell>
 
@@ -171,11 +339,13 @@ const HolidayTable = ({
 
                             </TableCell>
 
+
                             <TableCell>
 
                                 <b>Type</b>
 
                             </TableCell>
+
 
                             <TableCell>
 
@@ -183,11 +353,13 @@ const HolidayTable = ({
 
                             </TableCell>
 
+
                             <TableCell align="center">
 
                                 <b>Status</b>
 
                             </TableCell>
+
 
                             <TableCell align="center">
 
@@ -195,11 +367,14 @@ const HolidayTable = ({
 
                             </TableCell>
 
+
                         </TableRow>
 
                     </TableHead>
 
+
                     <TableBody>
+
 
                         {
 
@@ -207,143 +382,215 @@ const HolidayTable = ({
 
                                 .slice(
 
-                                    page * rowsPerPage,
+                                    page *
 
-                                    page * rowsPerPage + rowsPerPage
+                                        rowsPerPage,
+
+                                    page *
+
+                                        rowsPerPage +
+
+                                        rowsPerPage
 
                                 )
 
-                                .map((holiday) => (
+                                .map(
 
-                                    <TableRow
+                                    (holiday) => (
 
-                                        key={holiday.holidayId}
+                                        <TableRow
 
-                                        hover
+                                            key={
 
-                                    >
-
-                                        <TableCell>
-
-                                            {holiday.holidayId}
-
-                                        </TableCell>
-
-                                        <TableCell>
-
-                                            {holiday.holidayName}
-
-                                        </TableCell>
-
-                                        <TableCell>
-
-                                            {holiday.holidayDate}
-
-                                        </TableCell>
-
-                                        <TableCell>
-
-                                            {holiday.holidayType}
-
-                                        </TableCell>
-
-                                        <TableCell>
-
-                                            {holiday.description}
-
-                                        </TableCell>
-
-                                        <TableCell align="center">
-
-                                            {
-
-                                                holiday.active ? (
-
-                                                    <Chip
-
-                                                        label="Active"
-
-                                                        color="success"
-
-                                                        size="small"
-
-                                                    />
-
-                                                ) : (
-
-                                                    <Chip
-
-                                                        label="Inactive"
-
-                                                        color="error"
-
-                                                        size="small"
-
-                                                    />
-
-                                                )
+                                                holiday.holidayId
 
                                             }
 
-                                        </TableCell>
+                                            hover
 
-                                        <TableCell align="center">
+                                        >
 
-                                            <Tooltip title="Edit">
 
-                                                <IconButton
+                                            <TableCell>
 
-                                                    color="primary"
+                                                {
 
-                                                    onClick={() =>
+                                                    holiday.holidayId
 
-                                                        onEdit(holiday)
+                                                }
 
-                                                    }
+                                            </TableCell>
 
-                                                >
 
-                                                    <EditIcon />
+                                            <TableCell>
 
-                                                </IconButton>
+                                                {
 
-                                            </Tooltip>
+                                                    holiday.holidayName
 
-                                            <Tooltip title="Delete">
+                                                }
 
-                                                <IconButton
+                                            </TableCell>
 
-                                                    color="error"
 
-                                                    onClick={() =>
+                                            <TableCell>
 
-                                                        openDeleteDialog(
+                                                {
 
-                                                            holiday.holidayId
+                                                    holiday.holidayDate
+
+                                                }
+
+                                            </TableCell>
+
+
+                                            <TableCell>
+
+                                                {
+
+                                                    holiday.holidayType
+
+                                                }
+
+                                            </TableCell>
+
+
+                                            <TableCell>
+
+                                                {
+
+                                                    holiday.description ||
+
+                                                    "-"
+
+                                                }
+
+                                            </TableCell>
+
+
+                                            <TableCell align="center">
+
+
+                                                {
+
+                                                    holiday.active
+
+                                                        ? (
+
+                                                            <Chip
+
+                                                                label="Active"
+
+                                                                color="success"
+
+                                                                size="small"
+
+                                                            />
 
                                                         )
 
-                                                    }
+                                                        : (
+
+                                                            <Chip
+
+                                                                label="Inactive"
+
+                                                                color="error"
+
+                                                                size="small"
+
+                                                            />
+
+                                                        )
+
+                                                }
+
+
+                                            </TableCell>
+
+
+                                            <TableCell align="center">
+
+
+                                                {/* EDIT */}
+
+                                                <Tooltip
+
+                                                    title="Edit"
 
                                                 >
 
-                                                    <DeleteIcon />
+                                                    <IconButton
 
-                                                </IconButton>
+                                                        color="primary"
 
-                                            </Tooltip>
+                                                        onClick={() =>
 
-                                        </TableCell>
+                                                            onEdit(
 
-                                    </TableRow>
+                                                                holiday
 
-                                ))
+                                                            )
+
+                                                        }
+
+                                                    >
+
+                                                        <EditIcon />
+
+                                                    </IconButton>
+
+                                                </Tooltip>
+
+
+                                                {/* DELETE */}
+
+                                                <Tooltip
+
+                                                    title="Delete"
+
+                                                >
+
+                                                    <IconButton
+
+                                                        color="error"
+
+                                                        onClick={() =>
+
+                                                            openDeleteDialog(
+
+                                                                holiday.holidayId
+
+                                                            )
+
+                                                        }
+
+                                                    >
+
+                                                        <DeleteIcon />
+
+                                                    </IconButton>
+
+                                                </Tooltip>
+
+
+                                            </TableCell>
+
+
+                                        </TableRow>
+
+                                    )
+
+                                )
 
                         }
 
+
                         {
 
-                            filteredData.length === 0 && (
+                            filteredData.length ===
+
+                                0 && (
 
                                 <TableRow>
 
@@ -365,51 +612,89 @@ const HolidayTable = ({
 
                         }
 
+
                     </TableBody>
+
 
                 </Table>
 
             </TableContainer>
 
+
+            {/* ================= PAGINATION ================= */}
+
             <TablePagination
 
                 component="div"
 
-                count={filteredData.length}
+                count={
+                    filteredData.length
+                }
 
-                page={page}
+                page={
+                    page
+                }
 
-                rowsPerPage={rowsPerPage}
+                rowsPerPage={
+                    rowsPerPage
+                }
 
-                rowsPerPageOptions={[5, 10, 25, 50]}
+                rowsPerPageOptions={[
+                    5,
+                    10,
+                    25,
+                    50
+                ]}
 
-                onPageChange={(event, newPage) =>
+                onPageChange={
 
-                    setPage(newPage)
+                    (event, newPage) =>
+
+                        setPage(
+                            newPage
+                        )
 
                 }
 
-                onRowsPerPageChange={(event) => {
+                onRowsPerPageChange={
 
-                    setRowsPerPage(
+                    (event) => {
 
-                        parseInt(event.target.value, 10)
+                        setRowsPerPage(
 
-                    );
+                            parseInt(
 
-                    setPage(0);
+                                event.target.value,
 
-                }}
+                                10
+
+                            )
+
+                        );
+
+                        setPage(0);
+
+                    }
+
+                }
 
             />
 
+
+            {/* ================= DELETE DIALOG ================= */}
+
             <Dialog
 
-                open={deleteOpen}
+                open={
+                    deleteOpen
+                }
 
-                onClose={() => setDeleteOpen(false)}
+                onClose={
+                    closeDeleteDialog
+                }
 
             >
+
 
                 <DialogTitle>
 
@@ -417,20 +702,25 @@ const HolidayTable = ({
 
                 </DialogTitle>
 
+
                 <DialogContent>
 
                     Are you sure you want to delete this holiday?
 
                 </DialogContent>
 
+
                 <DialogActions>
+
 
                     <Button
 
-                        onClick={() =>
+                        onClick={
+                            closeDeleteDialog
+                        }
 
-                            setDeleteOpen(false)
-
+                        disabled={
+                            deleting
                         }
 
                     >
@@ -439,28 +729,71 @@ const HolidayTable = ({
 
                     </Button>
 
+
                     <Button
 
                         color="error"
 
                         variant="contained"
 
-                        onClick={handleDelete}
+                        onClick={
+                            handleDelete
+                        }
+
+                        disabled={
+                            deleting
+                        }
+
+                        startIcon={
+
+                            deleting
+
+                                ? (
+
+                                    <CircularProgress
+
+                                        size={18}
+
+                                        color="inherit"
+
+                                    />
+
+                                )
+
+                                : (
+
+                                    <DeleteIcon />
+
+                                )
+
+                        }
 
                     >
 
-                        Delete
+                        {
+
+                            deleting
+
+                                ? "Deleting..."
+
+                                : "Delete"
+
+                        }
 
                     </Button>
 
+
                 </DialogActions>
 
+
             </Dialog>
+
 
         </Paper>
 
     );
 
 };
+
 
 export default HolidayTable;

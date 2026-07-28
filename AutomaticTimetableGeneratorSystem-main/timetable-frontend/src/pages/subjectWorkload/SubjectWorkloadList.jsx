@@ -1,180 +1,447 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+    useEffect,
+    useMemo,
+    useState
+} from "react";
 
 import {
-  Box,
-  Typography,
-  CircularProgress,
-  Alert,
-  TextField,
-  InputAdornment,
+    Box,
+    Typography,
+    CircularProgress,
+    Alert,
+    TextField,
+    InputAdornment,
+    Button
 } from "@mui/material";
+
+import AddIcon from "@mui/icons-material/Add";
 
 import SearchIcon from "@mui/icons-material/Search";
 
-import DashboardLayout from "../../components/layout/DashboardLayout";
-import SubjectWorkloadTable from "../../components/subjectWorkload/SubjectWorkloadTable";
-import SubjectWorkloadForm from "../../components/subjectWorkload/SubjectWorkloadForm";
-import subjectWorkloadService from "../../services/subjectWorkloadService";
+import DashboardLayout
+    from "../../components/layout/DashboardLayout";
+
+import SubjectWorkloadTable
+    from "../../components/subjectWorkload/SubjectWorkloadTable";
+
+import SubjectWorkloadForm
+    from "../../components/subjectWorkload/SubjectWorkloadForm";
+
+import subjectWorkloadService
+    from "../../services/subjectWorkloadService";
+
 
 const SubjectWorkloadList = () => {
 
-  const [workloads, setWorkloads] = useState([]);
+    // ==========================================
+    // STATE
+    // ==========================================
 
-  const [loading, setLoading] = useState(true);
+    const [workloads, setWorkloads] =
+        useState([]);
 
-  const [error, setError] = useState("");
+    const [loading, setLoading] =
+        useState(true);
 
-  const [open, setOpen] = useState(false);
+    const [error, setError] =
+        useState("");
 
-  const [selectedWorkload, setSelectedWorkload] = useState(null);
+    const [open, setOpen] =
+        useState(false);
 
-  const [search, setSearch] = useState("");
+    const [selectedWorkload, setSelectedWorkload] =
+        useState(null);
 
-  const loadWorkloads = async () => {
+    const [search, setSearch] =
+        useState("");
 
-    try {
 
-      setLoading(true);
+    // ==========================================
+    // LOAD SUBJECT WORKLOADS
+    // ==========================================
 
-      const response =
-        await subjectWorkloadService.getAllSubjectWorkloads();
+    const loadWorkloads = async () => {
 
-      setWorkloads(response);
+        try {
 
-    } catch (error) {
+            setLoading(true);
 
-      console.error(error);
+            setError("");
 
-      setError("Unable to load Subject Workloads.");
+            const response =
+                await subjectWorkloadService
+                    .getAllSubjectWorkloads();
 
-    } finally {
 
-      setLoading(false);
+            // Support:
+            // []
+            //
+            // OR
+            //
+            // { content: [] }
 
-    }
+            const data =
+                Array.isArray(response)
+                    ? response
+                    : response?.content || [];
 
-  };
 
-  useEffect(() => {
+            setWorkloads(data);
 
-    loadWorkloads();
 
-  }, []);
+        } catch (error) {
 
-  const filteredWorkloads = useMemo(() => {
+            console.error(
+                "Subject workload loading error:",
+                error
+            );
 
-    const keyword = search.toLowerCase();
 
-    return workloads.filter((item) =>
+            console.error(
+                "Server response:",
+                error?.response?.data
+            );
 
-      item.facultyCode?.toLowerCase().includes(keyword) ||
 
-      item.facultyName?.toLowerCase().includes(keyword) ||
+            setError(
 
-      item.subjectCode?.toLowerCase().includes(keyword) ||
+                error?.response?.data?.message ||
 
-      item.subjectName?.toLowerCase().includes(keyword) ||
+                error?.response?.data?.error ||
 
-      item.sectionName?.toLowerCase().includes(keyword)
+                error?.message ||
+
+                "Unable to load Subject Workloads."
+
+            );
+
+        } finally {
+
+            setLoading(false);
+
+        }
+
+    };
+
+
+    // ==========================================
+    // LOAD ON PAGE OPEN
+    // ==========================================
+
+    useEffect(() => {
+
+        loadWorkloads();
+
+    }, []);
+
+
+    // ==========================================
+    // SEARCH FILTER
+    // ==========================================
+
+    const filteredWorkloads = useMemo(() => {
+
+        const keyword =
+            search
+                .trim()
+                .toLowerCase();
+
+
+        if (!keyword) {
+
+            return workloads;
+
+        }
+
+
+        return workloads.filter(
+            (item) =>
+
+                item.facultyCode
+                    ?.toLowerCase()
+                    .includes(keyword)
+
+                ||
+
+                item.facultyName
+                    ?.toLowerCase()
+                    .includes(keyword)
+
+                ||
+
+                item.subjectCode
+                    ?.toLowerCase()
+                    .includes(keyword)
+
+                ||
+
+                item.subjectName
+                    ?.toLowerCase()
+                    .includes(keyword)
+
+                ||
+
+                item.sectionName
+                    ?.toLowerCase()
+                    .includes(keyword)
+
+        );
+
+    }, [
+        workloads,
+        search
+    ]);
+
+
+    // ==========================================
+    // ADD BUTTON
+    // ==========================================
+
+    const handleAdd = () => {
+
+        // Clear previous selected record
+
+        setSelectedWorkload(null);
+
+        // Open Add form
+
+        setOpen(true);
+
+    };
+
+
+    // ==========================================
+    // EDIT BUTTON
+    // ==========================================
+
+    const handleEdit = (
+        workload
+    ) => {
+
+        setSelectedWorkload(
+            workload
+        );
+
+        setOpen(true);
+
+    };
+
+
+    // ==========================================
+    // CLOSE FORM
+    // ==========================================
+
+    const handleClose = () => {
+
+        setOpen(false);
+
+        setSelectedWorkload(null);
+
+    };
+
+
+    // ==========================================
+    // RENDER
+    // ==========================================
+
+    return (
+
+        <DashboardLayout>
+
+            {/* ==================================
+                PAGE HEADER
+            ================================== */}
+
+            <Box
+                display="flex"
+                justifyContent="space-between"
+                alignItems="center"
+                mb={3}
+                gap={2}
+                flexWrap="wrap"
+            >
+
+                <Typography
+                    variant="h4"
+                    fontWeight="bold"
+                >
+
+                    Subject Workload Management
+
+                </Typography>
+
+
+                {/* ==================================
+                    ADD BUTTON
+                ================================== */}
+
+                <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={
+                        <AddIcon />
+                    }
+                    onClick={
+                        handleAdd
+                    }
+                    sx={{
+                        minWidth: 220,
+                        height: 45,
+                        fontWeight: "bold"
+                    }}
+                >
+
+                    Add Subject Workload
+
+                </Button>
+
+            </Box>
+
+
+            {/* ==================================
+                SEARCH
+            ================================== */}
+
+            <TextField
+
+                fullWidth
+
+                placeholder=
+                    "Search by Faculty, Subject or Section..."
+
+                value={
+                    search
+                }
+
+                onChange={
+                    (event) =>
+                        setSearch(
+                            event.target.value
+                        )
+                }
+
+                sx={{
+                    mb: 3
+                }}
+
+                InputProps={{
+
+                    startAdornment: (
+
+                        <InputAdornment
+                            position="start"
+                        >
+
+                            <SearchIcon />
+
+                        </InputAdornment>
+
+                    )
+
+                }}
+
+            />
+
+
+            {/* ==================================
+                ERROR
+            ================================== */}
+
+            {error && (
+
+                <Alert
+                    severity="error"
+                    sx={{
+                        mb: 2
+                    }}
+                    onClose={() =>
+                        setError("")
+                    }
+                >
+
+                    {error}
+
+                </Alert>
+
+            )}
+
+
+            {/* ==================================
+                LOADING
+            ================================== */}
+
+            {loading ? (
+
+                <Box
+
+                    display="flex"
+
+                    justifyContent="center"
+
+                    alignItems="center"
+
+                    mt={5}
+
+                >
+
+                    <CircularProgress />
+
+                </Box>
+
+            ) : (
+
+                /* ==================================
+                   TABLE
+                ================================== */
+
+                <SubjectWorkloadTable
+
+                    workloads={
+                        filteredWorkloads
+                    }
+
+                    onEdit={
+                        handleEdit
+                    }
+
+                    reload={
+                        loadWorkloads
+                    }
+
+                />
+
+            )}
+
+
+            {/* ==================================
+                ADD / EDIT FORM
+            ================================== */}
+
+            <SubjectWorkloadForm
+
+                open={
+                    open
+                }
+
+                onClose={
+                    handleClose
+                }
+
+                workload={
+                    selectedWorkload
+                }
+
+                reload={
+                    loadWorkloads
+                }
+
+            />
+
+        </DashboardLayout>
 
     );
 
-  }, [workloads, search]);
-
-  const handleAdd = () => {
-
-    setSelectedWorkload(null);
-
-    setOpen(true);
-
-  };
-
-  const handleEdit = (workload) => {
-
-    setSelectedWorkload(workload);
-
-    setOpen(true);
-
-  };
-
-  const handleClose = () => {
-
-    setOpen(false);
-
-    setSelectedWorkload(null);
-
-  };
-
-  return (
-
-    <DashboardLayout>
-
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-      >
-
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-        >
-          Subject Workload Management
-        </Typography>
-
-      </Box>
-
-      <TextField
-        fullWidth
-        placeholder="Search by Faculty, Subject or Section..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        sx={{ mb: 3 }}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position="start">
-              <SearchIcon />
-            </InputAdornment>
-          ),
-        }}
-      />
-
-      {error && (
-        <Alert
-          severity="error"
-          sx={{ mb: 2 }}
-        >
-          {error}
-        </Alert>
-      )}
-
-      {loading ? (
-        <Box
-          display="flex"
-          justifyContent="center"
-          mt={5}
-        >
-          <CircularProgress />
-        </Box>
-      ) : (        <SubjectWorkloadTable
-          workloads={filteredWorkloads}
-          onEdit={handleEdit}
-          reload={loadWorkloads}
-        />
-      )}
-
-      <SubjectWorkloadForm
-        open={open}
-        onClose={handleClose}
-        workload={selectedWorkload}
-        reload={loadWorkloads}
-      />
-
-    </DashboardLayout>
-
-  );
-
 };
+
 
 export default SubjectWorkloadList;

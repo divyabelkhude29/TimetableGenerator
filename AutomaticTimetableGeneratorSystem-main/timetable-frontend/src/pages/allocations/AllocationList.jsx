@@ -1,207 +1,539 @@
-import { useEffect, useState } from "react";
+import {
+    useEffect,
+    useState
+} from "react";
 
 import {
-  Box,
-  Typography,
-  Button,
-  CircularProgress,
-  Alert,
+    Box,
+    Typography,
+    Button,
+    CircularProgress,
+    Alert
 } from "@mui/material";
 
-import AddIcon from "@mui/icons-material/Add";
+import AddIcon
+    from "@mui/icons-material/Add";
 
-import DashboardLayout from "../../components/layout/DashboardLayout";
-import AllocationTable from "../../components/allocations/AllocationTable";
-import AllocationForm from "../../components/allocations/AllocationForm";
-import allocationService from "../../services/allocationService";
+import DashboardLayout
+    from "../../components/layout/DashboardLayout";
+
+import AllocationTable
+    from "../../components/allocations/AllocationTable";
+
+import AllocationForm
+    from "../../components/allocations/AllocationForm";
+
+import allocationService
+    from "../../services/allocationService";
+
 
 const AllocationList = () => {
 
-  const [allocationList, setAllocationList] = useState([]);
 
-  const [loading, setLoading] = useState(true);
+    const [
+        allocationList,
+        setAllocationList
+    ] = useState([]);
 
-  const [error, setError] = useState("");
 
-  const [open, setOpen] = useState(false);
+    const [
+        loading,
+        setLoading
+    ] = useState(true);
 
-  const [selectedAllocation, setSelectedAllocation] = useState(null);
 
-  const loadAllocations = async () => {
+    const [
+        error,
+        setError
+    ] = useState("");
 
-    try {
 
-      setLoading(true);
+    const [
+        open,
+        setOpen
+    ] = useState(false);
 
-      setError("");
 
-      const response =
-        await allocationService.getAllAllocations();
+    const [
+        selectedAllocation,
+        setSelectedAllocation
+    ] = useState(null);
 
-      console.log("Allocation Response :", response);
 
-      if (Array.isArray(response)) {
+    /*
+     * Load allocations
+     */
+    const loadAllocations = async () => {
 
-        setAllocationList(response);
+        try {
 
-      } else if (Array.isArray(response.data)) {
+            setLoading(true);
 
-        setAllocationList(response.data);
+            setError("");
 
-      } else {
 
-        setAllocationList([]);
+            const response =
+                await allocationService
+                    .getAllAllocations();
 
-      }
 
-    } catch (err) {
+            console.log(
+                "Allocation Response:",
+                response
+            );
 
-      console.error(err);
 
-      setAllocationList([]);
+            /*
+             * Your service already returns
+             * response.data.
+             */
+            const data =
 
-      setError("Unable to load allocations.");
+                Array.isArray(response)
 
-    } finally {
+                    ? response
 
-      setLoading(false);
+                    : Array.isArray(
+                        response?.content
+                    )
 
-    }
+                        ? response.content
 
-  };
+                        : [];
 
-  useEffect(() => {
 
-    loadAllocations();
+            setAllocationList(
+                data
+            );
 
-  }, []);
 
-  const handleAdd = () => {
+        } catch (err) {
 
-    setSelectedAllocation(null);
+            console.error(
+                "Error loading allocations:",
+                err
+            );
 
-    setOpen(true);
 
-  };
+            setAllocationList([]);
 
-  const handleEdit = (allocation) => {
 
-    setSelectedAllocation(allocation);
+            setError(
 
-    setOpen(true);
+                err?.response?.data?.message ||
 
-  };
+                err?.response?.data?.error ||
 
-  const handleDelete = async (allocationId) => {
+                "Unable to load allocations."
 
-    if (!window.confirm("Delete this allocation?")) {
+            );
 
-      return;
+        } finally {
 
-    }
+            setLoading(false);
 
-    try {
+        }
 
-      await allocationService.deleteAllocation(allocationId);
+    };
 
-      loadAllocations();
 
-    } catch (err) {
+    /*
+     * Initial load
+     */
+    useEffect(() => {
 
-      console.error(err);
+        loadAllocations();
 
-      alert("Unable to delete allocation.");
+    }, []);
 
-    }
 
-  };
+    /*
+     * Add Allocation
+     */
+    const handleAdd = () => {
 
-  const handleClose = () => {
+        setSelectedAllocation(
+            null
+        );
 
-    setOpen(false);
+        setOpen(true);
 
-    setSelectedAllocation(null);
+    };
 
-  };
 
-  return (
+    /*
+     * Edit Allocation
+     */
+    const handleEdit = (
+        allocation
+    ) => {
 
-    <DashboardLayout>
+        setSelectedAllocation(
+            allocation
+        );
 
-      <Box
-        display="flex"
-        justifyContent="space-between"
-        alignItems="center"
-        mb={3}
-      >
+        setOpen(true);
 
-        <Typography
-          variant="h4"
-          fontWeight="bold"
-        >
+    };
 
-          Faculty Subject Allocation
 
-        </Typography>
+    /*
+     * Save Allocation
+     */
+    const handleSave = async (
+        formData
+    ) => {
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={handleAdd}
-        >
+        try {
 
-          Add Allocation
+            setError("");
 
-        </Button>
 
-      </Box>
+            console.log(
+                "Allocation Save Payload:",
+                formData
+            );
 
-      {error && (
 
-        <Alert
-          severity="error"
-          sx={{ mb: 2 }}
-        >
+            /*
+             * UPDATE
+             */
+            if (
+                selectedAllocation
+            ) {
 
-          {error}
+                const allocationId =
 
-        </Alert>
+                    selectedAllocation
+                        .allocationId ??
 
-      )}
+                    selectedAllocation
+                        .id;
 
-      {loading ? (
 
-        <Box
-          display="flex"
-          justifyContent="center"
-          mt={5}
-        >
+                if (!allocationId) {
 
-          <CircularProgress />
+                    throw new Error(
+                        "Allocation ID not found."
+                    );
 
-        </Box>
+                }
 
-      ) : (
 
-        <AllocationTable
-          allocations={allocationList}
-          onEdit={handleEdit}
-          onDelete={handleDelete}
-        />
+                await allocationService
+                    .updateAllocation(
 
-      )}
+                        allocationId,
 
-      <AllocationForm
-        open={open}
-        onClose={handleClose}
-        allocation={selectedAllocation}
-        reload={loadAllocations}
-      />
+                        formData
 
-    </DashboardLayout>
+                    );
 
-  );
+            }
+
+            /*
+             * CREATE
+             */
+            else {
+
+                await allocationService
+                    .createAllocation(
+                        formData
+                    );
+
+            }
+
+
+            /*
+             * Close form
+             */
+            setOpen(false);
+
+
+            setSelectedAllocation(
+                null
+            );
+
+
+            /*
+             * Reload table
+             */
+            await loadAllocations();
+
+
+        } catch (err) {
+
+            console.error(
+                "Save allocation failed:",
+                err
+            );
+
+
+            setError(
+
+                err?.response?.data?.message ||
+
+                err?.response?.data?.error ||
+
+                err?.message ||
+
+                "Unable to save allocation."
+
+            );
+
+
+            throw err;
+
+        }
+
+    };
+
+
+    /*
+     * Delete Allocation
+     */
+    const handleDelete = async (
+        allocationId
+    ) => {
+
+
+        if (!allocationId) {
+
+            alert(
+                "Invalid allocation ID."
+            );
+
+            return;
+
+        }
+
+
+        const confirmed =
+            window.confirm(
+                "Delete this allocation?"
+            );
+
+
+        if (!confirmed) {
+
+            return;
+
+        }
+
+
+        try {
+
+            await allocationService
+                .deleteAllocation(
+                    allocationId
+                );
+
+
+            await loadAllocations();
+
+
+        } catch (err) {
+
+            console.error(
+                "Delete allocation failed:",
+                err
+            );
+
+
+            setError(
+
+                err?.response?.data?.message ||
+
+                err?.response?.data?.error ||
+
+                "Unable to delete allocation."
+
+            );
+
+        }
+
+    };
+
+
+    /*
+     * Close Form
+     */
+    const handleClose = () => {
+
+        setOpen(false);
+
+        setSelectedAllocation(
+            null
+        );
+
+    };
+
+
+    return (
+
+        <DashboardLayout>
+
+            <Box
+                sx={{
+                    width: "100%"
+                }}
+            >
+
+
+                {/* HEADER */}
+
+                <Box
+
+                    sx={{
+
+                        display:
+                            "flex",
+
+                        justifyContent:
+                            "space-between",
+
+                        alignItems:
+                            "center",
+
+                        mb: 3
+
+                    }}
+
+                >
+
+                    <Typography
+
+                        variant="h4"
+
+                        fontWeight="bold"
+
+                    >
+
+                        Faculty Subject Allocation
+
+                    </Typography>
+
+
+                    <Button
+
+                        variant="contained"
+
+                        startIcon={
+                            <AddIcon />
+                        }
+
+                        onClick={
+                            handleAdd
+                        }
+
+                    >
+
+                        Add Allocation
+
+                    </Button>
+
+                </Box>
+
+
+                {/* ERROR */}
+
+                {error && (
+
+                    <Alert
+
+                        severity="error"
+
+                        sx={{
+                            mb: 2
+                        }}
+
+                        onClose={() =>
+                            setError("")
+                        }
+
+                    >
+
+                        {error}
+
+                    </Alert>
+
+                )}
+
+
+                {/* FORM */}
+
+                <AllocationForm
+
+                    open={
+                        open
+                    }
+
+                    onClose={
+                        handleClose
+                    }
+
+                    onSave={
+                        handleSave
+                    }
+
+                    allocation={
+                        selectedAllocation
+                    }
+
+                />
+
+
+                {/* TABLE */}
+
+                {loading ? (
+
+                    <Box
+
+                        sx={{
+
+                            display:
+                                "flex",
+
+                            justifyContent:
+                                "center",
+
+                            mt: 5
+
+                        }}
+
+                    >
+
+                        <CircularProgress />
+
+                    </Box>
+
+                ) : (
+
+                    <AllocationTable
+
+                        allocations={
+                            allocationList
+                        }
+
+                        onEdit={
+                            handleEdit
+                        }
+
+                        onDelete={
+                            handleDelete
+                        }
+
+                    />
+
+                )}
+
+            </Box>
+
+        </DashboardLayout>
+
+    );
 
 };
+
 
 export default AllocationList;
