@@ -51,4 +51,6 @@ public interface SubjectWorkloadDAO {
     boolean existsByAllocationAndNotWorkloadId(
             FacultySubjectAllocation allocation,
             Long workloadId);
+    
+    List<SubjectWorkload> findActiveWorkloads();
 }

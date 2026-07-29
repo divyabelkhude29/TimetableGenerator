@@ -155,6 +155,7 @@ public class SecurityConfig {
                  * POST /api/auth/register
                  */
                 .requestMatchers(
+                		"/api/auth/admin-exists",
                         "/api/auth/login",
                         "/api/auth/register"
                 )

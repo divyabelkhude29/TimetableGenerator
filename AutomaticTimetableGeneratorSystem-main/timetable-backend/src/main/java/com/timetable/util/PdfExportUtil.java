@@ -67,18 +67,6 @@ public class PdfExportUtil {
              * Report Information
              */
             document.add(new Paragraph(
-                    "Academic Year ID : "
-                            + request.getAcademicYearId()));
-
-            document.add(new Paragraph(
-                    "Course ID : "
-                            + request.getCourseId()));
-
-            document.add(new Paragraph(
-                    "Semester ID : "
-                            + request.getSemesterId()));
-
-            document.add(new Paragraph(
                     "Academic Section ID : "
                             + request.getAcademicSectionId()));
 
@@ -132,16 +120,18 @@ public class PdfExportUtil {
                             value(slot.getDayOfWeek()));
 
                     table.addCell(
-                            value(slot.getTimeSlotId()));
+                            value(slot.getStartTime())
+                                    + " - "
+                                    + value(slot.getEndTime()));
 
                     table.addCell(
-                            value(slot.getSubjectId()));
+                            value(slot.getSubjectName()));
 
                     table.addCell(
-                            value(slot.getFacultyId()));
+                            value(slot.getFacultyName()));
 
                     table.addCell(
-                            value(slot.getClass()));
+                            value(slot.getClassroomName()));
                 }
             }
 

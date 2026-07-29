@@ -63,4 +63,19 @@ public interface FacultySubjectAllocationDAO {
                              Section section,
                              Semester semester,
                              String academicYear);
+    
+    /*
+     * Timetable Generation
+     */
+    List<FacultySubjectAllocation> findForGeneration(
+            String academicYear,
+            Long semesterId,
+            Long sectionId);
+
+    List<FacultySubjectAllocation> findActiveAllocations();
+    
+    List<FacultySubjectAllocation> findBySemesterAndSection(
+            Long semesterId,
+            Long sectionId);
+    
 }

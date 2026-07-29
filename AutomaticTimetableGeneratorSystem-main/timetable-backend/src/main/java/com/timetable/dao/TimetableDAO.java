@@ -85,4 +85,23 @@ public interface TimetableDAO {
      */
     List<Timetable> findByAllocation(
             FacultySubjectAllocation allocation);
+    
+    
+    void deleteGeneratedTimetable(
+            String academicYear,
+            Long semesterId,
+            Long sectionId);
+
+    void saveAll(
+            List<Timetable> timetables);
+    
+    List<Timetable> findBySectionSemesterAndAcademicYear(
+            Long sectionId,
+            Long semesterId,
+            String academicYear);
+
+    void deleteBySectionSemesterAndAcademicYear(
+            Long sectionId,
+            Long semesterId,
+            String academicYear);
 }

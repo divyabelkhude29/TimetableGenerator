@@ -4,13 +4,23 @@ import jakarta.validation.constraints.NotNull;
 
 public class ReportRequest {
 
-    @NotNull(message = "Academic Year ID is required.")
+    /*
+     * Optional - the system does not currently expose a
+     * standalone Academic Year entity/ID, so this is not
+     * required. Kept for forward compatibility.
+     */
     private Long academicYearId;
 
-    @NotNull(message = "Course ID is required.")
+    /*
+     * Optional - informational only, the report is generated
+     * from academicSectionId.
+     */
     private Long courseId;
 
-    @NotNull(message = "Semester ID is required.")
+    /*
+     * Optional - informational only, the report is generated
+     * from academicSectionId.
+     */
     private Long semesterId;
 
     @NotNull(message = "Academic Section ID is required.")

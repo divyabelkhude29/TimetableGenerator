@@ -67,6 +67,12 @@ public class TimetableSlotDTO {
     private boolean elective;
 
     private boolean generatedAutomatically;
+    
+    private Long allocationId;
+
+    private Long classroomId;
+
+    private String classroomName;
 
     public TimetableSlotDTO() {
     }
@@ -219,5 +225,29 @@ public class TimetableSlotDTO {
 
     public void setGeneratedAutomatically(boolean generatedAutomatically) {
         this.generatedAutomatically = generatedAutomatically;
+    }
+	
+    public Long getAllocationId() {
+        return allocationId;
+    }
+
+    public void setAllocationId(Long allocationId) {
+        this.allocationId = allocationId;
+    }
+
+    public Long getClassroomId() {
+        return classroomId;
+    }
+
+    public void setClassroomId(Long classroomId) {
+        this.classroomId = classroomId;
+    }
+
+    public String getClassroomName() {
+        return classroomName;
+    }
+
+    public void setClassroomName(String classroomName) {
+        this.classroomName = classroomName;
     }
 }

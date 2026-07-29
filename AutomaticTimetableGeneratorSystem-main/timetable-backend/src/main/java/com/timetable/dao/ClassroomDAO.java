@@ -40,5 +40,7 @@ public interface ClassroomDAO {
      * Check Room Number Exists
      */
     boolean existsByRoomNumber(String roomNumber);
+    
+    List<Classroom> findActiveClassrooms();
 
 }

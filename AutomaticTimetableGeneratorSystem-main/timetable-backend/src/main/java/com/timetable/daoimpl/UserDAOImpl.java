@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import com.timetable.dao.UserDAO;
 import com.timetable.entity.User;
+import com.timetable.enums.RoleType;
 
 @Repository
 
@@ -134,6 +135,17 @@ public class UserDAOImpl implements UserDAO {
         Long count = getSession()
                 .createQuery(hql, Long.class)
                 .setParameter("mobile", mobile)
+                .uniqueResult();
+
+        return count != null && count > 0;
+    }
+    public boolean existsByRole(RoleType role) {
+
+        String hql = "SELECT COUNT(u) FROM User u WHERE u.role = :role";
+
+        Long count = getSession()
+                .createQuery(hql, Long.class)
+                .setParameter("role", role)
                 .uniqueResult();
 
         return count != null && count > 0;

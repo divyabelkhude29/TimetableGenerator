@@ -25,7 +25,7 @@ public class TimetableRequest {
     public String getDayOfWeek() {
         return dayOfWeek;
     }
-
+ 
     public void setDayOfWeek(String dayOfWeek) {
         this.dayOfWeek = dayOfWeek;
     }

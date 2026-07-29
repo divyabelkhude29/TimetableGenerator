@@ -50,20 +50,11 @@ public class ExcelExportUtil {
              * Report Information
              */
             Row row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue("Academic Year ID");
-            row.createCell(1).setCellValue(request.getAcademicYearId());
-
-            row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue("Course ID");
-            row.createCell(1).setCellValue(request.getCourseId());
-
-            row = sheet.createRow(rowIndex++);
-            row.createCell(0).setCellValue("Semester ID");
-            row.createCell(1).setCellValue(request.getSemesterId());
-
-            row = sheet.createRow(rowIndex++);
             row.createCell(0).setCellValue("Academic Section ID");
-            row.createCell(1).setCellValue(request.getAcademicSectionId());
+            row.createCell(1).setCellValue(
+                    request.getAcademicSectionId() == null
+                            ? 0
+                            : request.getAcademicSectionId());
 
             row = sheet.createRow(rowIndex++);
             row.createCell(0).setCellValue("Report Type");
@@ -119,16 +110,19 @@ public class ExcelExportUtil {
                             .setCellValue(value(slot.getDayOfWeek()));
 
                     data.createCell(1)
-                            .setCellValue(value(slot.getTimeSlotId()));
+                            .setCellValue(
+                                    value(slot.getStartTime())
+                                            + " - "
+                                            + value(slot.getEndTime()));
 
                     data.createCell(2)
-                            .setCellValue(value(slot.getSubjectId()));
+                            .setCellValue(value(slot.getSubjectName()));
 
                     data.createCell(3)
-                            .setCellValue(value(slot.getFacultyId()));
+                            .setCellValue(value(slot.getFacultyName()));
 
                     data.createCell(4)
-                            .setCellValue(value(slot.getClass()));
+                            .setCellValue(value(slot.getClassroomName()));
                 }
             }
 

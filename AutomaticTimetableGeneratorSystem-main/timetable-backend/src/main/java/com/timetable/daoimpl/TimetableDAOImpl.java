@@ -2,10 +2,7 @@ package com.timetable.daoimpl;
 
 import java.util.List;
 
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.timetable.dao.TimetableDAO;
 import com.timetable.entity.Classroom;
@@ -15,22 +12,17 @@ import com.timetable.entity.Section;
 import com.timetable.entity.TimeSlot;
 import com.timetable.entity.Timetable;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
+import jakarta.transaction.Transactional;
+
 @Repository
 @Transactional
 public class TimetableDAOImpl implements TimetableDAO {
 
-    private final SessionFactory sessionFactory;
-
-    public TimetableDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
-
-    /**
-     * Get Current Session
-     */
-    private Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
     /**
      * Save Timetable
@@ -38,7 +30,7 @@ public class TimetableDAOImpl implements TimetableDAO {
     @Override
     public Timetable save(Timetable timetable) {
 
-        getCurrentSession().persist(timetable);
+        entityManager.persist(timetable);
 
         return timetable;
     }
@@ -49,7 +41,7 @@ public class TimetableDAOImpl implements TimetableDAO {
     @Override
     public Timetable update(Timetable timetable) {
 
-        return (Timetable) getCurrentSession().merge(timetable);
+        return entityManager.merge(timetable);
     }
 
     /**
@@ -61,30 +53,31 @@ public class TimetableDAOImpl implements TimetableDAO {
         Timetable timetable = findById(timetableId);
 
         if (timetable != null) {
-            getCurrentSession().remove(timetable);
+            entityManager.remove(timetable);
         }
     }
 
     /**
-     * Find Timetable By ID
+     * Find By ID
      */
     @Override
     public Timetable findById(Long timetableId) {
 
-        return getCurrentSession().get(Timetable.class, timetableId);
+        return entityManager.find(Timetable.class, timetableId);
     }
 
     /**
-     * Find All Timetables
+     * Find All
      */
     @Override
     public List<Timetable> findAll() {
 
-        return getCurrentSession()
-                .createQuery(
-                        "FROM Timetable t ORDER BY t.timetableId",
-                        Timetable.class)
-                .getResultList();
+        TypedQuery<Timetable> query =
+                entityManager.createQuery(
+                        "FROM Timetable t ORDER BY t.dayOfWeek, t.timeSlot.slotOrder",
+                        Timetable.class);
+
+        return query.getResultList();
     }
 
     /**
@@ -93,10 +86,9 @@ public class TimetableDAOImpl implements TimetableDAO {
     @Override
     public List<Timetable> findByDay(String dayOfWeek) {
 
-        return getCurrentSession()
-                .createQuery(
-                        "FROM Timetable t WHERE t.dayOfWeek = :day ORDER BY t.timeSlot.startTime",
-                        Timetable.class)
+        return entityManager.createQuery(
+                "FROM Timetable t WHERE t.dayOfWeek = :day",
+                Timetable.class)
                 .setParameter("day", dayOfWeek)
                 .getResultList();
     }
@@ -107,10 +99,9 @@ public class TimetableDAOImpl implements TimetableDAO {
     @Override
     public List<Timetable> findByClassroom(Classroom classroom) {
 
-        return getCurrentSession()
-                .createQuery(
-                        "FROM Timetable t WHERE t.classroom = :classroom ORDER BY t.dayOfWeek, t.timeSlot.startTime",
-                        Timetable.class)
+        return entityManager.createQuery(
+                "FROM Timetable t WHERE t.classroom = :classroom",
+                Timetable.class)
                 .setParameter("classroom", classroom)
                 .getResultList();
     }
@@ -121,10 +112,9 @@ public class TimetableDAOImpl implements TimetableDAO {
     @Override
     public List<Timetable> findByFaculty(Faculty faculty) {
 
-        return getCurrentSession()
-                .createQuery(
-                        "FROM Timetable t WHERE t.allocation.faculty = :faculty ORDER BY t.dayOfWeek, t.timeSlot.startTime",
-                        Timetable.class)
+        return entityManager.createQuery(
+                "FROM Timetable t WHERE t.allocation.faculty = :faculty",
+                Timetable.class)
                 .setParameter("faculty", faculty)
                 .getResultList();
     }
@@ -135,25 +125,10 @@ public class TimetableDAOImpl implements TimetableDAO {
     @Override
     public List<Timetable> findBySection(Section section) {
 
-        return getCurrentSession()
-                .createQuery(
-                        "FROM Timetable t WHERE t.allocation.section = :section ORDER BY t.dayOfWeek, t.timeSlot.startTime",
-                        Timetable.class)
+        return entityManager.createQuery(
+                "FROM Timetable t WHERE t.allocation.section = :section",
+                Timetable.class)
                 .setParameter("section", section)
-                .getResultList();
-    }
-
-    /**
-     * Find By Allocation
-     */
-    @Override
-    public List<Timetable> findByAllocation(FacultySubjectAllocation allocation) {
-
-        return getCurrentSession()
-                .createQuery(
-                        "FROM Timetable t WHERE t.allocation = :allocation ORDER BY t.dayOfWeek, t.timeSlot.startTime",
-                        Timetable.class)
-                .setParameter("allocation", allocation)
                 .getResultList();
     }
 
@@ -166,20 +141,21 @@ public class TimetableDAOImpl implements TimetableDAO {
             String dayOfWeek,
             TimeSlot timeSlot) {
 
-        Long count = getCurrentSession()
-                .createQuery(
-                        "SELECT COUNT(t) " +
-                        "FROM Timetable t " +
-                        "WHERE t.allocation.faculty = :faculty " +
-                        "AND t.dayOfWeek = :day " +
-                        "AND t.timeSlot = :timeSlot",
-                        Long.class)
+        Long count = entityManager.createQuery(
+                """
+                SELECT COUNT(t)
+                FROM Timetable t
+                WHERE t.allocation.faculty = :faculty
+                AND t.dayOfWeek = :day
+                AND t.timeSlot = :slot
+                """,
+                Long.class)
                 .setParameter("faculty", faculty)
                 .setParameter("day", dayOfWeek)
-                .setParameter("timeSlot", timeSlot)
-                .uniqueResult();
+                .setParameter("slot", timeSlot)
+                .getSingleResult();
 
-        return count != null && count > 0;
+        return count > 0;
     }
 
     /**
@@ -191,20 +167,21 @@ public class TimetableDAOImpl implements TimetableDAO {
             String dayOfWeek,
             TimeSlot timeSlot) {
 
-        Long count = getCurrentSession()
-                .createQuery(
-                        "SELECT COUNT(t) " +
-                        "FROM Timetable t " +
-                        "WHERE t.classroom = :classroom " +
-                        "AND t.dayOfWeek = :day " +
-                        "AND t.timeSlot = :timeSlot",
-                        Long.class)
+        Long count = entityManager.createQuery(
+                """
+                SELECT COUNT(t)
+                FROM Timetable t
+                WHERE t.classroom = :classroom
+                AND t.dayOfWeek = :day
+                AND t.timeSlot = :slot
+                """,
+                Long.class)
                 .setParameter("classroom", classroom)
                 .setParameter("day", dayOfWeek)
-                .setParameter("timeSlot", timeSlot)
-                .uniqueResult();
+                .setParameter("slot", timeSlot)
+                .getSingleResult();
 
-        return count != null && count > 0;
+        return count > 0;
     }
 
     /**
@@ -216,19 +193,120 @@ public class TimetableDAOImpl implements TimetableDAO {
             String dayOfWeek,
             TimeSlot timeSlot) {
 
-        Long count = getCurrentSession()
-                .createQuery(
-                        "SELECT COUNT(t) " +
-                        "FROM Timetable t " +
-                        "WHERE t.allocation.section = :section " +
-                        "AND t.dayOfWeek = :day " +
-                        "AND t.timeSlot = :timeSlot",
-                        Long.class)
+        Long count = entityManager.createQuery(
+                """
+                SELECT COUNT(t)
+                FROM Timetable t
+                WHERE t.allocation.section = :section
+                AND t.dayOfWeek = :day
+                AND t.timeSlot = :slot
+                """,
+                Long.class)
                 .setParameter("section", section)
                 .setParameter("day", dayOfWeek)
-                .setParameter("timeSlot", timeSlot)
-                .uniqueResult();
+                .setParameter("slot", timeSlot)
+                .getSingleResult();
 
-        return count != null && count > 0;
+        return count > 0;
     }
+
+    /**
+     * Find By Allocation
+     */
+    @Override
+    public List<Timetable> findByAllocation(
+            FacultySubjectAllocation allocation) {
+
+        return entityManager.createQuery(
+                "FROM Timetable t WHERE t.allocation = :allocation",
+                Timetable.class)
+                .setParameter("allocation", allocation)
+                .getResultList();
+    }
+
+    /**
+     * Delete Generated Timetable
+     */
+    @Override
+    public void deleteGeneratedTimetable(
+            String academicYear,
+            Long semesterId,
+            Long sectionId) {
+
+        entityManager.createQuery(
+                """
+                DELETE FROM Timetable t
+                WHERE t.allocation.section.sectionId = :sectionId
+                AND t.allocation.semester.semesterId = :semesterId
+                AND t.allocation.academicYear = :academicYear
+                """)
+                .setParameter("sectionId", sectionId)
+                .setParameter("semesterId", semesterId)
+                .setParameter("academicYear", academicYear)
+                .executeUpdate();
+    }
+
+    /**
+     * Save All
+     */
+    @Override
+    public void saveAll(List<Timetable> timetables) {
+
+        for (int i = 0; i < timetables.size(); i++) {
+
+            entityManager.persist(timetables.get(i));
+
+            if (i % 25 == 0) {
+                entityManager.flush();
+                entityManager.clear();
+            }
+        }
+    }
+
+    /**
+     * Find Generated Timetable
+     */
+    @Override
+    public List<Timetable> findBySectionSemesterAndAcademicYear(
+            Long sectionId,
+            Long semesterId,
+            String academicYear) {
+
+        return entityManager.createQuery(
+                """
+                FROM Timetable t
+                WHERE t.allocation.section.sectionId = :sectionId
+                AND t.allocation.semester.semesterId = :semesterId
+                AND t.allocation.academicYear = :academicYear
+                ORDER BY t.dayOfWeek, t.timeSlot.slotOrder
+                """,
+                Timetable.class)
+                .setParameter("sectionId", sectionId)
+                .setParameter("semesterId", semesterId)
+                .setParameter("academicYear", academicYear)
+                .getResultList();
+    }
+
+    /**
+     * Delete Generated Timetable
+     */
+    @Override
+    public void deleteBySectionSemesterAndAcademicYear(
+            Long sectionId,
+            Long semesterId,
+            String academicYear) {
+
+        entityManager.createQuery(
+                """
+                DELETE FROM Timetable t
+                WHERE t.allocation.section.sectionId = :sectionId
+                AND t.allocation.semester.semesterId = :semesterId
+                AND t.allocation.academicYear = :academicYear
+                """)
+                .setParameter("sectionId", sectionId)
+                .setParameter("semesterId", semesterId)
+                .setParameter("academicYear", academicYear)
+                .executeUpdate();
+    }
+
 }

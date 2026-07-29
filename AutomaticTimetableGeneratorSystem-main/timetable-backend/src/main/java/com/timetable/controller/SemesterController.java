@@ -89,5 +89,13 @@ public class SemesterController {
 
         return ResponseEntity.ok("Semester deleted successfully.");
     }
+    
+    @GetMapping("/course/{courseId}")
+    public ResponseEntity<List<SemesterResponse>> getSemestersByCourse(
+            @PathVariable Long courseId) {
+
+        return ResponseEntity.ok(
+                semesterService.getSemestersByCourse(courseId));
+    }
 
 }

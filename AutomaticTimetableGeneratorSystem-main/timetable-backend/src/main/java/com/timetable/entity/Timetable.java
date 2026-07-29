@@ -24,7 +24,8 @@ public class Timetable {
     /*
      * Faculty + Subject + Section + Semester + Academic Year
      */
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = 
+    		FetchType.LAZY)
     @JoinColumn(name = "allocation_id", nullable = false)
     private FacultySubjectAllocation allocation;
 

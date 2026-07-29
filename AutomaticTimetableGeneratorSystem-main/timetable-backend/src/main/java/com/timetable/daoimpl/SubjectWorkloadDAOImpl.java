@@ -138,4 +138,18 @@ public class SubjectWorkloadDAOImpl implements SubjectWorkloadDAO {
 
         return count != null && count > 0;
     }
+    
+    @Override
+    public List<SubjectWorkload> findActiveWorkloads() {
+
+        return sessionFactory
+                .getCurrentSession()
+                .createQuery(
+                        """
+                        FROM SubjectWorkload
+                        WHERE active=true
+                        """,
+                        SubjectWorkload.class)
+                .list();
+    }
 }

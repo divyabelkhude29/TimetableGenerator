@@ -21,7 +21,7 @@ public class CourseDAOImpl implements CourseDAO {
     }
 
     /**
-     * Returns Current Hibernate Session
+     * Current Hibernate Session
      */
     private Session getCurrentSession() {
         return sessionFactory.getCurrentSession();
@@ -44,16 +44,29 @@ public class CourseDAOImpl implements CourseDAO {
     @Override
     public Course update(Course course) {
 
-        return (Course) getCurrentSession().merge(course);
+        return getCurrentSession().merge(course);
     }
 
     /**
-     * Delete Course
+     * Delete Course Entity
      */
     @Override
     public void delete(Course course) {
 
         getCurrentSession().remove(course);
+    }
+
+    /**
+     * Delete Course By ID
+     */
+    @Override
+    public void delete(Long courseId) {
+
+        Course course = findById(courseId);
+
+        if (course != null) {
+            getCurrentSession().remove(course);
+        }
     }
 
     /**
@@ -79,7 +92,7 @@ public class CourseDAOImpl implements CourseDAO {
     }
 
     /**
-     * Find Course By Course Code
+     * Find Course By Code
      */
     @Override
     public Course findByCourseCode(String courseCode) {
@@ -95,7 +108,7 @@ public class CourseDAOImpl implements CourseDAO {
     }
 
     /**
-     * Find Courses By Department ID
+     * Find Courses By Department
      */
     @Override
     public List<Course> findByDepartmentId(Long departmentId) {
@@ -123,10 +136,4 @@ public class CourseDAOImpl implements CourseDAO {
 
         return count != null && count > 0;
     }
-
-	@Override
-	public void delete(Long courseId) {
-		// TODO Auto-generated method stub
-		
-	}
 }

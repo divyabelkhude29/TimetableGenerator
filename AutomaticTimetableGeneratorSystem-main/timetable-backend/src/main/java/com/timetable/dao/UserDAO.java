@@ -3,6 +3,7 @@ package com.timetable.dao;
 import java.util.List;
 
 import com.timetable.entity.User;
+import com.timetable.enums.RoleType;
 
 public interface UserDAO {
 
@@ -27,5 +28,7 @@ public interface UserDAO {
     boolean existsByEmail(String email);
 
     boolean existsByMobile(String mobile);
+    
+    boolean existsByRole(RoleType Role);
 
 }

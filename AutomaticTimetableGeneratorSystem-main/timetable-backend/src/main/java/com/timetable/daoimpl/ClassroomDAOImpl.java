@@ -113,5 +113,19 @@ public class ClassroomDAOImpl implements ClassroomDAO {
 
         return count != null && count > 0;
     }
+    
+    @Override
+    public List<Classroom> findActiveClassrooms() {
+
+        return sessionFactory
+                .getCurrentSession()
+                .createQuery(
+                        """
+                        FROM Classroom
+                        WHERE active=true
+                        """,
+                        Classroom.class)
+                .list();
+    }
 
 }

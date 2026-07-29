@@ -1,5 +1,8 @@
 package com.timetable.controller;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -179,6 +182,16 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/admin-exists")
+    public ResponseEntity<?> adminExists() {
+
+    	boolean exists = userService.adminExists();
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+
+        return ResponseEntity.ok(response);
+    }
 
     /*
      * ============================================================

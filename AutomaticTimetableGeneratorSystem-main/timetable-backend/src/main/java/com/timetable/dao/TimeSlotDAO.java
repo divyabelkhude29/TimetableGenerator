@@ -51,4 +51,6 @@ public interface TimeSlotDAO {
      */
     boolean existsByDayOfWeekAndSlotOrder(String dayOfWeek, Integer slotOrder);
 
+
+    List<TimeSlot> findActiveSlots();
 }

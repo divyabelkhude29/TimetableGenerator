@@ -143,4 +143,19 @@ public class TimeSlotDAOImpl implements TimeSlotDAO {
 
         return count != null && count > 0;
     }
+    
+    @Override
+    public List<TimeSlot> findActiveSlots() {
+
+        return sessionFactory
+                .getCurrentSession()
+                .createQuery(
+                        """
+                        FROM TimeSlot
+                        WHERE active=true
+                        ORDER BY slotOrder
+                        """,
+                        TimeSlot.class)
+                .list();
+    }
 }

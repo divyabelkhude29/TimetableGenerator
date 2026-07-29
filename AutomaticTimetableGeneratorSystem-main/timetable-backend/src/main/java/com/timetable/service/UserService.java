@@ -30,5 +30,7 @@ public interface UserService {
                         ChangePasswordRequest request);
 
     void resetPassword(String email);
+    
+    boolean adminExists();
 
 }

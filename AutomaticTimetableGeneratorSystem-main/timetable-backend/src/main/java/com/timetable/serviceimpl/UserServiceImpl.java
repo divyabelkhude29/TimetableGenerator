@@ -14,6 +14,7 @@ import com.timetable.dto.user.ChangePasswordRequest;
 import com.timetable.dto.user.UpdateUserRequest;
 import com.timetable.dto.user.UserResponse;
 import com.timetable.entity.User;
+import com.timetable.enums.RoleType;
 import com.timetable.exception.AuthenticationException;
 import com.timetable.exception.DuplicateRecordException;
 import com.timetable.exception.ResourceNotFoundException;
@@ -45,6 +46,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public String register(RegisterRequest request) {
 
+    	if (RoleType.ROLE_ADMIN.equals(request.getRole()) && adminExists()) {
+    	    throw new RuntimeException("Admin already exists.");
+    	}
         validateRegistration(request);
 
         User user = userMapper.toEntity(request);
@@ -584,15 +588,9 @@ public class UserServiceImpl implements UserService {
 
         return response;
     }
-
-    /**
-     * Future Enhancement
-     *
-     * EmailService Integration
-     * Audit Logging
-     * Login History
-     * Password Expiry
-     * OTP Verification
-     * Refresh Token Support
-     */
+    @Override
+    public boolean adminExists() {
+        return userDAO.existsByRole(RoleType.ROLE_ADMIN);
+    }
+   
 }

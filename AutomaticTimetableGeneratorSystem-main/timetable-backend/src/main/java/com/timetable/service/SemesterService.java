@@ -32,5 +32,7 @@ public interface SemesterService {
      * Get All Semesters
      */
     List<SemesterResponse> getAllSemesters();
+    
+    List<SemesterResponse> getSemestersByCourse(Long courseId);
 
 }

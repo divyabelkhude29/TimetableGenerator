@@ -1,14 +1,19 @@
 package com.timetable.serviceimpl;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.timetable.dto.report.ReportRequest;
 import com.timetable.dto.report.TimetableReportResponse;
+import com.timetable.dto.timetable.TimetableResponse;
+import com.timetable.dto.timetablegeneration.TimetableSlotDTO;
 import com.timetable.exception.ReportGenerationException;
 import com.timetable.service.ReportService;
+import com.timetable.service.TimetableService;
 import com.timetable.util.ExcelExportUtil;
 import com.timetable.util.PdfExportUtil;
 
@@ -20,12 +25,16 @@ public class ReportServiceImpl implements ReportService {
 
     private final ExcelExportUtil excelExportUtil;
 
+    private final TimetableService timetableService;
+
     public ReportServiceImpl(
             PdfExportUtil pdfExportUtil,
-            ExcelExportUtil excelExportUtil) {
+            ExcelExportUtil excelExportUtil,
+            TimetableService timetableService) {
 
         this.pdfExportUtil = pdfExportUtil;
         this.excelExportUtil = excelExportUtil;
+        this.timetableService = timetableService;
     }
 
     /**
@@ -97,22 +106,79 @@ public class ReportServiceImpl implements ReportService {
                 academicSectionId);
 
         /*
-         * TODO
-         * Load actual timetable data from database.
+         * Load the actual, persisted timetable entries
+         * for this section.
          */
+        List<TimetableResponse> entries =
+                timetableService.getTimetablesBySection(
+                        academicSectionId);
 
-        response.setTotalClasses(0);
+        List<TimetableSlotDTO> slots =
+                entries.stream()
+                        .map(this::toSlotDTO)
+                        .collect(Collectors.toList());
 
-        response.setTotalFaculties(0);
+        response.setTimetable(slots);
 
-        response.setTotalSubjects(0);
+        if (!entries.isEmpty()) {
 
-        response.setTotalClassrooms(0);
+            response.setSemesterId(
+                    entries.get(0).getSemesterId());
+        }
+
+        response.setTotalClasses(
+                entries.size());
+
+        response.setTotalFaculties(
+                (int) entries.stream()
+                        .map(TimetableResponse::getFacultyId)
+                        .distinct()
+                        .count());
+
+        response.setTotalSubjects(
+                (int) entries.stream()
+                        .map(TimetableResponse::getSubjectId)
+                        .distinct()
+                        .count());
+
+        response.setTotalClassrooms(
+                (int) entries.stream()
+                        .map(TimetableResponse::getClassroomId)
+                        .distinct()
+                        .count());
 
         response.setGeneratedAt(
                 LocalDateTime.now());
 
         return response;
+    }
+
+    /**
+     * Convert a persisted timetable entry into a report slot.
+     */
+    private TimetableSlotDTO toSlotDTO(
+            TimetableResponse entry) {
+
+        TimetableSlotDTO slot =
+                new TimetableSlotDTO();
+
+        slot.setDayOfWeek(entry.getDayOfWeek());
+        slot.setTimeSlotId(entry.getTimeSlotId());
+        slot.setStartTime(entry.getStartTime());
+        slot.setEndTime(entry.getEndTime());
+        slot.setSemesterId(entry.getSemesterId());
+        slot.setSemesterNumber(entry.getSemesterNumber());
+        slot.setAcademicSectionId(entry.getSectionId());
+        slot.setSectionName(entry.getSectionName());
+        slot.setSubjectId(entry.getSubjectId());
+        slot.setSubjectName(entry.getSubjectName());
+        slot.setFacultyId(entry.getFacultyId());
+        slot.setFacultyName(entry.getFacultyName());
+        slot.setClassroomId(entry.getClassroomId());
+        slot.setClassroomName(entry.getClassroomName());
+        slot.setAllocationId(entry.getAllocationId());
+
+        return slot;
     }
 
     /**
@@ -133,21 +199,30 @@ public class ReportServiceImpl implements ReportService {
         response.setAcademicSectionId(
                 academicSectionId);
 
-        /*
-         * TODO
-         * Calculate actual statistics from database.
-         */
+        List<TimetableResponse> entries =
+                timetableService.getTimetablesBySection(
+                        academicSectionId);
 
-        response.setTotalClasses(0);
+        response.setTotalClasses(
+                entries.size());
 
-        response.setTotalFaculties(0);
+        response.setTotalFaculties(
+                (int) entries.stream()
+                        .map(TimetableResponse::getFacultyId)
+                        .distinct()
+                        .count());
 
-        response.setTotalSubjects(0);
+        response.setTotalSubjects(
+                (int) entries.stream()
+                        .map(TimetableResponse::getSubjectId)
+                        .distinct()
+                        .count());
 
-        response.setTotalClassrooms(0);
-
-        response.getRemarks().add(
-                "Statistics generation is currently using placeholder values.");
+        response.setTotalClassrooms(
+                (int) entries.stream()
+                        .map(TimetableResponse::getClassroomId)
+                        .distinct()
+                        .count());
 
         response.setGeneratedAt(
                 LocalDateTime.now());

@@ -30,85 +30,247 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
+
         System.out.println("====================================");
-        System.out.println("JWT Secret : " + jwtSecret);
-        System.out.println("Secret Length : " + jwtSecret.length());
-        System.out.println("JWT Expiration : " + jwtExpiration);
+        System.out.println("JWT INITIALIZATION");
+        System.out.println("====================================");
+
+        System.out.println("JWT Secret Length : "
+                + jwtSecret.length());
+
+        System.out.println("JWT Expiration : "
+                + jwtExpiration + " milliseconds");
+
+        System.out.println("JWT Expiration : "
+                + (jwtExpiration / 1000) + " seconds");
+
+        System.out.println("JWT Expiration : "
+                + (jwtExpiration / 1000 / 60) + " minutes");
+
+        System.out.println("JWT Expiration : "
+                + (jwtExpiration / 1000 / 60 / 60) + " hours");
+
+        System.out.println("Current Server Time : "
+                + new Date());
+
         System.out.println("====================================");
     }
 
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
+
+        return Keys.hmacShaKeyFor(
+                jwtSecret.getBytes(StandardCharsets.UTF_8)
+        );
     }
 
     public String generateToken(User user) {
 
-        Map<String, Object> claims = new HashMap<>();
+        Date now = new Date();
 
-        claims.put("role", user.getRole().name());
-        claims.put("userId", user.getUserId());
+        Date expiration =
+                new Date(now.getTime() + jwtExpiration);
+
+        Map<String, Object> claims =
+                new HashMap<>();
+
+        claims.put(
+                "role",
+                user.getRole().name()
+        );
+
+        claims.put(
+                "userId",
+                user.getUserId()
+        );
 
         String token = Jwts.builder()
+
                 .claims(claims)
-                .subject(user.getUsername())
-                .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
-                .signWith(getSigningKey())
+
+                .subject(
+                        user.getUsername()
+                )
+
+                .issuedAt(now)
+
+                .expiration(expiration)
+
+                .signWith(
+                        getSigningKey()
+                )
+
                 .compact();
 
-        System.out.println("Generated Token:");
-        System.out.println(token);
+        System.out.println("====================================");
+        System.out.println("JWT GENERATED");
+        System.out.println("====================================");
+
+        System.out.println(
+                "Username : "
+                + user.getUsername()
+        );
+
+        System.out.println(
+                "User ID : "
+                + user.getUserId()
+        );
+
+        System.out.println(
+                "Role : "
+                + user.getRole().name()
+        );
+
+        System.out.println(
+                "Issued At : "
+                + now
+        );
+
+        System.out.println(
+                "Expiration : "
+                + expiration
+        );
+
+        System.out.println(
+                "Valid For : "
+                + jwtExpiration
+                + " milliseconds"
+        );
+
+        System.out.println("====================================");
 
         return token;
     }
 
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
+    public String extractUsername(
+            String token) {
+
+        return extractClaim(
+                token,
+                Claims::getSubject
+        );
     }
 
-    public Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
+    public Date extractExpiration(
+            String token) {
+
+        return extractClaim(
+                token,
+                Claims::getExpiration
+        );
     }
 
-    public <T> T extractClaim(String token,
-                              Function<Claims, T> resolver) {
+    public <T> T extractClaim(
+            String token,
+            Function<Claims, T> resolver) {
 
-        Claims claims = extractAllClaims(token);
+        Claims claims =
+                extractAllClaims(token);
 
         return resolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(
+            String token) {
 
         return Jwts.parser()
-                .verifyWith(getSigningKey())
+
+                .verifyWith(
+                        getSigningKey()
+                )
+
                 .build()
+
                 .parseSignedClaims(token)
+
                 .getPayload();
     }
 
-    public boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
+    public boolean isTokenExpired(
+            String token) {
+
+        Date expiration =
+                extractExpiration(token);
+
+        boolean expired =
+                expiration.before(
+                        new Date()
+                );
+
+        System.out.println(
+                "JWT Expiration : "
+                + expiration
+        );
+
+        System.out.println(
+                "Current Time : "
+                + new Date()
+        );
+
+        System.out.println(
+                "Token Expired : "
+                + expired
+        );
+
+        return expired;
     }
 
-    public boolean validateToken(String token,
-                                 String username) {
+    public boolean validateToken(
+            String token,
+            String username) {
 
         try {
 
-            String extractedUsername = extractUsername(token);
+            String extractedUsername =
+                    extractUsername(token);
 
-            return extractedUsername.equals(username)
-                    && !isTokenExpired(token);
+            boolean usernameMatches =
+                    extractedUsername.equals(
+                            username
+                    );
+
+            boolean expired =
+                    isTokenExpired(token);
+
+            System.out.println(
+                    "JWT Username : "
+                    + extractedUsername
+            );
+
+            System.out.println(
+                    "Requested Username : "
+                    + username
+            );
+
+            System.out.println(
+                    "Username Matches : "
+                    + usernameMatches
+            );
+
+            System.out.println(
+                    "Token Expired : "
+                    + expired
+            );
+
+            return usernameMatches
+                    && !expired;
 
         } catch (JwtException ex) {
+
+            System.out.println(
+                    "JWT Validation Error : "
+                    + ex.getMessage()
+            );
 
             return false;
 
         } catch (Exception ex) {
 
-            return false;
+            System.out.println(
+                    "JWT Validation Exception : "
+                    + ex.getMessage()
+            );
 
+            return false;
         }
     }
 }

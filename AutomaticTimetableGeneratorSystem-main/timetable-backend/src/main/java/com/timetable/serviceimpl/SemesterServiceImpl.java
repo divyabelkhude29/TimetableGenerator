@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.timetable.dao.CourseDAO;
 import com.timetable.dao.SemesterDAO;
 import com.timetable.dto.semester.SemesterRequest;
 import com.timetable.dto.semester.SemesterResponse;
@@ -20,11 +21,16 @@ import com.timetable.validation.SemesterValidation;
 public class SemesterServiceImpl implements SemesterService {
 
     private final SemesterDAO semesterDAO;
+    private final CourseDAO courseDAO;
     private final SemesterValidation semesterValidation;
 
-    public SemesterServiceImpl(SemesterDAO semesterDAO,
-                               SemesterValidation semesterValidation) {
+    public SemesterServiceImpl(
+            SemesterDAO semesterDAO,
+            CourseDAO courseDAO,
+            SemesterValidation semesterValidation) {
+
         this.semesterDAO = semesterDAO;
+        this.courseDAO = courseDAO;
         this.semesterValidation = semesterValidation;
     }
 
@@ -48,8 +54,9 @@ public class SemesterServiceImpl implements SemesterService {
      * Update Semester
      */
     @Override
-    public SemesterResponse updateSemester(Long semesterId,
-                                           SemesterRequest request) {
+    public SemesterResponse updateSemester(
+            Long semesterId,
+            SemesterRequest request) {
 
         Semester semester = semesterDAO.findById(semesterId);
 
@@ -58,16 +65,14 @@ public class SemesterServiceImpl implements SemesterService {
                     "Semester not found with ID : " + semesterId);
         }
 
-        Course course =
-                semesterValidation.validateForUpdate(
-                        semesterId,
-                        request);
+        Course course = semesterValidation.validateForUpdate(
+                semesterId,
+                request);
 
         SemesterMapper.updateEntity(semester, request);
         semester.setCourse(course);
 
-        Semester updatedSemester =
-                semesterDAO.update(semester);
+        Semester updatedSemester = semesterDAO.update(semester);
 
         return SemesterMapper.toResponse(updatedSemester);
     }
@@ -113,6 +118,26 @@ public class SemesterServiceImpl implements SemesterService {
     public List<SemesterResponse> getAllSemesters() {
 
         return semesterDAO.findAll()
+                .stream()
+                .map(SemesterMapper::toResponse)
+                .toList();
+    }
+
+    /**
+     * Get Semesters By Course
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<SemesterResponse> getSemestersByCourse(Long courseId) {
+
+        Course course = courseDAO.findById(courseId);
+
+        if (course == null) {
+            throw new ResourceNotFoundException(
+                    "Course not found with ID : " + courseId);
+        }
+
+        return semesterDAO.findByCourse(course)
                 .stream()
                 .map(SemesterMapper::toResponse)
                 .toList();

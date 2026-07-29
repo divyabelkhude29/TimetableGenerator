@@ -171,4 +171,60 @@ public class FacultySubjectAllocationDAOImpl implements FacultySubjectAllocation
 
         return count != null && count > 0;
     }
+    
+    @Override
+    public List<FacultySubjectAllocation> findForGeneration(
+            String academicYear,
+            Long semesterId,
+            Long sectionId) {
+
+        return sessionFactory
+                .getCurrentSession()
+                .createQuery(
+                        """
+                        FROM FacultySubjectAllocation f
+                        WHERE f.active = true
+                        AND f.academicYear = :year
+                        AND f.semester.semesterId = :semesterId
+                        AND f.section.sectionId = :sectionId
+                        """,
+                        FacultySubjectAllocation.class)
+                .setParameter("year", academicYear)
+                .setParameter("semesterId", semesterId)
+                .setParameter("sectionId", sectionId)
+                .list();
+    }
+
+    @Override
+    public List<FacultySubjectAllocation> findActiveAllocations() {
+
+        return sessionFactory
+                .getCurrentSession()
+                .createQuery(
+                        """
+                        FROM FacultySubjectAllocation
+                        WHERE active=true
+                        """,
+                        FacultySubjectAllocation.class)
+                .list();
+    }
+    
+   
+    @Override
+    public List<FacultySubjectAllocation> findBySemesterAndSection(
+            Long semesterId,
+            Long sectionId) {
+
+        return sessionFactory
+                .getCurrentSession()
+                .createQuery("""
+                    FROM FacultySubjectAllocation f
+                    WHERE f.semester.semesterId = :semesterId
+                    AND f.section.sectionId = :sectionId
+                    AND f.active = true
+                """, FacultySubjectAllocation.class)
+                .setParameter("semesterId", semesterId)
+                .setParameter("sectionId", sectionId)
+                .list();
+    }
 }
