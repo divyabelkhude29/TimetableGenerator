@@ -1,23 +1,13 @@
 import {
-
-    Drawer,
-
-    Toolbar,
-
-    List,
-
-    ListItemButton,
-
-    ListItemIcon,
-
-    ListItemText,
-
-    Typography,
-
-    Divider,
-
-    Box
-
+  Drawer,
+  Toolbar,
+  List,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  Typography,
+  Divider,
+  Box
 } from "@mui/material";
 
 import { NavLink } from "react-router-dom";
@@ -25,215 +15,248 @@ import { NavLink } from "react-router-dom";
 import menuItems from "../../config/menuItems";
 
 const Sidebar = ({
-
-    drawerWidth,
-
-    mobileOpen,
-
-    handleDrawerToggle
-
+  drawerWidth,
+  collapsedWidth,
+  sidebarOpen,
+  mobileOpen,
+  onMobileClose
 }) => {
 
-    const drawer = (
+  const drawerContent = (
 
-        <>
+    <>
 
-            <Toolbar>
+      <Toolbar
+        sx={{
+          justifyContent: sidebarOpen ? "center" : "center"
+        }}
+      >
 
-                <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                >
-
-                    Admin Panel
-
-                </Typography>
-
-            </Toolbar>
-
-            <Divider />
-
-            <List>
-
-                {
-
-                    menuItems.map((item, index) => {
-
-                        if (item.header) {
-
-                            return (
-
-                                <Typography
-
-                                    key={index}
-
-                                    sx={{
-
-                                        px: 2,
-
-                                        py: 1,
-
-                                        fontWeight: "bold",
-
-                                        color: "gray",
-
-                                        fontSize: 13
-
-                                    }}
-
-                                >
-
-                                    {item.header}
-
-                                </Typography>
-
-                            );
-
-                        }
-
-                        return (
-
-                            <ListItemButton
-
-                                key={index}
-
-                                component={NavLink}
-
-                                to={item.path}
-
-                                sx={{
-
-                                    "&.active": {
-
-                                        backgroundColor: "#1976d2",
-
-                                        color: "#fff",
-
-                                        "& .MuiListItemIcon-root": {
-
-                                            color: "#fff"
-
-                                        }
-
-                                    }
-
-                                }}
-
-                            >
-
-                                <ListItemIcon>
-
-                                    {item.icon}
-
-                                </ListItemIcon>
-
-                                <ListItemText
-
-                                    primary={item.text}
-
-                                />
-
-                            </ListItemButton>
-
-                        );
-
-                    })
-
-                }
-
-            </List>
-
-        </>
-
-    );
-
-    return (
-
-        <Box
-            component="nav"
-            sx={{
-                width: {
-                    md: drawerWidth
-                },
-                flexShrink: {
-                    md: 0
-                }
-            }}
+        <Typography
+          variant="h6"
+          fontWeight="bold"
+          sx={{
+            display: sidebarOpen ? "block" : "none",
+            transition: ".3s"
+          }}
         >
+          Admin Panel
+        </Typography>
 
-            <Drawer
+      </Toolbar>
 
-                variant="temporary"
+      <Divider />
 
-                open={mobileOpen}
+      <List sx={{ mt: 1 }}>
 
-                onClose={handleDrawerToggle}
+        {menuItems.map((item, index) => {
 
-                ModalProps={{
+          if (item.header) {
 
-                    keepMounted: true
+            return (
 
-                }}
-
+              <Typography
+                key={index}
                 sx={{
-
-                    display: {
-
-                        xs: "block",
-
-                        md: "none"
-
-                    },
-
-                    "& .MuiDrawer-paper": {
-
-                        width: drawerWidth
-
-                    }
-
+                  px: sidebarOpen ? 2 : 0,
+                  py: 1,
+                  textAlign: sidebarOpen ? "left" : "center",
+                  color: "gray",
+                  fontWeight: "bold",
+                  fontSize: 12,
+                  display: sidebarOpen ? "block" : "none"
                 }}
+              >
+                {item.header}
+              </Typography>
+
+            );
+
+          }
+
+          return (
+
+            <ListItemButton
+
+              key={index}
+
+              component={NavLink}
+
+              to={item.path}
+
+              sx={{
+
+                minHeight: 50,
+
+                px: sidebarOpen ? 2 : 1.5,
+
+                justifyContent: sidebarOpen ? "initial" : "center",
+
+                borderRadius: 2,
+
+                mx: 1,
+
+                mb: .5,
+
+                "&.active": {
+
+                  bgcolor: "#1976d2",
+
+                  color: "#fff",
+
+                  "& .MuiListItemIcon-root": {
+
+                    color: "#fff"
+
+                  }
+
+                }
+
+              }}
 
             >
 
-                {drawer}
-
-            </Drawer>
-
-            <Drawer
-
-                variant="persistent"
-
-                open
+              <ListItemIcon
 
                 sx={{
 
-                    display: {
+                  minWidth: 0,
 
-                        xs: "none",
+                  mr: sidebarOpen ? 2 : "auto",
 
-                        md: "block"
-
-                    },
-
-                    "& .MuiDrawer-paper": {
-
-                        width: drawerWidth,
-
-                        boxSizing: "border-box"
-
-                    }
+                  justifyContent: "center"
 
                 }}
 
-            >
+              >
 
-                {drawer}
+                {item.icon}
 
-            </Drawer>
+              </ListItemIcon>
 
-        </Box>
+              <ListItemText
 
-    );
+                primary={item.text}
+
+                sx={{
+
+                  opacity: sidebarOpen ? 1 : 0,
+
+                  transition: ".2s",
+
+                  whiteSpace: "nowrap"
+
+                }}
+
+              />
+
+            </ListItemButton>
+
+          );
+
+        })}
+
+      </List>
+
+    </>
+
+  );
+
+  return (
+
+    <>
+
+      {/* Mobile Drawer */}
+
+      <Drawer
+
+        variant="temporary"
+
+        open={mobileOpen}
+
+        onClose={onMobileClose}
+
+        ModalProps={{
+
+          keepMounted: true
+
+        }}
+
+        sx={{
+
+          display: {
+
+            xs: "block",
+
+            md: "none"
+
+          },
+
+          "& .MuiDrawer-paper": {
+
+            width: drawerWidth,
+
+            boxSizing: "border-box"
+
+          }
+
+        }}
+
+      >
+
+        {drawerContent}
+
+      </Drawer>
+
+      {/* Desktop Drawer */}
+
+      <Drawer
+
+        variant="permanent"
+
+        sx={{
+
+          display: {
+
+            xs: "none",
+
+            md: "block"
+
+          },
+
+          width: sidebarOpen ? drawerWidth : collapsedWidth,
+
+          flexShrink: 0,
+
+          "& .MuiDrawer-paper": {
+
+            width: sidebarOpen ? drawerWidth : collapsedWidth,
+
+            transition: "width .3s ease",
+
+            overflowX: "hidden",
+
+            whiteSpace: "nowrap",
+
+            boxSizing: "border-box",
+
+            borderRight: "1px solid #ddd",
+
+            bgcolor: "#fff"
+
+          }
+
+        }}
+
+      >
+
+        {drawerContent}
+
+      </Drawer>
+
+    </>
+
+  );
 
 };
 

@@ -9,6 +9,8 @@ import {
   IconButton,
   Chip,
   Tooltip,
+  Typography,
+  Box,
 } from "@mui/material";
 
 import EditIcon from "@mui/icons-material/Edit";
@@ -50,138 +52,186 @@ const DepartmentTable = ({
 
   return (
 
-    <TableContainer component={Paper}>
+    <Paper
+      elevation={3}
+      sx={{
+        width: "100%",
+        borderRadius: 3,
+        overflow: "hidden"
+      }}
+    >
 
-      <Table>
+      <TableContainer
+        sx={{
+          maxHeight: "70vh",
+          overflowX: "auto"
+        }}
+      >
 
-        <TableHead>
+        <Table stickyHeader>
 
-          <TableRow>
+          <TableHead>
 
-            <TableCell>
-              <b>Department Code</b>
-            </TableCell>
+            <TableRow>
 
-            <TableCell>
-              <b>Department Name</b>
-            </TableCell>
-
-            <TableCell>
-              <b>HOD</b>
-            </TableCell>
-
-            <TableCell>
-              <b>Status</b>
-            </TableCell>
-
-            <TableCell align="center">
-              <b>Actions</b>
-            </TableCell>
-
-          </TableRow>
-
-        </TableHead>
-
-        <TableBody>
-
-          {departments.length > 0 ? (
-
-            departments.map((department) => (
-
-              <TableRow
-                key={department.departmentId}
-                hover
+              <TableCell
+                sx={{
+                  fontWeight: "bold",
+                  bgcolor: "#1976d2",
+                  color: "#fff"
+                }}
               >
+                Department Code
+              </TableCell>
 
-                <TableCell>
-                  {department.departmentCode}
-                </TableCell>
+              <TableCell
+                sx={{
+                  fontWeight: "bold",
+                  bgcolor: "#1976d2",
+                  color: "#fff"
+                }}
+              >
+                Department Name
+              </TableCell>
 
-                <TableCell>
-                  {department.departmentName}
-                </TableCell>
+              <TableCell
+                sx={{
+                  fontWeight: "bold",
+                  bgcolor: "#1976d2",
+                  color: "#fff"
+                }}
+              >
+                HOD
+              </TableCell>
 
-                <TableCell>
-                  {department.hodName || "-"}
-                </TableCell>
+              <TableCell
+                sx={{
+                  fontWeight: "bold",
+                  bgcolor: "#1976d2",
+                  color: "#fff"
+                }}
+              >
+                Status
+              </TableCell>
 
-                <TableCell>
+              <TableCell
+                align="center"
+                sx={{
+                  fontWeight: "bold",
+                  bgcolor: "#1976d2",
+                  color: "#fff"
+                }}
+              >
+                Actions
+              </TableCell>
 
-                  <Chip
-                    label={
-                      department.active
-                        ? "Active"
-                        : "Inactive"
-                    }
-                    color={
-                      department.active
-                        ? "success"
-                        : "error"
-                    }
-                  />
+            </TableRow>
 
-                </TableCell>
+          </TableHead>
 
-                <TableCell align="center">
+          <TableBody>
 
-                  <Tooltip title="Edit">
+            {departments.length > 0 ? (
 
-                    <IconButton
-                      color="primary"
-                      onClick={() => onEdit(department)}
+              departments.map((department) => (
+
+                <TableRow
+                  key={department.departmentId}
+                  hover
+                >
+
+                  <TableCell>
+                    {department.departmentCode}
+                  </TableCell>
+
+                  <TableCell>
+                    {department.departmentName}
+                  </TableCell>
+
+                  <TableCell>
+                    {department.hodName || "-"}
+                  </TableCell>
+
+                  <TableCell>
+
+                    <Chip
+                      label={department.active ? "Active" : "Inactive"}
+                      color={department.active ? "success" : "error"}
+                      size="small"
+                    />
+
+                  </TableCell>
+
+                  <TableCell align="center">
+
+                    <Tooltip title="Edit">
+
+                      <IconButton
+                        color="primary"
+                        onClick={() => onEdit(department)}
+                      >
+
+                        <EditIcon />
+
+                      </IconButton>
+
+                    </Tooltip>
+
+                    <Tooltip title="Delete">
+
+                      <IconButton
+                        color="error"
+                        onClick={() =>
+                          handleDelete(department.departmentId)
+                        }
+                      >
+
+                        <DeleteIcon />
+
+                      </IconButton>
+
+                    </Tooltip>
+
+                  </TableCell>
+
+                </TableRow>
+
+              ))
+
+            ) : (
+
+              <TableRow>
+
+                <TableCell
+                  colSpan={5}
+                  align="center"
+                  sx={{ py: 5 }}
+                >
+
+                  <Box>
+
+                    <Typography
+                      variant="h6"
+                      color="text.secondary"
                     >
+                      No Departments Found
+                    </Typography>
 
-                      <EditIcon />
-
-                    </IconButton>
-
-                  </Tooltip>
-
-                  <Tooltip title="Delete">
-
-                    <IconButton
-                      color="error"
-                      onClick={() =>
-                        handleDelete(
-                          department.departmentId
-                        )
-                      }
-                    >
-
-                      <DeleteIcon />
-
-                    </IconButton>
-
-                  </Tooltip>
+                  </Box>
 
                 </TableCell>
 
               </TableRow>
 
-            ))
+            )}
 
-          ) : (
+          </TableBody>
 
-            <TableRow>
+        </Table>
 
-              <TableCell
-                colSpan={5}
-                align="center"
-              >
+      </TableContainer>
 
-                No Departments Found
-
-              </TableCell>
-
-            </TableRow>
-
-          )}
-
-        </TableBody>
-
-      </Table>
-
-    </TableContainer>
+    </Paper>
 
   );
 

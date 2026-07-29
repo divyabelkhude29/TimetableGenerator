@@ -43,7 +43,7 @@ const Home = () => {
                <div className="content">
                   <h1>Get Started</h1>
 
-                  <h2>Generate Clash-Free Timetables</h2>
+                  <h2>Generate Automatic Timetable</h2>
 
                   <p>
                      Smart Timetable Generator provides a fast, reliable

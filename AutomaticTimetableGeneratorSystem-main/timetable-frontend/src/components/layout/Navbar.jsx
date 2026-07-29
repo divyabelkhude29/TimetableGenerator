@@ -3,17 +3,17 @@ import {
   Toolbar,
   Typography,
   IconButton,
-  Badge,
   Avatar,
   Box,
   Menu,
   MenuItem,
   Divider,
-  ListItemIcon
+  ListItemIcon,
+  useMediaQuery,
+  useTheme
 } from "@mui/material";
 
 import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsIcon from "@mui/icons-material/Notifications";
 import LogoutIcon from "@mui/icons-material/Logout";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 
@@ -22,13 +22,23 @@ import { useNavigate } from "react-router-dom";
 
 import useAuth from "../../hooks/useAuth";
 
-const Navbar = ({ onMenuClick }) => {
+const Navbar = ({
+  drawerWidth,
+  collapsedWidth,
+  sidebarOpen,
+  onMenuClick,
+  onMobileMenuClick
+}) => {
 
   const navigate = useNavigate();
 
   const { user, logout } = useAuth();
 
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const theme = useTheme();
+
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
 
   const open = Boolean(anchorEl);
 
@@ -56,8 +66,23 @@ const Navbar = ({ onMenuClick }) => {
       position="fixed"
       elevation={1}
       sx={{
+        zIndex: (theme) => theme.zIndex.drawer + 1,
+
         backgroundColor: "#1976d2",
-        zIndex: 1300
+
+        transition: "all .3s ease",
+
+        width: {
+          xs: "100%",
+          md: `calc(100% - ${
+            sidebarOpen ? drawerWidth : collapsedWidth
+          }px)`
+        },
+
+        ml: {
+          xs: 0,
+          md: `${sidebarOpen ? drawerWidth : collapsedWidth}px`
+        }
       }}
     >
 
@@ -66,40 +91,31 @@ const Navbar = ({ onMenuClick }) => {
         <IconButton
           color="inherit"
           edge="start"
+          onClick={isMobile ? onMobileMenuClick : onMenuClick}
           sx={{ mr: 2 }}
-          onClick={onMenuClick}
         >
+
           <MenuIcon />
+
         </IconButton>
 
         <Typography
           variant="h6"
           sx={{
             flexGrow: 1,
-            fontWeight: 600
+            fontWeight: 600,
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
           }}
         >
           Constraint Based Timetable Management System
         </Typography>
 
-        {/* <IconButton color="inherit">
-
-          <Badge
-            badgeContent={4}
-            color="error"
-          >
-
-            <NotificationsIcon />
-
-          </Badge>
-
-        </IconButton> */}
-
         <Box
           sx={{
             display: "flex",
             alignItems: "center",
-            ml: 2,
             cursor: "pointer"
           }}
           onClick={handleMenuOpen}
@@ -117,7 +133,14 @@ const Navbar = ({ onMenuClick }) => {
 
           </Avatar>
 
-          <Typography>
+          <Typography
+            sx={{
+              display: {
+                xs: "none",
+                sm: "block"
+              }
+            }}
+          >
 
             {user?.username || "Admin"}
 

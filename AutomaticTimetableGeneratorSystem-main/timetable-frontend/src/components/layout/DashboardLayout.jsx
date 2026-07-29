@@ -1,60 +1,87 @@
-import { Box, Toolbar } from "@mui/material";
+import { Box } from "@mui/material";
 import { useState } from "react";
 
 import Navbar from "./Navbar";
 import Sidebar from "./Sidebar";
 import Footer from "./Footer";
 
-const drawerWidth = 250;
+const drawerWidth = 260;
+const collapsedWidth = 72;
 
 const DashboardLayout = ({ children }) => {
 
-    const [mobileOpen, setMobileOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
-    const handleDrawerToggle = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
 
-        setMobileOpen(!mobileOpen);
+  const handleSidebarToggle = () => {
+    setSidebarOpen((prev) => !prev);
+  };
 
-    };
+  const handleMobileDrawerToggle = () => {
+    setMobileOpen((prev) => !prev);
+  };
 
-    return (
+  return (
+    <Box sx={{ display: "flex", minHeight: "100vh", bgcolor: "#f5f7fb" }}>
 
-        <Box sx={{ display: "flex" }}>
+      <Navbar
+        drawerWidth={drawerWidth}
+        collapsedWidth={collapsedWidth}
+        sidebarOpen={sidebarOpen}
+        onMenuClick={handleSidebarToggle}
+        onMobileMenuClick={handleMobileDrawerToggle}
+      />
 
-            <Navbar onMenuClick={handleDrawerToggle} />
+      <Sidebar
+        drawerWidth={drawerWidth}
+        collapsedWidth={collapsedWidth}
+        sidebarOpen={sidebarOpen}
+        mobileOpen={mobileOpen}
+        onMobileClose={handleMobileDrawerToggle}
+      />
 
-            <Sidebar
-                drawerWidth={drawerWidth}
-                mobileOpen={mobileOpen}
-                handleDrawerToggle={handleDrawerToggle}
-            />
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          display: "flex",
+          flexDirection: "column",
+          minHeight: "100vh",
+          transition: "all .3s ease",
 
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                    ml: {
-                        xs: 0,
-                        md: `${drawerWidth}px`
-                    },
-                    bgcolor: "#f5f5f5",
-                    minHeight: "100vh",
-                    p: 3
-                }}
-            >
+          width: {
+            md: `calc(100% - ${
+              sidebarOpen ? drawerWidth : collapsedWidth
+            }px)`
+          },
 
-                <Toolbar />
+          ml: {
+            md: `${sidebarOpen ? drawerWidth : collapsedWidth}px`
+          },
 
-                {children}
+          mt: "64px"
+        }}
+      >
 
-                <Footer />
-
-            </Box>
-
+        <Box
+          sx={{
+            flex: 1,
+            p: {
+              xs: 2,
+              md: 4
+            }
+          }}
+        >
+          {children}
         </Box>
 
-    );
+        <Footer />
 
+      </Box>
+
+    </Box>
+  );
 };
 
 export default DashboardLayout;
