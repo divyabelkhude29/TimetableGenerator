@@ -128,7 +128,7 @@ const DepartmentList = () => {
         >
 
           <Typography
-            variant="h3"
+            variant="h4"
             fontWeight="bold"
           >
             Department Management
