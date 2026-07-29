@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
+
 import {
     Grid,
     Paper,
     TextField,
     MenuItem,
     Button,
-    Typography
+    Typography,
+    CircularProgress
 } from "@mui/material";
 
 import courseService from "../../services/courseService";
@@ -24,6 +26,10 @@ const TimetableFilter = ({
     const [semesters, setSemesters] = useState([]);
     const [sections, setSections] = useState([]);
 
+    const [loadingCourses, setLoadingCourses] = useState(false);
+    const [loadingSemesters, setLoadingSemesters] = useState(false);
+    const [loadingSections, setLoadingSections] = useState(false);
+
     useEffect(() => {
         loadCourses();
     }, []);
@@ -31,10 +37,14 @@ const TimetableFilter = ({
     useEffect(() => {
 
         if (filters.courseId) {
+
             loadSemesters(filters.courseId);
+
         } else {
+
             setSemesters([]);
             setSections([]);
+
         }
 
     }, [filters.courseId]);
@@ -42,25 +52,54 @@ const TimetableFilter = ({
     useEffect(() => {
 
         if (filters.semesterId) {
+
             loadSections(filters.semesterId);
+
         } else {
+
             setSections([]);
+
         }
 
     }, [filters.semesterId]);
+
+    const extractList = (response) => {
+
+        if (Array.isArray(response)) {
+            return response;
+        }
+
+        if (response?.data && Array.isArray(response.data)) {
+            return response.data;
+        }
+
+        if (response?.content && Array.isArray(response.content)) {
+            return response.content;
+        }
+
+        return [];
+    };
 
     const loadCourses = async () => {
 
         try {
 
+            setLoadingCourses(true);
+
             const response =
                 await courseService.getAllCourses();
 
-            setCourses(response || []);
+            setCourses(extractList(response));
 
         } catch (error) {
 
             console.error(error);
+
+            setCourses([]);
+
+        } finally {
+
+            setLoadingCourses(false);
 
         }
 
@@ -70,14 +109,22 @@ const TimetableFilter = ({
 
         try {
 
+            setLoadingSemesters(true);
+
             const response =
                 await semesterService.getSemestersByCourse(courseId);
 
-            setSemesters(response || []);
+            setSemesters(extractList(response));
 
         } catch (error) {
 
             console.error(error);
+
+            setSemesters([]);
+
+        } finally {
+
+            setLoadingSemesters(false);
 
         }
 
@@ -87,14 +134,22 @@ const TimetableFilter = ({
 
         try {
 
+            setLoadingSections(true);
+
             const response =
                 await sectionService.getSectionsBySemester(semesterId);
 
-            setSections(response || []);
+            setSections(extractList(response));
 
         } catch (error) {
 
             console.error(error);
+
+            setSections([]);
+
+        } finally {
+
+            setLoadingSections(false);
 
         }
 
@@ -103,6 +158,29 @@ const TimetableFilter = ({
     const handleChange = (event) => {
 
         const { name, value } = event.target;
+
+        if (name === "courseId") {
+
+            setFilters(prev => ({
+                ...prev,
+                courseId: value,
+                semesterId: "",
+                sectionId: ""
+            }));
+
+            return;
+        }
+
+        if (name === "semesterId") {
+
+            setFilters(prev => ({
+                ...prev,
+                semesterId: value,
+                sectionId: ""
+            }));
+
+            return;
+        }
 
         setFilters(prev => ({
             ...prev,
@@ -113,21 +191,19 @@ const TimetableFilter = ({
 
     return (
 
-        <Paper sx={{ p: 3, mb: 3 }}>
+        <Paper sx={{ p: 3 }}>
 
             <Typography
                 variant="h6"
-                gutterBottom>
-
+                gutterBottom
+            >
                 Timetable Filters
-
             </Typography>
 
-            <Grid
-                container
-                spacing={2}>
+            <Grid container spacing={2}>
 
                 <Grid item xs={12} md={3}>
+
                     <TextField
                         fullWidth
                         label="Academic Year"
@@ -135,9 +211,11 @@ const TimetableFilter = ({
                         value={filters.academicYear}
                         onChange={handleChange}
                     />
+
                 </Grid>
 
                 <Grid item xs={12} md={3}>
+
                     <TextField
                         fullWidth
                         select
@@ -145,26 +223,36 @@ const TimetableFilter = ({
                         name="courseId"
                         value={filters.courseId}
                         onChange={handleChange}
+                        disabled={loadingCourses}
                     >
 
+                        <MenuItem value="">
+                            Select Course
+                        </MenuItem>
+
                         {
+
                             courses.map(course => (
 
                                 <MenuItem
                                     key={course.courseId}
-                                    value={course.courseId}>
+                                    value={course.courseId}
+                                >
 
                                     {course.courseName}
 
                                 </MenuItem>
 
                             ))
+
                         }
 
                     </TextField>
+
                 </Grid>
 
                 <Grid item xs={12} md={3}>
+
                     <TextField
                         fullWidth
                         select
@@ -172,26 +260,39 @@ const TimetableFilter = ({
                         name="semesterId"
                         value={filters.semesterId}
                         onChange={handleChange}
+                        disabled={
+                            !filters.courseId ||
+                            loadingSemesters
+                        }
                     >
 
+                        <MenuItem value="">
+                            Select Semester
+                        </MenuItem>
+
                         {
+
                             semesters.map(semester => (
 
                                 <MenuItem
                                     key={semester.semesterId}
-                                    value={semester.semesterId}>
+                                    value={semester.semesterId}
+                                >
 
                                     Semester {semester.semesterNumber}
 
                                 </MenuItem>
 
                             ))
+
                         }
 
                     </TextField>
+
                 </Grid>
 
                 <Grid item xs={12} md={3}>
+
                     <TextField
                         fullWidth
                         select
@@ -199,23 +300,35 @@ const TimetableFilter = ({
                         name="sectionId"
                         value={filters.sectionId}
                         onChange={handleChange}
+                        disabled={
+                            !filters.semesterId ||
+                            loadingSections
+                        }
                     >
 
+                        <MenuItem value="">
+                            Select Section
+                        </MenuItem>
+
                         {
+
                             sections.map(section => (
 
                                 <MenuItem
                                     key={section.sectionId}
-                                    value={section.sectionId}>
+                                    value={section.sectionId}
+                                >
 
                                     {section.sectionName}
 
                                 </MenuItem>
 
                             ))
+
                         }
 
                     </TextField>
+
                 </Grid>
 
                 <Grid
@@ -223,33 +336,40 @@ const TimetableFilter = ({
                     xs={12}
                     sx={{
                         display: "flex",
+                        justifyContent: "flex-end",
                         gap: 2,
-                        justifyContent: "flex-end"
-                    }}>
+                        flexWrap: "wrap"
+                    }}
+                >
 
                     <Button
                         variant="contained"
-                        onClick={onLoad}>
-
+                        onClick={onLoad}
+                    >
                         Load Timetable
-
                     </Button>
 
-                    <Button
-                        variant="contained"
-                        color="success"
-                        onClick={onGenerate}>
+                    {
 
-                        Generate
+                        onGenerate && (
 
-                    </Button>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={onGenerate}
+                            >
+                                Generate
+                            </Button>
+
+                        )
+
+                    }
 
                     <Button
                         variant="outlined"
-                        onClick={onRefresh}>
-
+                        onClick={onRefresh}
+                    >
                         Refresh
-
                     </Button>
 
                 </Grid>

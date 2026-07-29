@@ -1,9 +1,11 @@
 import api from "./api";
 
-const BASE_URL = "/timetable";
-
 /**
  * Get timetable
+ *
+ * Backend does not expose a "/timetable/view" endpoint -
+ * the real, working endpoint is GET /timetables/section/{sectionId},
+ * which returns the persisted timetable entries for that section.
  */
 const getTimetable = async (
     academicYear,
@@ -13,15 +15,7 @@ const getTimetable = async (
 ) => {
 
     const response = await api.get(
-        `${BASE_URL}/view`,
-        {
-            params: {
-                academicYear,
-                courseId,
-                semesterId,
-                sectionId
-            }
-        }
+        `/timetables/section/${sectionId}`
     );
 
     return response.data;
@@ -102,6 +96,9 @@ const deleteTimetable = async (request) => {
 
 /**
  * Export PDF
+ *
+ * Real backend endpoint is POST /reports/pdf with a
+ * ReportRequest body (only academicSectionId is required).
  */
 const exportPdf = async (
     academicYear,
@@ -110,15 +107,16 @@ const exportPdf = async (
     sectionId
 ) => {
 
-    const response = await api.get(
-        `${BASE_URL}/export/pdf`,
+    const response = await api.post(
+        "/reports/pdf",
         {
-            params: {
-                academicYear,
-                courseId,
-                semesterId,
-                sectionId
-            },
+            courseId,
+            semesterId,
+            academicSectionId: sectionId,
+            reportType: "TIMETABLE",
+            exportFormat: "PDF"
+        },
+        {
             responseType: "blob"
         }
     );
@@ -129,6 +127,9 @@ const exportPdf = async (
 
 /**
  * Export Excel
+ *
+ * Real backend endpoint is POST /reports/excel with a
+ * ReportRequest body (only academicSectionId is required).
  */
 const exportExcel = async (
     academicYear,
@@ -137,15 +138,16 @@ const exportExcel = async (
     sectionId
 ) => {
 
-    const response = await api.get(
-        `${BASE_URL}/export/excel`,
+    const response = await api.post(
+        "/reports/excel",
         {
-            params: {
-                academicYear,
-                courseId,
-                semesterId,
-                sectionId
-            },
+            courseId,
+            semesterId,
+            academicSectionId: sectionId,
+            reportType: "TIMETABLE",
+            exportFormat: "EXCEL"
+        },
+        {
             responseType: "blob"
         }
     );

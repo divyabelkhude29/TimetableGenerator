@@ -79,10 +79,10 @@ const Navbar = ({ onMenuClick }) => {
             fontWeight: 600
           }}
         >
-          College Timetable Management System
+          Constraint Based Timetable Management System
         </Typography>
 
-        <IconButton color="inherit">
+        {/* <IconButton color="inherit">
 
           <Badge
             badgeContent={4}
@@ -93,7 +93,7 @@ const Navbar = ({ onMenuClick }) => {
 
           </Badge>
 
-        </IconButton>
+        </IconButton> */}
 
         <Box
           sx={{

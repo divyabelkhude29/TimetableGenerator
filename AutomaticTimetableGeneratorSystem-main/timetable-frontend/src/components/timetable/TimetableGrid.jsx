@@ -22,7 +22,7 @@ const DAYS = [
 
 const TimetableGrid = ({ timetable = [] }) => {
 
-    if (!timetable.length) {
+    if (!Array.isArray(timetable) || timetable.length === 0) {
         return (
             <Paper sx={{ p: 4 }}>
                 <Typography align="center">
@@ -33,29 +33,42 @@ const TimetableGrid = ({ timetable = [] }) => {
     }
 
     /*
-     * Get unique time slots
+     * Unique Time Slots
      */
-    const timeSlots = [...new Map(
-        timetable.map(slot => [
-            slot.timeSlotId,
-            {
-                timeSlotId: slot.timeSlotId,
-                startTime: slot.startTime,
-                endTime: slot.endTime
-            }
-        ])
-    ).values()]
-        .sort((a, b) => a.timeSlotId - b.timeSlotId);
+    const timeSlots = [
+        ...new Map(
+            timetable.map(item => [
+                item.timeSlotId,
+                {
+                    timeSlotId: item.timeSlotId,
+                    startTime: item.startTime,
+                    endTime: item.endTime
+                }
+            ])
+        ).values()
+    ].sort((a, b) => a.timeSlotId - b.timeSlotId);
 
     /*
-     * Find one slot
+     * Normalize day
+     */
+    const normalizeDay = (day) => {
+
+        if (!day) return "";
+
+        return day.toUpperCase().trim();
+
+    };
+
+    /*
+     * Find slot
      */
     const findSlot = (day, timeSlotId) => {
 
-        return timetable.find(
-            slot =>
-                slot.dayOfWeek === day &&
-                slot.timeSlotId === timeSlotId
+        return timetable.find(item =>
+
+            normalizeDay(item.dayOfWeek) === day &&
+            item.timeSlotId === timeSlotId
+
         );
 
     };
@@ -64,7 +77,10 @@ const TimetableGrid = ({ timetable = [] }) => {
 
         <TableContainer
             component={Paper}
-            sx={{ mt: 3 }}
+            sx={{
+                mt: 2,
+                overflowX: "auto"
+            }}
         >
 
             <Table>
@@ -74,15 +90,17 @@ const TimetableGrid = ({ timetable = [] }) => {
                     <TableRow>
 
                         <TableCell
+                            align="center"
                             sx={{
                                 fontWeight: "bold",
-                                width: 130
+                                minWidth: 120
                             }}
                         >
-                            Day
+                            Day / Time
                         </TableCell>
 
                         {
+
                             timeSlots.map(slot => (
 
                                 <TableCell
@@ -90,7 +108,7 @@ const TimetableGrid = ({ timetable = [] }) => {
                                     align="center"
                                     sx={{
                                         fontWeight: "bold",
-                                        minWidth: 170
+                                        minWidth: 180
                                     }}
                                 >
 
@@ -103,6 +121,7 @@ const TimetableGrid = ({ timetable = [] }) => {
                                 </TableCell>
 
                             ))
+
                         }
 
                     </TableRow>
@@ -112,6 +131,7 @@ const TimetableGrid = ({ timetable = [] }) => {
                 <TableBody>
 
                     {
+
                         DAYS.map(day => (
 
                             <TableRow key={day}>
@@ -121,17 +141,20 @@ const TimetableGrid = ({ timetable = [] }) => {
                                         fontWeight: "bold"
                                     }}
                                 >
+
                                     {day}
+
                                 </TableCell>
 
                                 {
+
                                     timeSlots.map(slot => (
 
                                         <TableCell
                                             key={`${day}-${slot.timeSlotId}`}
                                             sx={{
                                                 verticalAlign: "top",
-                                                p: 1
+                                                padding: 1
                                             }}
                                         >
 
@@ -147,11 +170,13 @@ const TimetableGrid = ({ timetable = [] }) => {
                                         </TableCell>
 
                                     ))
+
                                 }
 
                             </TableRow>
 
                         ))
+
                     }
 
                 </TableBody>

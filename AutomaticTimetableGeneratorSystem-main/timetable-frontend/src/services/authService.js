@@ -1,5 +1,9 @@
 import axiosInstance from "../api/axiosInstance";
 
+const checkAdminExists = async () => {
+   const response = await axiosInstance.get("/auth/admin-exists");
+   return response;
+};
 
 const login = async (username, password) => {
 
@@ -26,7 +30,9 @@ const register = async (registerData) => {
 };
 
 
+
 export default {
-  login,
-  register,
+   checkAdminExists,
+   login,
+   register,
 };

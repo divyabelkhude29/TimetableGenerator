@@ -1,0 +1,286 @@
+/* ==========================================================
+   REGISTER PAGE
+========================================================== */
+
+.register-container {
+   width: 100%;
+   height: 100vh;
+   background: linear-gradient(135deg, #052b6b, #0b3d91, #1565c0);
+
+   display: flex;
+   justify-content: center;
+   align-items: center;
+
+   padding: 20px;
+   position: relative;
+   z-index: 2;
+}
+
+.register-card {
+   width: 45%;
+   /* max-width: 500px; */
+   height: 85vh;
+
+   background: #fff;
+
+   border-radius: 15px;
+
+   padding: 22px 28px;
+
+   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18);
+
+   animation: fadeIn 0.4s ease;
+   position: relative;
+}
+
+.register-card h1 {
+   text-align: center;
+   color: #0b3d91;
+   font-size: 28px;
+   margin-bottom: 4px;
+}
+
+.subtitle {
+   text-align: center;
+   color: #666;
+   font-size: 12px;
+   margin-bottom: 30px;
+}
+
+/* ==========================================================
+   FORM
+========================================================== */
+
+form {
+   display: flex;
+   flex-direction: column;
+}
+
+.row {
+   display: flex;
+   gap: 20px;
+}
+
+.row .input-group {
+   flex: 1;
+}
+
+.input-group {
+   display: flex;
+   flex-direction: column;
+   margin-bottom: 5px;
+}
+
+.input-group label {
+   font-size: 12px;
+   font-weight: 600;
+   color: #333;
+   margin-bottom: 5px;
+}
+
+.input-group input,
+.input-group select {
+   width: 100%;
+
+   height: 30px;
+
+   padding: 0 14px;
+
+   border: 1px solid #d5d5d5;
+
+   border-radius: 5px;
+
+   outline: none;
+
+   font-size: 14px;
+
+   transition: 0.3s;
+   margin-bottom: 4px;
+}
+
+.input-group input:focus,
+.input-group select:focus {
+   border-color: #1976d2;
+
+   box-shadow: 0 0 5px rgba(25, 118, 210, 0.25);
+}
+
+/* ==========================================================
+   PASSWORD
+========================================================== */
+
+.password-box {
+   position: relative;
+}
+
+.password-box input {
+   padding-right: 45px;
+}
+
+.eye {
+   position: absolute;
+
+   right: 14px;
+
+   top: 50%;
+
+   transform: translateY(-50%);
+
+   cursor: pointer;
+
+   font-size: 18px;
+}
+
+/* ==========================================================
+   BUTTON
+========================================================== */
+
+.btn {
+   width: 100%;
+
+   height: 44px;
+
+   margin-top: 8px;
+
+   border: none;
+
+   border-radius: 8px;
+
+   background: #0b3d91;
+   color: #ffffff;
+
+   font-size: 15px;
+
+   font-weight: 600;
+
+   cursor: pointer;
+
+   transition: 0.3s;
+}
+
+.btn:hover {
+   background: #052b6b;
+   transform: translateY(-2px);
+}
+
+/* .btn:disabled {
+   background: #90caf9;
+} */
+
+/* ==========================================================
+   ALERT
+========================================================== */
+
+.error,
+.success {
+   padding: 10px;
+
+   border-radius: 8px;
+
+   margin-bottom: 14px;
+
+   font-size: 14px;
+
+   text-align: center;
+}
+
+.error {
+   background: #ffebee;
+
+   color: #c62828;
+
+   border: 1px solid #ef9a9a;
+}
+
+.success {
+   background: #e8f5e9;
+
+   color: #2e7d32;
+
+   border: 1px solid #81c784;
+}
+
+/* ==========================================================
+   LOGIN LINK
+========================================================== */
+
+.login-link {
+   text-align: center;
+
+   margin-top: 15px;
+
+   font-size: 14px;
+}
+
+.login-link a {
+   color: #1976d2;
+
+   text-decoration: none;
+
+   font-weight: 600;
+}
+
+.login-link a:hover {
+   text-decoration: underline;
+}
+
+/* ==========================================================
+   ANIMATION
+========================================================== */
+
+@keyframes fadeIn {
+   from {
+      opacity: 0;
+      transform: translateY(15px);
+   }
+
+   to {
+      opacity: 1;
+      transform: translateY(0);
+   }
+}
+
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
+
+@media (max-width: 768px) {
+   .register-container {
+      height: auto;
+
+      min-height: 100vh;
+
+      padding: 20px 10px;
+   }
+
+   .register-card {
+      max-width: 100%;
+
+      padding: 20px;
+   }
+
+   .row {
+      flex-direction: column;
+
+      gap: 0;
+   }
+}
+
+@media (max-width: 480px) {
+   .register-card h1 {
+      font-size: 24px;
+   }
+
+   .subtitle {
+      font-size: 13px;
+   }
+
+   .input-group input,
+   .input-group select {
+      height: 40px;
+   }
+
+   .btn {
+      height: 42px;
+   }
+}

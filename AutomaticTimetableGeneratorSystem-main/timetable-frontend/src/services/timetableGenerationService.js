@@ -28,7 +28,7 @@ const timetableGenerationService = {
 
     },
 
-    // Validate Generation
+    // Validate Timetable Generation
     validateGeneration: async (request) => {
 
         const response = await api.post(

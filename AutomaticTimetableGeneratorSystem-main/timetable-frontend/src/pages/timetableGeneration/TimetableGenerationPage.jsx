@@ -5,18 +5,32 @@ import {
     Box,
     CircularProgress,
     Alert,
-    Typography
+    Typography,
+    Button
 } from "@mui/material";
+
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 import DashboardLayout from "../../components/layout/DashboardLayout";
 
-import TimetableGenerationForm from "../../components/timetableGeneration/TimetableGenerationForm";
-import GenerationStatistics from "../../components/timetableGeneration/GenerationStatistics";
-import ValidationPanel from "../../components/timetableGeneration/ValidationPanel";
-import PreviewTable from "../../components/timetableGeneration/PreviewTable";
-import GenerationResult from "../../components/timetableGeneration/GenerationResult";
+import TimetableGenerationForm
+    from "../../components/timetableGeneration/TimetableGenerationForm";
 
-import timetableGenerationService from "../../services/timetableGenerationService";
+import GenerationStatistics
+    from "../../components/timetableGeneration/GenerationStatistics";
+
+import ValidationPanel
+    from "../../components/timetableGeneration/ValidationPanel";
+
+import PreviewTable
+    from "../../components/timetableGeneration/PreviewTable";
+
+import GenerationResult
+    from "../../components/timetableGeneration/GenerationResult";
+
+import timetableGenerationService
+    from "../../services/timetableGenerationService";
+
 
 export default function TimetableGenerationPage() {
 
@@ -42,42 +56,46 @@ export default function TimetableGenerationPage() {
 
     const [generationResult, setGenerationResult] = useState(null);
 
+
     /*
-     * Generate Timetable
+     * GENERATE
+     * Generate timetable but DO NOT redirect automatically
      */
     const handleGenerate = async () => {
 
         try {
 
             setLoading(true);
+
             setError("");
 
             const response =
-                await timetableGenerationService.generateTimetable(formData);
+                await timetableGenerationService.generateTimetable(
+                    formData
+                );
+
+            console.log(
+                "Generate Response:",
+                response
+            );
 
             setGenerationResult(response);
+
             setStatistics(response);
 
-            if (response.success) {
+        } catch (error) {
 
-                setTimeout(() => {
-                    navigate("/timetable-view");
-                }, 1000);
-
-            }
-
-        }
-        catch (error) {
-
-            console.error(error);
+            console.error(
+                "Generation Error:",
+                error
+            );
 
             setError(
                 error.response?.data?.message ||
                 "Unable to generate timetable."
             );
 
-        }
-        finally {
+        } finally {
 
             setLoading(false);
 
@@ -85,23 +103,44 @@ export default function TimetableGenerationPage() {
 
     };
 
+
     /*
-     * Preview Timetable
+     * VIEW TIMETABLE
+     */
+    const handleViewTimetable = () => {
+
+        console.log(
+            "Navigating to timetable view..."
+        );
+
+        navigate("/timetable-view");
+
+    };
+
+
+    /*
+     * PREVIEW
      */
     const handlePreview = async () => {
 
         try {
 
             setLoading(true);
+
             setError("");
 
             const response =
-                await timetableGenerationService.previewTimetable(formData);
+                await timetableGenerationService.previewTimetable(
+                    formData
+                );
 
-            setPreviewRows(response);
+            setPreviewRows(
+                Array.isArray(response)
+                    ? response
+                    : response?.data || []
+            );
 
-        }
-        catch (error) {
+        } catch (error) {
 
             console.error(error);
 
@@ -110,8 +149,7 @@ export default function TimetableGenerationPage() {
                 "Unable to preview timetable."
             );
 
-        }
-        finally {
+        } finally {
 
             setLoading(false);
 
@@ -119,23 +157,30 @@ export default function TimetableGenerationPage() {
 
     };
 
+
     /*
-     * Validate Timetable
+     * VALIDATE
      */
     const handleValidate = async () => {
 
         try {
 
             setLoading(true);
+
             setError("");
 
             const response =
-                await timetableGenerationService.validateGeneration(formData);
+                await timetableGenerationService.validateGeneration(
+                    formData
+                );
 
-            setValidationMessages(response);
+            setValidationMessages(
+                Array.isArray(response)
+                    ? response
+                    : response?.data || []
+            );
 
-        }
-        catch (error) {
+        } catch (error) {
 
             console.error(error);
 
@@ -144,8 +189,7 @@ export default function TimetableGenerationPage() {
                 "Validation failed."
             );
 
-        }
-        finally {
+        } finally {
 
             setLoading(false);
 
@@ -153,32 +197,33 @@ export default function TimetableGenerationPage() {
 
     };
 
+
     /*
-     * Regenerate Timetable
+     * REGENERATE
      */
     const handleRegenerate = async () => {
 
         try {
 
             setLoading(true);
+
             setError("");
 
             const response =
-                await timetableGenerationService.regenerateTimetable(formData);
+                await timetableGenerationService.regenerateTimetable(
+                    formData
+                );
+
+            console.log(
+                "Regenerate Response:",
+                response
+            );
 
             setGenerationResult(response);
+
             setStatistics(response);
 
-            if (response.success) {
-
-                setTimeout(() => {
-                    navigate("/timetable-view");
-                }, 1000);
-
-            }
-
-        }
-        catch (error) {
+        } catch (error) {
 
             console.error(error);
 
@@ -187,8 +232,7 @@ export default function TimetableGenerationPage() {
                 "Unable to regenerate timetable."
             );
 
-        }
-        finally {
+        } finally {
 
             setLoading(false);
 
@@ -196,25 +240,32 @@ export default function TimetableGenerationPage() {
 
     };
 
+
     /*
-     * Delete Generated Timetable
+     * DELETE
      */
     const handleDelete = async () => {
 
         try {
 
             setLoading(true);
+
             setError("");
 
-            await timetableGenerationService.deleteGeneratedTimetable(formData);
+            await timetableGenerationService
+                .deleteGeneratedTimetable(
+                    formData
+                );
 
             setStatistics(null);
+
             setGenerationResult(null);
+
             setPreviewRows([]);
+
             setValidationMessages([]);
 
-        }
-        catch (error) {
+        } catch (error) {
 
             console.error(error);
 
@@ -223,14 +274,14 @@ export default function TimetableGenerationPage() {
                 "Unable to delete timetable."
             );
 
-        }
-        finally {
+        } finally {
 
             setLoading(false);
 
         }
 
     };
+
 
     return (
 
@@ -246,6 +297,7 @@ export default function TimetableGenerationPage() {
                     Automatic Timetable Generation
                 </Typography>
 
+
                 {error && (
 
                     <Alert
@@ -257,16 +309,52 @@ export default function TimetableGenerationPage() {
 
                 )}
 
+
                 <TimetableGenerationForm
+
                     formData={formData}
+
                     setFormData={setFormData}
+
                     onPreview={handlePreview}
+
                     onValidate={handleValidate}
+
                     onGenerate={handleGenerate}
+
                     onRegenerate={handleRegenerate}
+
                     onDelete={handleDelete}
+
                     loading={loading}
+
                 />
+
+
+                {/* VIEW TIMETABLE BUTTON */}
+
+                <Box
+                    display="flex"
+                    justifyContent="flex-end"
+                    mt={3}
+                >
+
+                    <Button
+                        variant="contained"
+                        color="info"
+                        size="large"
+                        startIcon={
+                            <VisibilityIcon />
+                        }
+                        onClick={
+                            handleViewTimetable
+                        }
+                    >
+                        View Timetable
+                    </Button>
+
+                </Box>
+
 
                 {loading && (
 
@@ -275,18 +363,24 @@ export default function TimetableGenerationPage() {
                         justifyContent="center"
                         my={4}
                     >
+
                         <CircularProgress />
+
                     </Box>
 
                 )}
 
+
                 {validationMessages.length > 0 && (
 
                     <ValidationPanel
-                        messages={validationMessages}
+                        messages={
+                            validationMessages
+                        }
                     />
 
                 )}
+
 
                 {previewRows.length > 0 && (
 
@@ -296,6 +390,7 @@ export default function TimetableGenerationPage() {
 
                 )}
 
+
                 {statistics && (
 
                     <GenerationStatistics
@@ -303,6 +398,7 @@ export default function TimetableGenerationPage() {
                     />
 
                 )}
+
 
                 {generationResult && (
 

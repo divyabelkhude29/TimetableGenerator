@@ -20,11 +20,13 @@ export default function TimetableGenerationForm({
 
     formData,
     setFormData,
+
     onGenerate,
     onPreview,
     onValidate,
     onRegenerate,
     onDelete,
+
     loading
 
 }) {
@@ -54,11 +56,19 @@ export default function TimetableGenerationForm({
             const response =
                 await courseService.getAllCourses();
 
-            setCourses(response);
+            setCourses(
+                Array.isArray(response)
+                    ? response
+                    : []
+            );
 
-        } catch (error) {
+        }
+        catch (error) {
 
-            console.error(error);
+            console.error(
+                "Unable to load courses:",
+                error
+            );
 
         }
 
@@ -71,11 +81,19 @@ export default function TimetableGenerationForm({
             const response =
                 await semesterService.getAllSemesters();
 
-            setSemesters(response);
+            setSemesters(
+                Array.isArray(response)
+                    ? response
+                    : []
+            );
 
-        } catch (error) {
+        }
+        catch (error) {
 
-            console.error(error);
+            console.error(
+                "Unable to load semesters:",
+                error
+            );
 
         }
 
@@ -88,11 +106,19 @@ export default function TimetableGenerationForm({
             const response =
                 await sectionService.getAllSections();
 
-            setSections(response);
+            setSections(
+                Array.isArray(response)
+                    ? response
+                    : []
+            );
 
-        } catch (error) {
+        }
+        catch (error) {
 
-            console.error(error);
+            console.error(
+                "Unable to load sections:",
+                error
+            );
 
         }
 
@@ -101,63 +127,79 @@ export default function TimetableGenerationForm({
     const handleChange = (event) => {
 
         const {
-
             name,
             value,
             checked,
             type
-
         } = event.target;
 
-        setFormData({
+        setFormData((previous) => ({
 
-            ...formData,
+            ...previous,
 
             [name]:
-
                 type === "checkbox"
-
                     ? checked
-
                     : value
 
-        });
+        }));
+
+        setErrors((previous) => ({
+
+            ...previous,
+
+            [name]: ""
+
+        }));
 
     };
 
     const validate = () => {
 
-        let temp = {};
+        const temp = {};
 
-        if (!formData.academicYear)
+        if (!formData.academicYear?.trim()) {
 
             temp.academicYear =
                 "Academic Year is required.";
 
-        if (!formData.courseId)
+        }
+
+        if (!formData.courseId) {
 
             temp.courseId =
                 "Course is required.";
 
-        if (!formData.semesterId)
+        }
+
+        if (!formData.semesterId) {
 
             temp.semesterId =
                 "Semester is required.";
 
-        if (!formData.sectionId)
+        }
+
+        if (!formData.sectionId) {
 
             temp.sectionId =
                 "Section is required.";
 
+        }
+
         setErrors(temp);
 
-        return Object.keys(temp).length === 0;
+        return (
+            Object.keys(temp).length === 0
+        );
 
     };
 
     const submit = (callback) => {
 
-        if (validate()) {
+        if (
+            typeof callback === "function" &&
+            validate()
+        ) {
 
             callback();
 
@@ -167,21 +209,31 @@ export default function TimetableGenerationForm({
 
     return (
 
-        <Paper sx={{ p: 3 }}>
+        <Paper
+            sx={{
+                p: 3
+            }}
+        >
 
             <Typography
                 variant="h6"
                 mb={3}
                 fontWeight="bold"
             >
-
                 Timetable Generation
-
             </Typography>
 
-            <Grid container spacing={3}>
+            <Grid
+                container
+                spacing={3}
+            >
 
-                <Grid item xs={12} md={6}>
+                {/* Academic Year */}
+                <Grid
+                    item
+                    xs={12}
+                    md={6}
+                >
 
                     <TextField
 
@@ -193,19 +245,32 @@ export default function TimetableGenerationForm({
 
                         placeholder="2025-2026"
 
-                        value={formData.academicYear}
+                        value={
+                            formData.academicYear
+                        }
 
-                        onChange={handleChange}
+                        onChange={
+                            handleChange
+                        }
 
-                        error={!!errors.academicYear}
+                        error={
+                            !!errors.academicYear
+                        }
 
-                        helperText={errors.academicYear}
+                        helperText={
+                            errors.academicYear
+                        }
 
                     />
 
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                {/* Course */}
+                <Grid
+                    item
+                    xs={12}
+                    md={6}
+                >
 
                     <TextField
 
@@ -217,43 +282,60 @@ export default function TimetableGenerationForm({
 
                         name="courseId"
 
-                        value={formData.courseId}
+                        value={
+                            formData.courseId
+                        }
 
-                        onChange={handleChange}
+                        onChange={
+                            handleChange
+                        }
 
-                        error={!!errors.courseId}
+                        error={
+                            !!errors.courseId
+                        }
 
-                        helperText={errors.courseId}
+                        helperText={
+                            errors.courseId
+                        }
 
                     >
 
-                        {
-
-                            courses.map((course) => (
+                        {courses.map(
+                            (course) => (
 
                                 <MenuItem
 
-                                    key={course.courseId}
+                                    key={
+                                        course.courseId
+                                    }
 
-                                    value={course.courseId}
+                                    value={
+                                        course.courseId
+                                    }
 
                                 >
 
                                     {course.courseCode}
+
                                     {" - "}
+
                                     {course.courseName}
 
                                 </MenuItem>
 
-                            ))
-
-                        }
+                            )
+                        )}
 
                     </TextField>
 
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                {/* Semester */}
+                <Grid
+                    item
+                    xs={12}
+                    md={6}
+                >
 
                     <TextField
 
@@ -265,41 +347,60 @@ export default function TimetableGenerationForm({
 
                         name="semesterId"
 
-                        value={formData.semesterId}
+                        value={
+                            formData.semesterId
+                        }
 
-                        onChange={handleChange}
+                        onChange={
+                            handleChange
+                        }
 
-                        error={!!errors.semesterId}
+                        error={
+                            !!errors.semesterId
+                        }
 
-                        helperText={errors.semesterId}
+                        helperText={
+                            errors.semesterId
+                        }
 
                     >
 
-                        {
-
-                            semesters.map((semester) => (
+                        {semesters.map(
+                            (semester) => (
 
                                 <MenuItem
 
-                                    key={semester.semesterId}
+                                    key={
+                                        semester.semesterId
+                                    }
 
-                                    value={semester.semesterId}
+                                    value={
+                                        semester.semesterId
+                                    }
 
                                 >
 
-                                    Semester {semester.semesterNumber}
+                                    Semester{" "}
+
+                                    {
+                                        semester.semesterNumber
+                                    }
 
                                 </MenuItem>
 
-                            ))
-
-                        }
+                            )
+                        )}
 
                     </TextField>
 
                 </Grid>
 
-                <Grid item xs={12} md={6}>
+                {/* Section */}
+                <Grid
+                    item
+                    xs={12}
+                    md={6}
+                >
 
                     <TextField
 
@@ -311,41 +412,57 @@ export default function TimetableGenerationForm({
 
                         name="sectionId"
 
-                        value={formData.sectionId}
+                        value={
+                            formData.sectionId
+                        }
 
-                        onChange={handleChange}
+                        onChange={
+                            handleChange
+                        }
 
-                        error={!!errors.sectionId}
+                        error={
+                            !!errors.sectionId
+                        }
 
-                        helperText={errors.sectionId}
+                        helperText={
+                            errors.sectionId
+                        }
 
                     >
 
-                        {
-
-                            sections.map((section) => (
+                        {sections.map(
+                            (section) => (
 
                                 <MenuItem
 
-                                    key={section.sectionId}
+                                    key={
+                                        section.sectionId
+                                    }
 
-                                    value={section.sectionId}
+                                    value={
+                                        section.sectionId
+                                    }
 
                                 >
 
-                                    {section.sectionName}
+                                    {
+                                        section.sectionName
+                                    }
 
                                 </MenuItem>
 
-                            ))
-
-                        }
+                            )
+                        )}
 
                     </TextField>
 
                 </Grid>
 
-                <Grid item xs={12}>
+                {/* Overwrite */}
+                <Grid
+                    item
+                    xs={12}
+                >
 
                     <FormControlLabel
 
@@ -353,9 +470,13 @@ export default function TimetableGenerationForm({
 
                             <Switch
 
-                                checked={formData.overwriteExisting}
+                                checked={
+                                    formData.overwriteExisting
+                                }
 
-                                onChange={handleChange}
+                                onChange={
+                                    handleChange
+                                }
 
                                 name="overwriteExisting"
 
@@ -363,61 +484,126 @@ export default function TimetableGenerationForm({
 
                         }
 
-                        label="Overwrite Existing Timetable"
+                        label={
+                            "Overwrite Existing Timetable"
+                        }
 
                     />
 
                 </Grid>
 
-                <Grid item xs={12}>
+                {/* Buttons */}
+                <Grid
+                    item
+                    xs={12}
+                >
 
                     <Stack
                         direction="row"
                         spacing={2}
                         flexWrap="wrap"
+                        useFlexGap
                     >
 
+                        {/* Validate */}
                         <Button
+
                             variant="contained"
-                            onClick={() => submit(onValidate)}
+
+                            onClick={() =>
+                                submit(
+                                    onValidate
+                                )
+                            }
+
                             disabled={loading}
+
                         >
+
                             Validate
+
                         </Button>
 
+                        {/* Preview */}
                         <Button
+
                             variant="outlined"
-                            onClick={() => submit(onPreview)}
+
+                            onClick={() =>
+                                submit(
+                                    onPreview
+                                )
+                            }
+
                             disabled={loading}
+
                         >
+
                             Preview
+
                         </Button>
 
+                        {/* Generate */}
                         <Button
+
                             variant="contained"
+
                             color="success"
-                            onClick={() => submit(onGenerate)}
+
+                            onClick={() =>
+                                submit(
+                                    onGenerate
+                                )
+                            }
+
                             disabled={loading}
+
                         >
+
                             Generate
+
                         </Button>
 
+                        {/* Regenerate */}
                         <Button
+
                             variant="contained"
+
                             color="warning"
-                            onClick={() => submit(onRegenerate)}
+
+                            onClick={() =>
+                                submit(
+                                    onRegenerate
+                                )
+                            }
+
                             disabled={loading}
+
                         >
+
                             Regenerate
+
                         </Button>
 
+                        {/* Delete */}
                         <Button
+
                             variant="contained"
+
                             color="error"
-                            onClick={() => submit(onDelete)}
+
+                            onClick={() =>
+                                submit(
+                                    onDelete
+                                )
+                            }
+
                             disabled={loading}
+
                         >
+
                             Delete
+
                         </Button>
 
                     </Stack>

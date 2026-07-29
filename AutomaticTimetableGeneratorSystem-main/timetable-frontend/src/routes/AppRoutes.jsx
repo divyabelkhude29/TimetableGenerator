@@ -4,6 +4,10 @@ import ProtectedRoute from "./ProtectedRoute";
 /* Authentication */
 import Login from "../pages/auth/Login";
 
+/* Home */
+import Home from '../pages/auth/Home';
+import Register from '../pages/auth/Register';
+
 /* Dashboards */
 import AdminDashboard from "../pages/admin/AdminDashboard";
 import FacultyDashboard from "../pages/faculty/FacultyDashboard";
@@ -27,6 +31,7 @@ import ConstraintList from "../pages/constraints/ConstraintList";
 import TimetableGenerationPage from "../pages/timetableGeneration/TimetableGenerationPage";
 import TimetableView from "../pages/timetable/TimetableView";
 
+
 const AppRoutes = () => {
 
     return (
@@ -36,8 +41,18 @@ const AppRoutes = () => {
             {/* Login */}
 
             <Route
-                path="/"
+                path="/login"
                 element={<Login />}
+            />
+
+            <Route 
+                path="/" 
+                element={<Home />} 
+            />
+            
+            <Route 
+                path="/register" 
+                element={<Register />} 
             />
 
             {/* ================= ADMIN ================= */}
