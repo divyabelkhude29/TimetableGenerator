@@ -128,7 +128,7 @@ const menuItems = [
     icon: <TableChartIcon />,
     path: "/timetable-view"
     },
-    
+
     {
         header: "ACCOUNT"
     },
@@ -136,7 +136,7 @@ const menuItems = [
     {
         text: "Logout",
         icon: <LogoutIcon />,
-        path: "/logout"
+        path: "/"
     }
 
 ];
