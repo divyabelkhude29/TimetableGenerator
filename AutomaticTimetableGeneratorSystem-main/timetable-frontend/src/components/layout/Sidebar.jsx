@@ -10,12 +10,15 @@ import {
   Box,
 } from "@mui/material";
 
+import useAuth from "../../hooks/useAuth";
 import MenuIcon from "@mui/icons-material/Menu";
 import IconButton from "@mui/material/IconButton";
 
 import { NavLink } from "react-router-dom";
 
 import menuItems from "../../config/menuItems";
+import studentMenuItems from "../../config/studentMenuItems";
+import facultyMenuItems from "../../config/facultyMenuItems";
 
 // const Sidebar = ({
 //   drawerWidth,
@@ -24,6 +27,7 @@ import menuItems from "../../config/menuItems";
 //   mobileOpen,
 //   onMobileClose,
 // }) => {
+
 const Sidebar = ({
   drawerWidth,
   collapsedWidth,
@@ -32,24 +36,24 @@ const Sidebar = ({
   onMobileClose,
   onDesktopToggle,
 }) => {
+  const { user } = useAuth();
+  let currentMenu = menuItems;
+
+  if (user?.role === "ROLE_STUDENT") {
+    currentMenu = studentMenuItems;
+  } else if (user?.role === "ROLE_FACULTY") {
+    currentMenu = facultyMenuItems;
+  }
+
+  const panelTitle =
+    user?.role === "ROLE_STUDENT"
+      ? "Student Panel"
+      : user?.role === "ROLE_FACULTY"
+        ? "Faculty Panel"
+        : "Admin Panel";
+
   const drawerContent = (
     <>
-      {/* <Toolbar
-        sx={{
-          justifyContent: sidebarOpen ? "center" : "center",
-        }}
-      >
-        <Typography
-          variant="h6"
-          fontWeight="bold"
-          sx={{
-            display: sidebarOpen ? "block" : "none",
-            transition: ".3s",
-          }}
-        >
-          Admin Panel
-        </Typography>
-      </Toolbar> */}
       <Toolbar
         sx={{
           display: "flex",
@@ -74,7 +78,7 @@ const Sidebar = ({
             >
               <MenuIcon />
             </IconButton>
-            <Typography
+            {/* <Typography
               variant="h6"
               fontWeight="bold"
               sx={{
@@ -82,6 +86,13 @@ const Sidebar = ({
               }}
             >
               Admin Panel
+            </Typography> */}
+            <Typography
+              variant="h6"
+              fontWeight="bold"
+              sx={{ whiteSpace: "nowrap" }}
+            >
+              {panelTitle}
             </Typography>
           </>
         ) : (
@@ -99,7 +110,7 @@ const Sidebar = ({
       <Divider />
 
       <List sx={{ mt: 1 }}>
-        {menuItems.map((item, index) => {
+        {currentMenu.map((item, index) => {
           if (item.header) {
             return (
               <Typography

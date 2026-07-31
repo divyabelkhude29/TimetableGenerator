@@ -30,14 +30,6 @@ const DashboardLayout = ({ children }) => {
         onMenuClick={handleSidebarToggle}
         onMobileMenuClick={handleMobileDrawerToggle}
       />
-
-      {/* <Sidebar
-        drawerWidth={drawerWidth}
-        collapsedWidth={collapsedWidth}
-        sidebarOpen={sidebarOpen}
-        mobileOpen={mobileOpen}
-        onMobileClose={handleMobileDrawerToggle}
-      /> */}
       <Sidebar
         drawerWidth={drawerWidth}
         collapsedWidth={collapsedWidth}
