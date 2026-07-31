@@ -5,8 +5,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import Login from "../pages/auth/Login";
 
 /* Home */
-import Home from '../pages/auth/Home';
-import Register from '../pages/auth/Register';
+import Home from "../pages/auth/Home";
+import Register from "../pages/auth/Register";
 
 /* Dashboards */
 import AdminDashboard from "../pages/admin/AdminDashboard";
@@ -23,7 +23,7 @@ import StudentList from "../pages/students/StudentList";
 import SubjectList from "../pages/subjects/SubjectList";
 import ClassroomList from "../pages/classrooms/ClassroomList";
 import TimeSlotList from "../pages/timeslots/TimeSlotList";
-import FacultyAvailabilityList from "../pages/facultyAvailability/FacultyAvailabilityList";/* Faculty Allocation */
+import FacultyAvailabilityList from "../pages/facultyAvailability/FacultyAvailabilityList"; /* Faculty Allocation */
 import AllocationList from "../pages/allocations/AllocationList";
 import SubjectWorkloadList from "../pages/subjectWorkload/SubjectWorkloadList";
 import HolidayList from "../pages/holidays/HolidayList";
@@ -31,159 +31,146 @@ import ConstraintList from "../pages/constraints/ConstraintList";
 import TimetableGenerationPage from "../pages/timetableGeneration/TimetableGenerationPage";
 import TimetableView from "../pages/timetable/TimetableView";
 
-
 const AppRoutes = () => {
+  return (
+    <Routes>
+      {/* Login */}
 
-    return (
+      <Route path="/login" element={<Login />} />
 
-        <Routes>
+      <Route path="/" element={<Home />} />
 
-            {/* Login */}
+      <Route path="/register" element={<Register />} />
 
-            <Route
-                path="/login"
-                element={<Login />}
-            />
+      {/* ================= ADMIN ================= */}
 
-            <Route 
-                path="/" 
-                element={<Home />} 
-            />
-            
-            <Route 
-                path="/register" 
-                element={<Register />} 
-            />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
 
-            {/* ================= ADMIN ================= */}
+      {/* ================= FACULTY ================= */}
 
-            <Route
-                path="/admin"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <AdminDashboard />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/faculty"
+        element={
+          <ProtectedRoute role="ROLE_FACULTY">
+            <FacultyDashboard />
+          </ProtectedRoute>
+        }
+      />
 
-            {/* ================= FACULTY ================= */}
+      {/* ================= STUDENT ================= */}
 
-            <Route
-                path="/faculty"
-                element={
-                    <ProtectedRoute role="ROLE_FACULTY">
-                        <FacultyDashboard />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/student"
+        element={
+          <ProtectedRoute role="ROLE_STUDENT">
+            <StudentDashboard />
+          </ProtectedRoute>
+        }
+      />
 
-            {/* ================= STUDENT ================= */}
+      {/* ================= MASTER MODULES ================= */}
 
-            <Route
-                path="/student"
-                element={
-                    <ProtectedRoute role="ROLE_STUDENT">
-                        <StudentDashboard />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/departments"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <DepartmentList />
+          </ProtectedRoute>
+        }
+      />
 
-            {/* ================= MASTER MODULES ================= */}
+      <Route
+        path="/courses"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <CourseList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/departments"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <DepartmentList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/semesters"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <SemesterList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/courses"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <CourseList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/sections"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <SectionList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/semesters"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <SemesterList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/faculties"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <FacultyList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/sections"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <SectionList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/students"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <StudentList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/faculties"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <FacultyList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/subjects"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <SubjectList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/students"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <StudentList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/classrooms"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <ClassroomList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/subjects"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <SubjectList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/timeslots"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <TimeSlotList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/classrooms"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <ClassroomList />
-                    </ProtectedRoute>
-                }
-            />
+      {/* ================= FACULTY ALLOCATION ================= */}
 
-            <Route
-                path="/timeslots"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <TimeSlotList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/allocations"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <AllocationList />
+          </ProtectedRoute>
+        }
+      />
 
-            {/* ================= FACULTY ALLOCATION ================= */}
-
-            <Route
-                path="/allocations"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <AllocationList />
-                    </ProtectedRoute>
-                }
-            />
-
-            {/* ================= TIMETABLE GENERATION ================= */}
-{/* 
+      {/* ================= TIMETABLE GENERATION ================= */}
+      {/*
             <Route
                 path="/timetable-generation"
                 element={
@@ -193,64 +180,69 @@ const AppRoutes = () => {
                 }
             /> */}
 
-            <Route
-                path="/faculty-availability"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <FacultyAvailabilityList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/faculty-availability"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <FacultyAvailabilityList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/subject-workloads"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <SubjectWorkloadList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/subject-workloads"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <SubjectWorkloadList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/holidays"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <HolidayList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/holidays"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <HolidayList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/constraints"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <ConstraintList />
-                    </ProtectedRoute>
-                }
-            />
+      <Route
+        path="/constraints"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <ConstraintList />
+          </ProtectedRoute>
+        }
+      />
 
-            <Route
-                path="/timetable-generation"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <TimetableGenerationPage />
-                    </ProtectedRoute>
-                }
-            />
-
-            <Route
-                path="/timetable-view"
-                element={
-                    <ProtectedRoute role="ROLE_ADMIN">
-                        <TimetableView />
-                    </ProtectedRoute>
-                }
-            />
-
-        </Routes>
-
-    );
-
+      <Route
+        path="/timetable-generation"
+        element={
+          <ProtectedRoute role="ROLE_ADMIN">
+            <TimetableGenerationPage />
+          </ProtectedRoute>
+        }
+      />
+      {/*
+        <Route
+          path="/timetable-view"
+          element={
+            <ProtectedRoute role="ROLE_ADMIN">
+              <TimetableView />
+            </ProtectedRoute>
+          }
+        /> */}
+      <Route
+        path="/timetable-view"
+        element={
+          <ProtectedRoute role={["ROLE_ADMIN", "ROLE_FACULTY", "ROLE_STUDENT"]}>
+            <TimetableView />
+          </ProtectedRoute>
+        }
+      />    
+    </Routes>
+  );
 };
 
 export default AppRoutes;
