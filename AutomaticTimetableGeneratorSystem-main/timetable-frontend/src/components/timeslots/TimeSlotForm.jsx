@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-
 import {
   Dialog,
   DialogTitle,
@@ -16,29 +15,22 @@ import {
 import timeSlotService from "../../services/timeSlotService";
 
 const days = [
-  "Monday",
-  "Tuesday",
-  "Wednesday",
-  "Thursday",
-  "Friday",
-  "Saturday",
-  "Sunday",
+  "MONDAY",
+  "TUESDAY",
+  "WEDNESDAY",
+  "THURSDAY",
+  "FRIDAY",
+  "SATURDAY",
+  "SUNDAY",
 ];
 
 const initialState = {
-
   slotName: "",
-
-  dayOfWeek: "Monday",
-
+  dayOfWeek: "MONDAY",
   startTime: "",
-
   endTime: "",
-
   slotOrder: "",
-
   active: true,
-
 };
 
 const TimeSlotForm = ({
@@ -48,152 +40,77 @@ const TimeSlotForm = ({
   reload,
 }) => {
 
-  const [formData, setFormData] =
-    useState(initialState);
+  const [formData, setFormData] = useState(initialState);
 
   useEffect(() => {
-
     if (timeSlot) {
-
       setFormData({
-
-        slotName:
-          timeSlot.slotName || "",
-
-        dayOfWeek:
-          timeSlot.dayOfWeek || "Monday",
-
-        startTime:
-          timeSlot.startTime || "",
-
-        endTime:
-          timeSlot.endTime || "",
-
-        slotOrder:
-          timeSlot.slotOrder || "",
-
-        active:
-          timeSlot.active ?? true,
-
+        slotName: timeSlot.slotName || "",
+        dayOfWeek: timeSlot.dayOfWeek || "MONDAY",
+        startTime: timeSlot.startTime || "",
+        endTime: timeSlot.endTime || "",
+        slotOrder: timeSlot.slotOrder || "",
+        active: timeSlot.active ?? true,
       });
-
     } else {
-
       setFormData(initialState);
-
     }
-
   }, [timeSlot]);
 
   const handleChange = (e) => {
-
-    const {
-
-      name,
-
-      value,
-
-      checked,
-
-      type,
-
-    } = e.target;
+    const { name, value, checked, type } = e.target;
 
     setFormData({
-
       ...formData,
-
-      [name]:
-        type === "checkbox"
-          ? checked
-          : value,
-
+      [name]: type === "checkbox" ? checked : value,
     });
-
   };
 
   const handleSubmit = async () => {
-
     try {
 
       const payload = {
-
         ...formData,
-
-        slotOrder:
-          Number(formData.slotOrder),
-
+        slotOrder: Number(formData.slotOrder),
       };
 
       if (timeSlot) {
-
         await timeSlotService.updateTimeSlot(
-
           timeSlot.timeSlotId,
-
           payload
-
         );
-
       } else {
-
-        await timeSlotService.createTimeSlot(
-
-          payload
-
-        );
-
+        await timeSlotService.createTimeSlot(payload);
       }
 
       reload();
-
       onClose();
 
     } catch (error) {
-
       console.error(error);
-
       alert(
-
         error.response?.data?.message ||
-
-        "Unable to save time slot."
-
+          "Unable to save time slot."
       );
-
     }
-
   };
 
   return (
-
     <Dialog
       open={open}
       onClose={onClose}
       fullWidth
       maxWidth="md"
     >
-
       <DialogTitle>
-
-        {timeSlot
-
-          ? "Update Time Slot"
-
-          : "Add Time Slot"}
-
+        {timeSlot ? "Update Time Slot" : "Add Time Slot"}
       </DialogTitle>
 
       <DialogContent>
 
-        <Grid
-          container
-          spacing={2}
-          mt={1}
-        >
+        <Grid container spacing={2} mt={1}>
 
           <Grid item xs={12} md={6}>
-
             <TextField
               fullWidth
               label="Slot Name"
@@ -201,11 +118,9 @@ const TimeSlotForm = ({
               value={formData.slotName}
               onChange={handleChange}
             />
-
           </Grid>
 
           <Grid item xs={12} md={6}>
-
             <TextField
               select
               fullWidth
@@ -214,24 +129,18 @@ const TimeSlotForm = ({
               value={formData.dayOfWeek}
               onChange={handleChange}
             >
-
               {days.map((day) => (
-
                 <MenuItem
                   key={day}
                   value={day}
                 >
                   {day}
                 </MenuItem>
-
               ))}
-
             </TextField>
-
           </Grid>
 
           <Grid item xs={12} md={4}>
-
             <TextField
               fullWidth
               type="time"
@@ -243,11 +152,9 @@ const TimeSlotForm = ({
                 shrink: true,
               }}
             />
-
           </Grid>
 
           <Grid item xs={12} md={4}>
-
             <TextField
               fullWidth
               type="time"
@@ -259,11 +166,9 @@ const TimeSlotForm = ({
                 shrink: true,
               }}
             />
-
           </Grid>
 
           <Grid item xs={12} md={4}>
-
             <TextField
               fullWidth
               type="number"
@@ -272,11 +177,9 @@ const TimeSlotForm = ({
               value={formData.slotOrder}
               onChange={handleChange}
             />
-
           </Grid>
 
           <Grid item xs={12}>
-
             <FormControlLabel
               control={
                 <Switch
@@ -287,7 +190,6 @@ const TimeSlotForm = ({
               }
               label="Active"
             />
-
           </Grid>
 
         </Grid>
@@ -296,9 +198,7 @@ const TimeSlotForm = ({
 
       <DialogActions>
 
-        <Button
-          onClick={onClose}
-        >
+        <Button onClick={onClose}>
           Cancel
         </Button>
 
@@ -306,21 +206,13 @@ const TimeSlotForm = ({
           variant="contained"
           onClick={handleSubmit}
         >
-
-          {timeSlot
-
-            ? "Update"
-
-            : "Save"}
-
+          {timeSlot ? "Update" : "Save"}
         </Button>
 
       </DialogActions>
 
     </Dialog>
-
   );
-
 };
 
 export default TimeSlotForm;

@@ -21,13 +21,13 @@ const AdminDashboard = () => {
 
             <DashboardCards counts={counts} />
 
-            <StatisticsChart />
+            {/* <StatisticsChart /> */}
 
             <QuickActions />
 
-            <RecentActivities />
+            {/* <RecentActivities /> */}
 
-            <TodayTimetable />
+            {/* <TodayTimetable /> */}
 
         </DashboardLayout>
 

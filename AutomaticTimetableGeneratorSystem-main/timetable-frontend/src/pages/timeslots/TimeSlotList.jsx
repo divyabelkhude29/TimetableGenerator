@@ -15,35 +15,62 @@ import TimeSlotTable from "../../components/timeslots/TimeSlotTable";
 import TimeSlotForm from "../../components/timeslots/TimeSlotForm";
 import timeSlotService from "../../services/timeSlotService";
 
+const dayOrder = {
+  MONDAY: 1,
+  TUESDAY: 2,
+  WEDNESDAY: 3,
+  THURSDAY: 4,
+  FRIDAY: 5,
+  SATURDAY: 6,
+  SUNDAY: 7,
+
+  // Also supports title case values
+  Monday: 1,
+  Tuesday: 2,
+  Wednesday: 3,
+  Thursday: 4,
+  Friday: 5,
+  Saturday: 6,
+  Sunday: 7,
+};
+
 const TimeSlotList = () => {
 
   const [timeSlots, setTimeSlots] = useState([]);
-
   const [loading, setLoading] = useState(true);
-
   const [error, setError] = useState("");
 
   const [open, setOpen] = useState(false);
 
-  const [selectedTimeSlot, setSelectedTimeSlot] =
-    useState(null);
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
 
   const loadTimeSlots = async () => {
 
     try {
 
       setLoading(true);
-
       setError("");
 
-      const response =
-        await timeSlotService.getAllTimeSlots();
+      const response = await timeSlotService.getAllTimeSlots();
 
       console.log("Time Slots :", response);
 
       if (Array.isArray(response)) {
 
-        setTimeSlots(response);
+        const sortedSlots = [...response].sort((a, b) => {
+
+          const dayComparison =
+            (dayOrder[a.dayOfWeek] || 99) -
+            (dayOrder[b.dayOfWeek] || 99);
+
+          if (dayComparison !== 0) {
+            return dayComparison;
+          }
+
+          return Number(a.slotOrder) - Number(b.slotOrder);
+        });
+
+        setTimeSlots(sortedSlots);
 
       } else {
 
@@ -136,9 +163,7 @@ const TimeSlotList = () => {
           variant="h4"
           fontWeight="bold"
         >
-
           Time Slot Management
-
         </Typography>
 
         <Button
@@ -146,9 +171,7 @@ const TimeSlotList = () => {
           startIcon={<AddIcon />}
           onClick={handleAdd}
         >
-
           Add Time Slot
-
         </Button>
 
       </Box>
@@ -159,9 +182,7 @@ const TimeSlotList = () => {
           severity="error"
           sx={{ mb: 2 }}
         >
-
           {error}
-
         </Alert>
 
       )}
@@ -173,9 +194,7 @@ const TimeSlotList = () => {
           justifyContent="center"
           mt={5}
         >
-
           <CircularProgress />
-
         </Box>
 
       ) : (

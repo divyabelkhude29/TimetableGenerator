@@ -18,127 +18,131 @@ import RuleIcon from "@mui/icons-material/Rule";
 import AutoFixHighIcon from "@mui/icons-material/AutoFixHigh";
 
 const menuItems = [
+  {
+    text: "Dashboard",
+    icon: <DashboardIcon />,
+    path: "/admin",
+  },
 
-    {
-        text: "Dashboard",
-        icon: <DashboardIcon />,
-        path: "/admin"
-    },
+  {
+    header: "MASTER",
+  },
+  {
+    text: "Profile",
+    path: "/profile",
+    icon: <PersonIcon />,
+  },
 
-    {
-        header: "MASTER"
-    },
+  {
+    text: "Departments",
+    icon: <BusinessIcon />,
+    path: "/departments",
+  },
 
-    {
-        text: "Departments",
-        icon: <BusinessIcon />,
-        path: "/departments"
-    },
+  {
+    text: "Courses",
+    icon: <SchoolIcon />,
+    path: "/courses",
+  },
 
-    {
-        text: "Courses",
-        icon: <SchoolIcon />,
-        path: "/courses"
-    },
+  {
+    text: "Semesters",
+    icon: <CalendarMonthIcon />,
+    path: "/semesters",
+  },
 
-    {
-        text: "Semesters",
-        icon: <CalendarMonthIcon />,
-        path: "/semesters"
-    },
+  {
+    text: "Sections",
+    icon: <ClassIcon />,
+    path: "/sections",
+  },
 
-    {
-        text: "Sections",
-        icon: <ClassIcon />,
-        path: "/sections"
-    },
+  {
+    text: "Subjects",
+    icon: <MenuBookIcon />,
+    path: "/subjects",
+  },
 
-    {
-        text: "Subjects",
-        icon: <MenuBookIcon />,
-        path: "/subjects"
-    },
+  {
+    text: "Faculty",
+    icon: <GroupsIcon />,
+    path: "/faculties",
+  },
 
-    {
-        text: "Faculty",
-        icon: <GroupsIcon />,
-        path: "/faculties"
-    },
+  {
+    text: "Students",
+    icon: <PersonIcon />,
+    path: "/students",
+  },
 
-    {
-        text: "Students",
-        icon: <PersonIcon />,
-        path: "/students"
-    },
+  {
+    text: "Classrooms",
+    icon: <MeetingRoomIcon />,
+    path: "/classrooms",
 
-    {
-        text: "Classrooms",
-        icon: <MeetingRoomIcon />,
-        path: "/classrooms"
-    },
+  },
 
-    {
-        text: "Time Slots",
-        icon: <AccessTimeIcon />,
-        path: "/timeslots"
-    },
+  {
+    text: "Time Slots",
+    icon: <AccessTimeIcon />,
+    path: "/timeslots",
+  },
 
-    {
-        header: "TIMETABLE"
-    },
+  {
+    header: "TIMETABLE",
+  },
 
-    {
-        text: "Faculty Allocation",
-        icon: <AssignmentIndIcon />,
-        path: "/allocations"
-    },
+  {
+    text: "Faculty Allocation",
+    icon: <AssignmentIndIcon />,
+    path: "/allocations",
+  },
 
-    {
-        text: "Faculty Availability",
-        icon: <ScheduleIcon />,
-        path: "/faculty-availability"
-    },
+  {
+    text: "Faculty Availability",
+    icon: <ScheduleIcon />,
+    path: "/faculty-availability",
+  },
 
-    {
+  {
     text: "Subject Workload",
     icon: <WorkHistoryIcon />,
-    path: "/subject-workloads"
-    },
+    path: "/subject-workloads",
+  },
 
-    {
+  {
     text: "Holidays",
     icon: <EventBusyIcon />,
-    path: "/holidays"
-    },
+    path: "/holidays",
+  },
 
-    {
+  {
     text: "Timetable Constraints",
     icon: <RuleIcon />,
-    path: "/constraints"
-    },
+    path: "/constraints",
+  },
 
-    {
+  {
     text: "Generate Timetable",
     icon: <AutoFixHighIcon />,
-    path: "/timetable-generation"
-    },
+    path: "/timetable-generation",
+  },
 
-    {
+  {
     text: "Timetable View",
     icon: <TableChartIcon />,
-    path: "/timetable-view"
-    },
-    
-    {
-        header: "ACCOUNT"
-    },
+    path: "/timetable-view",
+  },
 
-    {
-        text: "Logout",
-        icon: <LogoutIcon />,
-        path: "/logout"
-    }
+  {
+    header: "ACCOUNT",
+  },
 
+  {
+    text: "Logout",
+    icon: <LogoutIcon />,
+    path: "/",
+  },
 ];
 
 export default menuItems;
