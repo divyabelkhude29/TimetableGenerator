@@ -14,16 +14,13 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 public class DashboardControllerTest {
 
-    @Autowired
-    private MockMvc mockMvc;
+	@Autowired
+	private MockMvc mockMvc;
 
-    @Test
-    void testDashboardSummary()
-            throws Exception {
+	@Test
+	void testDashboardSummary() throws Exception {
 
-        mockMvc.perform(
-                get("/dashboard/summary"))
-                .andExpect(status().isOk());
-    }
+		mockMvc.perform(get("/dashboard/summary")).andExpect(status().isOk());
+	}
 
 }

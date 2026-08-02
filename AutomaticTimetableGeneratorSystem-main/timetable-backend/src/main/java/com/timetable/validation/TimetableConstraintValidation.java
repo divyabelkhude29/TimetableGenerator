@@ -10,85 +10,65 @@ import com.timetable.exception.ResourceNotFoundException;
 @Component
 public class TimetableConstraintValidation {
 
-    private final TimetableConstraintDAO timetableConstraintDAO;
+	private final TimetableConstraintDAO timetableConstraintDAO;
 
-    public TimetableConstraintValidation(
-            TimetableConstraintDAO timetableConstraintDAO) {
+	public TimetableConstraintValidation(TimetableConstraintDAO timetableConstraintDAO) {
 
-        this.timetableConstraintDAO = timetableConstraintDAO;
-    }
+		this.timetableConstraintDAO = timetableConstraintDAO;
+	}
 
-    /**
-     * Validate Before Create
-     */
-    public void validateForCreate(
-            TimetableConstraintRequest request) {
+	/**
+	 * Validate Before Create
+	 */
+	public void validateForCreate(TimetableConstraintRequest request) {
 
-        if (timetableConstraintDAO.existsByConstraintKey(
-                request.getConstraintKey())) {
+		if (timetableConstraintDAO.existsByConstraintKey(request.getConstraintKey())) {
 
-            throw new IllegalArgumentException(
-                    "Constraint already exists with key : "
-                            + request.getConstraintKey());
-        }
-    }
+			throw new IllegalArgumentException("Constraint already exists with key : " + request.getConstraintKey());
+		}
+	}
 
-    /**
-     * Validate Before Update
-     */
-    public void validateForUpdate(
-            Long constraintId,
-            TimetableConstraintRequest request) {
+	/**
+	 * Validate Before Update
+	 */
+	public void validateForUpdate(Long constraintId, TimetableConstraintRequest request) {
 
-        validateConstraint(constraintId);
+		validateConstraint(constraintId);
 
-        if (timetableConstraintDAO
-                .existsByConstraintKeyAndNotConstraintId(
-                        request.getConstraintKey(),
-                        constraintId)) {
+		if (timetableConstraintDAO.existsByConstraintKeyAndNotConstraintId(request.getConstraintKey(), constraintId)) {
 
-            throw new IllegalArgumentException(
-                    "Another constraint already exists with key : "
-                            + request.getConstraintKey());
-        }
-    }
+			throw new IllegalArgumentException(
+					"Another constraint already exists with key : " + request.getConstraintKey());
+		}
+	}
 
-    /**
-     * Validate Constraint Exists
-     */
-    public TimetableConstraint validateConstraint(
-            Long constraintId) {
+	/**
+	 * Validate Constraint Exists
+	 */
+	public TimetableConstraint validateConstraint(Long constraintId) {
 
-        TimetableConstraint constraint =
-                timetableConstraintDAO.findById(constraintId);
+		TimetableConstraint constraint = timetableConstraintDAO.findById(constraintId);
 
-        if (constraint == null) {
+		if (constraint == null) {
 
-            throw new ResourceNotFoundException(
-                    "Timetable Constraint not found with ID : "
-                            + constraintId);
-        }
+			throw new ResourceNotFoundException("Timetable Constraint not found with ID : " + constraintId);
+		}
 
-        return constraint;
-    }
+		return constraint;
+	}
 
-    /**
-     * Validate Constraint By Key
-     */
-    public TimetableConstraint validateConstraintByKey(
-            String constraintKey) {
+	/**
+	 * Validate Constraint By Key
+	 */
+	public TimetableConstraint validateConstraintByKey(String constraintKey) {
 
-        TimetableConstraint constraint =
-                timetableConstraintDAO.findByConstraintKey(
-                        constraintKey);
+		TimetableConstraint constraint = timetableConstraintDAO.findByConstraintKey(constraintKey);
 
-        if (constraint == null) {
+		if (constraint == null) {
 
-            throw new ResourceNotFoundException(
-                    "Timetable Constraint not found with key : "
-                            + constraintKey);
-        }
+			throw new ResourceNotFoundException("Timetable Constraint not found with key : " + constraintKey);
+		}
 
-        return constraint;
-    }
+		return constraint;
+	}
 }

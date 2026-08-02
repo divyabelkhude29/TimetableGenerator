@@ -16,131 +16,115 @@ import com.timetable.entity.Semester;
 @Transactional
 public class SectionDAOImpl implements SectionDAO {
 
-    private final SessionFactory sessionFactory;
+	private final SessionFactory sessionFactory;
 
-    public SectionDAOImpl(SessionFactory sessionFactory) {
-        this.sessionFactory = sessionFactory;
-    }
+	public SectionDAOImpl(SessionFactory sessionFactory) {
+		this.sessionFactory = sessionFactory;
+	}
 
-    /**
-     * Get Current Hibernate Session
-     */
-    private Session getCurrentSession() {
-        return sessionFactory.getCurrentSession();
-    }
+	/**
+	 * Get Current Hibernate Session
+	 */
+	private Session getCurrentSession() {
+		return sessionFactory.getCurrentSession();
+	}
 
-    /**
-     * Save Section
-     */
-    @Override
-    public Section save(Section section) {
+	/**
+	 * Save Section
+	 */
+	@Override
+	public Section save(Section section) {
 
-        getCurrentSession().persist(section);
+		getCurrentSession().persist(section);
 
-        return section;
-    }
+		return section;
+	}
 
-    /**
-     * Update Section
-     */
-    @Override
-    public Section update(Section section) {
+	/**
+	 * Update Section
+	 */
+	@Override
+	public Section update(Section section) {
 
-        return (Section) getCurrentSession().merge(section);
-    }
+		return (Section) getCurrentSession().merge(section);
+	}
 
-    /**
-     * Delete Section
-     */
-    @Override
-    public void delete(Long sectionId) {
+	/**
+	 * Delete Section
+	 */
+	@Override
+	public void delete(Long sectionId) {
 
-        Section section = findById(sectionId);
+		Section section = findById(sectionId);
 
-        if (section != null) {
-            getCurrentSession().remove(section);
-        }
-    }
+		if (section != null) {
+			getCurrentSession().remove(section);
+		}
+	}
 
-    /**
-     * Find Section By ID
-     */
-    @Override
-    public Section findById(Long sectionId) {
+	/**
+	 * Find Section By ID
+	 */
+	@Override
+	public Section findById(Long sectionId) {
 
-        return getCurrentSession().get(Section.class, sectionId);
-    }
+		return getCurrentSession().get(Section.class, sectionId);
+	}
 
-    /**
-     * Find All Sections
-     */
-    @Override
-    public List<Section> findAll() {
+	/**
+	 * Find All Sections
+	 */
+	@Override
+	public List<Section> findAll() {
 
-        return getCurrentSession()
-                .createQuery(
-                        "FROM Section s ORDER BY s.sectionName",
-                        Section.class)
-                .getResultList();
-    }
+		return getCurrentSession().createQuery("FROM Section s ORDER BY s.sectionName", Section.class).getResultList();
+	}
 
-    /**
-     * Find Section By Section Code
-     */
-    @Override
-    public Section findBySectionCode(String sectionCode) {
+	/**
+	 * Find Section By Section Code
+	 */
+	@Override
+	public Section findBySectionCode(String sectionCode) {
 
-        List<Section> sections = getCurrentSession()
-                .createQuery(
-                        "FROM Section s WHERE s.sectionCode = :sectionCode",
-                        Section.class)
-                .setParameter("sectionCode", sectionCode)
-                .getResultList();
+		List<Section> sections = getCurrentSession()
+				.createQuery("FROM Section s WHERE s.sectionCode = :sectionCode", Section.class)
+				.setParameter("sectionCode", sectionCode).getResultList();
 
-        return sections.isEmpty() ? null : sections.get(0);
-    }
+		return sections.isEmpty() ? null : sections.get(0);
+	}
 
-    /**
-     * Find Sections By Course
-     */
-    @Override
-    public List<Section> findByCourse(Course course) {
+	/**
+	 * Find Sections By Course
+	 */
+	@Override
+	public List<Section> findByCourse(Course course) {
 
-        return getCurrentSession()
-                .createQuery(
-                        "FROM Section s WHERE s.course = :course ORDER BY s.sectionName",
-                        Section.class)
-                .setParameter("course", course)
-                .getResultList();
-    }
+		return getCurrentSession()
+				.createQuery("FROM Section s WHERE s.course = :course ORDER BY s.sectionName", Section.class)
+				.setParameter("course", course).getResultList();
+	}
 
-    /**
-     * Find Sections By Semester
-     */
-    @Override
-    public List<Section> findBySemester(Semester semester) {
+	/**
+	 * Find Sections By Semester
+	 */
+	@Override
+	public List<Section> findBySemester(Semester semester) {
 
-        return getCurrentSession()
-                .createQuery(
-                        "FROM Section s WHERE s.semester = :semester ORDER BY s.sectionName",
-                        Section.class)
-                .setParameter("semester", semester)
-                .getResultList();
-    }
+		return getCurrentSession()
+				.createQuery("FROM Section s WHERE s.semester = :semester ORDER BY s.sectionName", Section.class)
+				.setParameter("semester", semester).getResultList();
+	}
 
-    /**
-     * Check Section Code Exists
-     */
-    @Override
-    public boolean existsBySectionCode(String sectionCode) {
+	/**
+	 * Check Section Code Exists
+	 */
+	@Override
+	public boolean existsBySectionCode(String sectionCode) {
 
-        Long count = getCurrentSession()
-                .createQuery(
-                        "SELECT COUNT(s) FROM Section s WHERE s.sectionCode = :sectionCode",
-                        Long.class)
-                .setParameter("sectionCode", sectionCode)
-                .uniqueResult();
+		Long count = getCurrentSession()
+				.createQuery("SELECT COUNT(s) FROM Section s WHERE s.sectionCode = :sectionCode", Long.class)
+				.setParameter("sectionCode", sectionCode).uniqueResult();
 
-        return count != null && count > 0;
-    }
+		return count != null && count > 0;
+	}
 }

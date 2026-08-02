@@ -19,163 +19,119 @@ import com.timetable.dto.timetablegeneration.TimetableSlotDTO;
 @Component
 public class PdfExportUtil {
 
-    public PdfExportUtil() {
+	public PdfExportUtil() {
 
-    }
+	}
 
-    /**
-     * Generate Timetable PDF
-     */
-    public byte[] exportPdf(
-            ReportRequest request,
-            TimetableReportResponse report) {
+	/**
+	 * Generate Timetable PDF
+	 */
+	public byte[] exportPdf(ReportRequest request, TimetableReportResponse report) {
 
-        try {
+		try {
 
-            ByteArrayOutputStream outputStream =
-                    new ByteArrayOutputStream();
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
-            Document document =
-                    new Document();
+			Document document = new Document();
 
-            PdfWriter.getInstance(
-                    document,
-                    outputStream);
+			PdfWriter.getInstance(document, outputStream);
 
-            document.open();
+			document.open();
 
-            /*
-             * Title
-             */
-            Font titleFont =
-                    FontFactory.getFont(
-                            FontFactory.HELVETICA_BOLD,
-                            18);
+			/*
+			 * Title
+			 */
+			Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 18);
 
-            Paragraph title =
-                    new Paragraph(
-                            "TIMETABLE REPORT",
-                            titleFont);
+			Paragraph title = new Paragraph("TIMETABLE REPORT", titleFont);
 
-            title.setAlignment(Paragraph.ALIGN_CENTER);
+			title.setAlignment(Paragraph.ALIGN_CENTER);
 
-            document.add(title);
+			document.add(title);
 
-            document.add(new Paragraph(" "));
+			document.add(new Paragraph(" "));
 
-            /*
-             * Report Information
-             */
-            document.add(new Paragraph(
-                    "Academic Section ID : "
-                            + request.getAcademicSectionId()));
+			/*
+			 * Report Information
+			 */
+			document.add(new Paragraph("Academic Section ID : " + request.getAcademicSectionId()));
 
-            document.add(new Paragraph(
-                    "Report Type : "
-                            + request.getReportType()));
+			document.add(new Paragraph("Report Type : " + request.getReportType()));
 
-            document.add(new Paragraph(" "));
+			document.add(new Paragraph(" "));
 
-            /*
-             * Statistics
-             */
-            document.add(new Paragraph(
-                    "Total Classes : "
-                            + report.getTotalClasses()));
+			/*
+			 * Statistics
+			 */
+			document.add(new Paragraph("Total Classes : " + report.getTotalClasses()));
 
-            document.add(new Paragraph(
-                    "Total Faculties : "
-                            + report.getTotalFaculties()));
+			document.add(new Paragraph("Total Faculties : " + report.getTotalFaculties()));
 
-            document.add(new Paragraph(
-                    "Total Subjects : "
-                            + report.getTotalSubjects()));
+			document.add(new Paragraph("Total Subjects : " + report.getTotalSubjects()));
 
-            document.add(new Paragraph(
-                    "Total Classrooms : "
-                            + report.getTotalClassrooms()));
+			document.add(new Paragraph("Total Classrooms : " + report.getTotalClassrooms()));
 
-            document.add(new Paragraph(" "));
+			document.add(new Paragraph(" "));
 
-            /*
-             * Timetable Table
-             */
-            PdfPTable table =
-                    new PdfPTable(5);
+			/*
+			 * Timetable Table
+			 */
+			PdfPTable table = new PdfPTable(5);
 
-            table.setWidthPercentage(100);
+			table.setWidthPercentage(100);
 
-            addHeader(table, "Day");
-            addHeader(table, "Time Slot");
-            addHeader(table, "Subject");
-            addHeader(table, "Faculty");
-            addHeader(table, "Classroom");
+			addHeader(table, "Day");
+			addHeader(table, "Time Slot");
+			addHeader(table, "Subject");
+			addHeader(table, "Faculty");
+			addHeader(table, "Classroom");
 
-            if (report.getTimetable() != null) {
+			if (report.getTimetable() != null) {
 
-                for (TimetableSlotDTO slot
-                        : report.getTimetable()) {
+				for (TimetableSlotDTO slot : report.getTimetable()) {
 
-                    table.addCell(
-                            value(slot.getDayOfWeek()));
+					table.addCell(value(slot.getDayOfWeek()));
 
-                    table.addCell(
-                            value(slot.getStartTime())
-                                    + " - "
-                                    + value(slot.getEndTime()));
+					table.addCell(value(slot.getStartTime()) + " - " + value(slot.getEndTime()));
 
-                    table.addCell(
-                            value(slot.getSubjectName()));
+					table.addCell(value(slot.getSubjectName()));
 
-                    table.addCell(
-                            value(slot.getFacultyName()));
+					table.addCell(value(slot.getFacultyName()));
 
-                    table.addCell(
-                            value(slot.getClassroomName()));
-                }
-            }
+					table.addCell(value(slot.getClassroomName()));
+				}
+			}
 
-            document.add(table);
+			document.add(table);
 
-            document.close();
+			document.close();
 
-            return outputStream.toByteArray();
+			return outputStream.toByteArray();
 
-        } catch (Exception ex) {
+		} catch (Exception ex) {
 
-            throw new RuntimeException(
-                    "Unable to generate PDF report.",
-                    ex);
-        }
-    }
+			throw new RuntimeException("Unable to generate PDF report.", ex);
+		}
+	}
 
-    /**
-     * Table Header
-     */
-    private void addHeader(
-            PdfPTable table,
-            String title) {
+	/**
+	 * Table Header
+	 */
+	private void addHeader(PdfPTable table, String title) {
 
-        Font font =
-                FontFactory.getFont(
-                        FontFactory.HELVETICA_BOLD);
+		Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
 
-        PdfPCell cell =
-                new PdfPCell(
-                        new Phrase(title, font));
+		PdfPCell cell = new PdfPCell(new Phrase(title, font));
 
-        table.addCell(cell);
-    }
+		table.addCell(cell);
+	}
 
-    /**
-     * Null-safe Object
-     */
-    private String value(
-            Object value) {
+	/**
+	 * Null-safe Object
+	 */
+	private String value(Object value) {
 
-        return value == null
-                ? "-"
-                : value.toString();
-    }
+		return value == null ? "-" : value.toString();
+	}
 
 }
