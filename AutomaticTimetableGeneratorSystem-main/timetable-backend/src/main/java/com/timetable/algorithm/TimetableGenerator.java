@@ -11,146 +11,173 @@ import com.timetable.dto.timetablegeneration.TimetableSlotDTO;
 @Component
 public class TimetableGenerator {
 
-	public TimetableGenerator() {
+    public TimetableGenerator() {
 
-	}
+    }
 
-	/**
-	 * Main Timetable Generation Algorithm
-	 */
-	public List<TimetableSlotDTO> generate(GenerateTimetableRequest request) {
+    /**
+     * Main Timetable Generation Algorithm
+     */
+    public List<TimetableSlotDTO> generate(
+            GenerateTimetableRequest request) {
 
-		List<TimetableSlotDTO> generatedSlots = new ArrayList<>();
+        List<TimetableSlotDTO> generatedSlots =
+                new ArrayList<>();
 
-		/*
-		 * ===================================================== STEP 1 Load Required
-		 * Data =====================================================
-		 */
+        /*
+         * =====================================================
+         * STEP 1
+         * Load Required Data
+         * =====================================================
+         */
 
-		/*
-		 * Academic Section
-		 */
+        /*
+         * Academic Section
+         */
 
-		/*
-		 * Working Days
-		 */
+        /*
+         * Working Days
+         */
 
-		/*
-		 * Time Slots
-		 */
+        /*
+         * Time Slots
+         */
 
-		/*
-		 * Faculty Subject Allocation
-		 */
+        /*
+         * Faculty Subject Allocation
+         */
 
-		/*
-		 * Faculty Availability
-		 */
+        /*
+         * Faculty Availability
+         */
 
-		/*
-		 * Subject Workload
-		 */
+        /*
+         * Subject Workload
+         */
 
-		/*
-		 * Holidays
-		 */
+        /*
+         * Holidays
+         */
 
-		/*
-		 * Constraints
-		 */
+        /*
+         * Constraints
+         */
 
-		/*
-		 * ===================================================== STEP 2 Build Candidate
-		 * Slots =====================================================
-		 */
+        /*
+         * =====================================================
+         * STEP 2
+         * Build Candidate Slots
+         * =====================================================
+         */
 
-		List<TimetableSlotDTO> candidateSlots = buildCandidateSlots();
+        List<TimetableSlotDTO> candidateSlots =
+                buildCandidateSlots();
 
-		/*
-		 * ===================================================== STEP 3 Schedule
-		 * Subjects =====================================================
-		 */
+        /*
+         * =====================================================
+         * STEP 3
+         * Schedule Subjects
+         * =====================================================
+         */
 
-		for (TimetableSlotDTO slot : candidateSlots) {
+        for (TimetableSlotDTO slot : candidateSlots) {
 
-			boolean assigned = assignSubject(slot);
+            boolean assigned =
+                    assignSubject(slot);
 
-			if (assigned) {
+            if (assigned) {
 
-				generatedSlots.add(slot);
-			}
-		}
+                generatedSlots.add(slot);
+            }
+        }
 
-		/*
-		 * ===================================================== STEP 4 Resolve
-		 * Remaining Conflicts =====================================================
-		 */
+        /*
+         * =====================================================
+         * STEP 4
+         * Resolve Remaining Conflicts
+         * =====================================================
+         */
 
-		resolveConflicts(generatedSlots);
+        resolveConflicts(generatedSlots);
 
-		/*
-		 * ===================================================== STEP 5 Optimize
-		 * Timetable =====================================================
-		 */
+        /*
+         * =====================================================
+         * STEP 5
+         * Optimize Timetable
+         * =====================================================
+         */
 
-		optimize(generatedSlots);
+        optimize(generatedSlots);
 
-		return generatedSlots;
-	}
+        return generatedSlots;
+    }
 
-	/**
-	 * Build Candidate Timetable Slots
-	 */
-	private List<TimetableSlotDTO> buildCandidateSlots() {
+    /**
+     * Build Candidate Timetable Slots
+     */
+    private List<TimetableSlotDTO> buildCandidateSlots() {
 
-		List<TimetableSlotDTO> slots = new ArrayList<>();
+        List<TimetableSlotDTO> slots =
+                new ArrayList<>();
 
-		/*
-		 * Every Working Day × Every Time Slot
-		 *
-		 * becomes one candidate slot.
-		 */
+        /*
+         * Every
+         * Working Day
+         *      ×
+         * Every Time Slot
+         *
+         * becomes one candidate slot.
+         */
 
-		return slots;
-	}
+        return slots;
+    }
 
-	/**
-	 * Assign Subject
-	 */
-	private boolean assignSubject(TimetableSlotDTO slot) {
+    /**
+     * Assign Subject
+     */
+    private boolean assignSubject(
+            TimetableSlotDTO slot) {
 
-		/*
-		 * Future Steps
-		 *
-		 * 1 Faculty Available? 2 Subject Remaining? 3 Workload Completed? 4 Constraint
-		 * Valid? 5 Conflict?
-		 */
+        /*
+         * Future Steps
+         *
+         * 1 Faculty Available?
+         * 2 Subject Remaining?
+         * 3 Workload Completed?
+         * 4 Constraint Valid?
+         * 5 Conflict?
+         */
 
-		return true;
-	}
+        return true;
+    }
 
-	/**
-	 * Resolve Conflicts
-	 */
-	private void resolveConflicts(List<TimetableSlotDTO> generatedSlots) {
+    /**
+     * Resolve Conflicts
+     */
+    private void resolveConflicts(
+            List<TimetableSlotDTO> generatedSlots) {
 
-		/*
-		 * Future Backtracking Algorithm
-		 */
+        /*
+         * Future
+         * Backtracking Algorithm
+         */
 
-	}
+    }
 
-	/**
-	 * Optimize Timetable
-	 */
-	private void optimize(List<TimetableSlotDTO> generatedSlots) {
+    /**
+     * Optimize Timetable
+     */
+    private void optimize(
+            List<TimetableSlotDTO> generatedSlots) {
 
-		/*
-		 * Improve timetable quality
-		 *
-		 * Spread lectures Reduce faculty gaps Avoid continuous classes
-		 */
+        /*
+         * Improve timetable quality
+         *
+         * Spread lectures
+         * Reduce faculty gaps
+         * Avoid continuous classes
+         */
 
-	}
+    }
 
 }

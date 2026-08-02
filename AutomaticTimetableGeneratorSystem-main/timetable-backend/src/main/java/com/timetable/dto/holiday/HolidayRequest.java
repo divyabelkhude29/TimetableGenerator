@@ -7,60 +7,60 @@ import jakarta.validation.constraints.NotNull;
 
 public class HolidayRequest {
 
-	@NotBlank(message = "Holiday name is required")
-	private String holidayName;
+    @NotBlank(message = "Holiday name is required")
+    private String holidayName;
 
-	@NotNull(message = "Holiday date is required")
-	private LocalDate holidayDate;
+    @NotNull(message = "Holiday date is required")
+    private LocalDate holidayDate;
 
-	@NotBlank(message = "Holiday type is required")
-	private String holidayType;
+    @NotBlank(message = "Holiday type is required")
+    private String holidayType;
 
-	private String description;
+    private String description;
 
-	@NotNull(message = "Active status is required")
-	private Boolean active;
+    @NotNull(message = "Active status is required")
+    private Boolean active;
 
-	public HolidayRequest() {
-	}
+    public HolidayRequest() {
+    }
 
-	public String getHolidayName() {
-		return holidayName;
-	}
+    public String getHolidayName() {
+        return holidayName;
+    }
 
-	public void setHolidayName(String holidayName) {
-		this.holidayName = holidayName;
-	}
+    public void setHolidayName(String holidayName) {
+        this.holidayName = holidayName;
+    }
 
-	public LocalDate getHolidayDate() {
-		return holidayDate;
-	}
+    public LocalDate getHolidayDate() {
+        return holidayDate;
+    }
 
-	public void setHolidayDate(LocalDate holidayDate) {
-		this.holidayDate = holidayDate;
-	}
+    public void setHolidayDate(LocalDate holidayDate) {
+        this.holidayDate = holidayDate;
+    }
 
-	public String getHolidayType() {
-		return holidayType;
-	}
+    public String getHolidayType() {
+        return holidayType;
+    }
 
-	public void setHolidayType(String holidayType) {
-		this.holidayType = holidayType;
-	}
+    public void setHolidayType(String holidayType) {
+        this.holidayType = holidayType;
+    }
 
-	public String getDescription() {
-		return description;
-	}
+    public String getDescription() {
+        return description;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public Boolean getActive() {
-		return active;
-	}
+    public Boolean getActive() {
+        return active;
+    }
 
-	public void setActive(Boolean active) {
-		this.active = active;
-	}
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 }

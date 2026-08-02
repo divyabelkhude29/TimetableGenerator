@@ -12,69 +12,84 @@ import com.timetable.exception.ResourceNotFoundException;
 @Component
 public class FacultyValidation {
 
-	private final FacultyDAO facultyDAO;
-	private final DepartmentDAO departmentDAO;
+    private final FacultyDAO facultyDAO;
+    private final DepartmentDAO departmentDAO;
 
-	public FacultyValidation(FacultyDAO facultyDAO, DepartmentDAO departmentDAO) {
+    public FacultyValidation(FacultyDAO facultyDAO,
+                             DepartmentDAO departmentDAO) {
 
-		this.facultyDAO = facultyDAO;
-		this.departmentDAO = departmentDAO;
-	}
+        this.facultyDAO = facultyDAO;
+        this.departmentDAO = departmentDAO;
+    }
 
-	/**
-	 * Validate Faculty Before Save
-	 */
-	public void validateForCreate(FacultyRequest request) {
+    /**
+     * Validate Faculty Before Save
+     */
+    public void validateForCreate(FacultyRequest request) {
 
-		Faculty faculty = facultyDAO.findByFacultyCode(request.getFacultyCode());
+        Faculty faculty = facultyDAO.findByFacultyCode(request.getFacultyCode());
 
-		if (faculty != null) {
-			throw new IllegalArgumentException("Faculty code already exists : " + request.getFacultyCode());
-		}
+        if (faculty != null) {
+            throw new IllegalArgumentException(
+                    "Faculty code already exists : " + request.getFacultyCode());
+        }
 
-		Faculty email = facultyDAO.findByEmail(request.getEmail());
+        Faculty email = facultyDAO.findByEmail(request.getEmail());
 
-		if (email != null) {
-			throw new IllegalArgumentException("Email already exists : " + request.getEmail());
-		}
+        if (email != null) {
+            throw new IllegalArgumentException(
+                    "Email already exists : " + request.getEmail());
+        }
 
-		Department department = departmentDAO.findById(request.getDepartmentId());
+        Department department =
+                departmentDAO.findById(request.getDepartmentId());
 
-		if (department == null) {
-			throw new ResourceNotFoundException("Department not found with ID : " + request.getDepartmentId());
-		}
-	}
+        if (department == null) {
+            throw new ResourceNotFoundException(
+                    "Department not found with ID : " + request.getDepartmentId());
+        }
+    }
 
-	/**
-	 * Validate Faculty Before Update
-	 */
-	public void validateForUpdate(Long facultyId, FacultyRequest request) {
+    /**
+     * Validate Faculty Before Update
+     */
+    public void validateForUpdate(Long facultyId,
+                                  FacultyRequest request) {
 
-		Faculty faculty = facultyDAO.findById(facultyId);
+        Faculty faculty = facultyDAO.findById(facultyId);
 
-		if (faculty == null) {
-			throw new ResourceNotFoundException("Faculty not found with ID : " + facultyId);
-		}
+        if (faculty == null) {
+            throw new ResourceNotFoundException(
+                    "Faculty not found with ID : " + facultyId);
+        }
 
-		Faculty duplicateCode = facultyDAO.findByFacultyCode(request.getFacultyCode());
+        Faculty duplicateCode =
+                facultyDAO.findByFacultyCode(request.getFacultyCode());
 
-		if (duplicateCode != null && !duplicateCode.getFacultyId().equals(facultyId)) {
+        if (duplicateCode != null &&
+                !duplicateCode.getFacultyId().equals(facultyId)) {
 
-			throw new IllegalArgumentException("Faculty code already exists.");
-		}
+            throw new IllegalArgumentException(
+                    "Faculty code already exists.");
+        }
 
-		Faculty duplicateEmail = facultyDAO.findByEmail(request.getEmail());
+        Faculty duplicateEmail =
+                facultyDAO.findByEmail(request.getEmail());
 
-		if (duplicateEmail != null && !duplicateEmail.getFacultyId().equals(facultyId)) {
+        if (duplicateEmail != null &&
+                !duplicateEmail.getFacultyId().equals(facultyId)) {
 
-			throw new IllegalArgumentException("Email already exists.");
-		}
+            throw new IllegalArgumentException(
+                    "Email already exists.");
+        }
 
-		Department department = departmentDAO.findById(request.getDepartmentId());
+        Department department =
+                departmentDAO.findById(request.getDepartmentId());
 
-		if (department == null) {
-			throw new ResourceNotFoundException("Department not found with ID : " + request.getDepartmentId());
-		}
-	}
+        if (department == null) {
+            throw new ResourceNotFoundException(
+                    "Department not found with ID : " + request.getDepartmentId());
+        }
+    }
 
 }

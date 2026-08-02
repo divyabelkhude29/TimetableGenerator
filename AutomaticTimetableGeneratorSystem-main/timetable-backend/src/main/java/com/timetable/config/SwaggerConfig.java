@@ -14,33 +14,43 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class SwaggerConfig {
 
-	@Bean
-	public OpenAPI timetableAPI() {
+    @Bean
+    public OpenAPI timetableAPI() {
 
-		return new OpenAPI()
+        return new OpenAPI()
 
-				.info(new Info()
+                .info(
+                        new Info()
 
-						.title("Automatic Timetable Generation System API")
+                                .title("Automatic Timetable Generation System API")
 
-						.description("REST APIs for Timetable Management System")
+                                .description(
+                                        "REST APIs for Timetable Management System"
+                                )
 
-						.version("1.0")
+                                .version("1.0")
 
-						.contact(new Contact()
+                                .contact(
+                                        new Contact()
 
-								.name("Timetable Team")
+                                                .name("Timetable Team")
 
-								.email("support@timetable.com"))
+                                                .email("support@timetable.com")
+                                )
 
-						.license(new License()
+                                .license(
+                                        new License()
 
-								.name("CDAC Project")))
+                                                .name("CDAC Project")
+                                )
+                )
 
-				.externalDocs(new ExternalDocumentation()
+                .externalDocs(
+                        new ExternalDocumentation()
 
-						.description("Project Documentation"));
+                                .description("Project Documentation")
+                );
 
-	}
+    }
 
 }
