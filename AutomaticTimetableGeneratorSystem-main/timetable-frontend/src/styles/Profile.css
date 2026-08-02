@@ -1,0 +1,96 @@
+/* ===========================
+   Profile Page
+=========================== */
+
+.profile-container {
+  padding: 24px;
+}
+
+.profile-card {
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.profile-card:hover {
+  transform: translateY(-2px);
+}
+
+.profile-avatar {
+  width: 100px !important;
+  height: 100px !important;
+  font-size: 40px !important;
+  font-weight: bold !important;
+  margin: 0 auto;
+}
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.profile-title {
+  margin-top: 12px;
+  font-weight: 600;
+}
+
+.section-title {
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.readonly-field .MuiOutlinedInput-root {
+  background: #f8f9fa;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.update-btn {
+  min-width: 180px;
+  height: 48px;
+}
+
+.password-section {
+  margin-top: 32px;
+}
+
+.info-section {
+  margin-bottom: 32px;
+}
+
+@media (max-width: 900px) {
+  .profile-container {
+    padding: 16px;
+  }
+
+  .profile-avatar {
+    width: 80px !important;
+    height: 80px !important;
+    font-size: 30px !important;
+  }
+
+  .profile-actions {
+    justify-content: center;
+  }
+
+  .update-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  .profile-container {
+    padding: 10px;
+  }
+
+  .profile-card {
+    padding: 16px !important;
+  }
+
+  .profile-title {
+    font-size: 22px;
+  }
+}
