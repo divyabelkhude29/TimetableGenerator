@@ -25,6 +25,11 @@ import com.timetable.dto.auth.LoginRequest;
 import com.timetable.dto.auth.LoginResponse;
 import com.timetable.dto.auth.RegisterRequest;
 
+import com.timetable.dto.profile.ProfileUpdateRequest;
+import com.timetable.dto.profile.ProfileResponse;
+
+import org.springframework.web.bind.annotation.PutMapping;
+
 import com.timetable.entity.User;
 
 import com.timetable.jwt.JwtUtil;
@@ -62,6 +67,17 @@ public class AuthController {
 
         this.userService =
                 userService;
+    }
+    
+    @GetMapping("/admin-exists")
+    public ResponseEntity<?> adminExists() {
+
+    	boolean exists = userService.adminExists();
+
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("exists", exists);
+
+        return ResponseEntity.ok(response);
     }
 
 
@@ -182,16 +198,7 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/admin-exists")
-    public ResponseEntity<?> adminExists() {
 
-    	boolean exists = userService.adminExists();
-
-        Map<String, Boolean> response = new HashMap<>();
-        response.put("exists", exists);
-
-        return ResponseEntity.ok(response);
-    }
 
     /*
      * ============================================================
@@ -204,14 +211,30 @@ public class AuthController {
      * Requires JWT.
      */
     @GetMapping("/profile")
-    public ResponseEntity<CustomUserDetails> profile(
+    public ResponseEntity<ProfileResponse> getProfile(
             Authentication authentication) {
 
-        CustomUserDetails user =
-                (CustomUserDetails)
-                        authentication.getPrincipal();
+        CustomUserDetails userDetails =
+                (CustomUserDetails) authentication.getPrincipal();
 
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(
+                userService.getProfile(userDetails.getUsername()));
+    }
+    
+    @PutMapping("/profile")
+    public ResponseEntity<String> updateProfile(
+            Authentication authentication,
+            @RequestBody ProfileUpdateRequest request) {
+
+        CustomUserDetails userDetails =
+                (CustomUserDetails) authentication.getPrincipal();
+
+        userService.updateProfile(
+                userDetails.getUsername(),
+                request);
+
+        return ResponseEntity.ok(
+                "Profile updated successfully");
     }
 
 }

@@ -8,49 +8,49 @@ import com.timetable.entity.Semester;
 
 public interface SectionDAO {
 
-    /**
-     * Save Section
-     */
-    Section save(Section section);
+	/**
+	 * Save Section
+	 */
+	Section save(Section section);
 
-    /**
-     * Update Section
-     */
-    Section update(Section section);
+	/**
+	 * Update Section
+	 */
+	Section update(Section section);
 
-    /**
-     * Delete Section
-     */
-    void delete(Long sectionId);
+	/**
+	 * Delete Section
+	 */
+	void delete(Long sectionId);
 
-    /**
-     * Find Section By ID
-     */
-    Section findById(Long sectionId);
+	/**
+	 * Find Section By ID
+	 */
+	Section findById(Long sectionId);
 
-    /**
-     * Find All Sections
-     */
-    List<Section> findAll();
+	/**
+	 * Find All Sections
+	 */
+	List<Section> findAll();
 
-    /**
-     * Find Section By Section Code
-     */
-    Section findBySectionCode(String sectionCode);
+	/**
+	 * Find Section By Section Code
+	 */
+	Section findBySectionCode(String sectionCode);
 
-    /**
-     * Find Sections By Course
-     */
-    List<Section> findByCourse(Course course);
+	/**
+	 * Find Sections By Course
+	 */
+	List<Section> findByCourse(Course course);
 
-    /**
-     * Find Sections By Semester
-     */
-    List<Section> findBySemester(Semester semester);
+	/**
+	 * Find Sections By Semester
+	 */
+	List<Section> findBySemester(Semester semester);
 
-    /**
-     * Check Section Code Exists
-     */
-    boolean existsBySectionCode(String sectionCode);
+	/**
+	 * Check Section Code Exists
+	 */
+	boolean existsBySectionCode(String sectionCode);
 
 }

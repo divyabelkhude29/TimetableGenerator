@@ -5,60 +5,60 @@ import jakarta.validation.constraints.NotNull;
 
 public class TimetableRequest {
 
-    @NotBlank(message = "Day of week is required")
-    private String dayOfWeek;
+	@NotBlank(message = "Day of week is required")
+	private String dayOfWeek;
 
-    private Boolean active = true;
+	private Boolean active = true;
 
-    @NotNull(message = "Allocation ID is required")
-    private Long allocationId;
+	@NotNull(message = "Allocation ID is required")
+	private Long allocationId;
 
-    @NotNull(message = "Classroom ID is required")
-    private Long classroomId;
+	@NotNull(message = "Classroom ID is required")
+	private Long classroomId;
 
-    @NotNull(message = "Time Slot ID is required")
-    private Long timeSlotId;
+	@NotNull(message = "Time Slot ID is required")
+	private Long timeSlotId;
 
-    public TimetableRequest() {
-    }
+	public TimetableRequest() {
+	}
 
-    public String getDayOfWeek() {
-        return dayOfWeek;
-    }
- 
-    public void setDayOfWeek(String dayOfWeek) {
-        this.dayOfWeek = dayOfWeek;
-    }
+	public String getDayOfWeek() {
+		return dayOfWeek;
+	}
 
-    public Boolean getActive() {
-        return active;
-    }
+	public void setDayOfWeek(String dayOfWeek) {
+		this.dayOfWeek = dayOfWeek;
+	}
 
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
+	public Boolean getActive() {
+		return active;
+	}
 
-    public Long getAllocationId() {
-        return allocationId;
-    }
+	public void setActive(Boolean active) {
+		this.active = active;
+	}
 
-    public void setAllocationId(Long allocationId) {
-        this.allocationId = allocationId;
-    }
+	public Long getAllocationId() {
+		return allocationId;
+	}
 
-    public Long getClassroomId() {
-        return classroomId;
-    }
+	public void setAllocationId(Long allocationId) {
+		this.allocationId = allocationId;
+	}
 
-    public void setClassroomId(Long classroomId) {
-        this.classroomId = classroomId;
-    }
+	public Long getClassroomId() {
+		return classroomId;
+	}
 
-    public Long getTimeSlotId() {
-        return timeSlotId;
-    }
+	public void setClassroomId(Long classroomId) {
+		this.classroomId = classroomId;
+	}
 
-    public void setTimeSlotId(Long timeSlotId) {
-        this.timeSlotId = timeSlotId;
-    }
+	public Long getTimeSlotId() {
+		return timeSlotId;
+	}
+
+	public void setTimeSlotId(Long timeSlotId) {
+		this.timeSlotId = timeSlotId;
+	}
 }

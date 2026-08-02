@@ -22,6 +22,8 @@ import com.timetable.exception.ValidationException;
 import com.timetable.mapper.UserMapper;
 import com.timetable.service.UserService;
 import com.timetable.util.RegexValidator;
+import com.timetable.dto.profile.ProfileResponse;
+import com.timetable.dto.profile.ProfileUpdateRequest;
 
 @Service
 @Transactional
@@ -121,22 +123,20 @@ public class UserServiceImpl implements UserService {
     /**
      * Validate Update Request
      */
-    private void validateUpdate(UpdateUserRequest request,
-                                Long userId) {
+    
+    private void validateUpdate(UpdateUserRequest request, Long userId) {
 
         if (request == null) {
             throw new ValidationException("Request cannot be null.");
         }
 
         if (!RegexValidator.isValidEmail(request.getEmail())) {
-
             throw new ValidationException(
                     "email",
                     "Invalid email.");
         }
 
         if (!RegexValidator.isValidMobile(request.getMobile())) {
-
             throw new ValidationException(
                     "mobile",
                     "Invalid mobile number.");
@@ -164,6 +164,8 @@ public class UserServiceImpl implements UserService {
                     request.getMobile());
         }
     }
+    
+    
 
     /**
      * Login
@@ -592,5 +594,83 @@ public class UserServiceImpl implements UserService {
     public boolean adminExists() {
         return userDAO.existsByRole(RoleType.ROLE_ADMIN);
     }
+    
+    @Override
+    public ProfileResponse getProfile(String username) {
+
+        User user = userDAO.findByUsername(username);
+
+        if (user == null) {
+            throw new ResourceNotFoundException(
+                    "User",
+                    "username",
+                    username);
+        }
+
+        return new ProfileResponse(
+                user.getUsername(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getMobile(),
+                user.getRole().name()
+        );
+    }
+    @Override
+    public void updateProfile(String username,
+            ProfileUpdateRequest request) {
+
+		User user = userDAO.findByUsername(username);
+		
+		if (user == null) {
+		throw new ResourceNotFoundException(
+		  "User",
+		  "username",
+		  username);
+		}
+		
+		if (!user.getEmail().equals(request.getEmail())) {
+		
+		User existing = userDAO.findByEmail(request.getEmail());
+		
+		if (existing != null &&
+		  !existing.getUserId().equals(user.getUserId())) {
+		
+		throw new DuplicateRecordException(
+		      "User",
+		      "email",
+		      request.getEmail());
+		}
+		
+		user.setEmail(request.getEmail());
+		}
+		
+		if (!user.getMobile().equals(request.getMobile())) {
+		
+		User existing = userDAO.findByMobile(request.getMobile());
+		
+		if (existing != null &&
+		  !existing.getUserId().equals(user.getUserId())) {
+		
+		throw new DuplicateRecordException(
+		      "User",
+		      "mobile",
+		      request.getMobile());
+		}
+		
+		user.setMobile(request.getMobile());
+		}
+		
+		if (request.getPassword() != null &&
+		!request.getPassword().isBlank()) {
+		
+		validatePassword(request.getPassword());
+		
+		user.setPassword(
+		  passwordEncoder.encode(request.getPassword()));
+		}
+		
+		userDAO.update(user);
+	}
    
 }

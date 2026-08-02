@@ -10,18 +10,16 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class DatabaseConfig {
 
-    @Bean
-    @ConfigurationProperties("spring.datasource")
-    public DataSourceProperties dataSourceProperties() {
-        return new DataSourceProperties();
-    }
+	@Bean
+	@ConfigurationProperties("spring.datasource")
+	public DataSourceProperties dataSourceProperties() {
+		return new DataSourceProperties();
+	}
 
-    @Bean
-    public DataSource dataSource() {
+	@Bean
+	public DataSource dataSource() {
 
-        return dataSourceProperties()
-                .initializeDataSourceBuilder()
-                .build();
-    }
+		return dataSourceProperties().initializeDataSourceBuilder().build();
+	}
 
 }

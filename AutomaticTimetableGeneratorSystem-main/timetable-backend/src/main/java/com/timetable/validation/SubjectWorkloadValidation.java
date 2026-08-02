@@ -12,108 +12,87 @@ import com.timetable.exception.ResourceNotFoundException;
 @Component
 public class SubjectWorkloadValidation {
 
-    private final SubjectWorkloadDAO subjectWorkloadDAO;
-    private final FacultySubjectAllocationDAO allocationDAO;
+	private final SubjectWorkloadDAO subjectWorkloadDAO;
+	private final FacultySubjectAllocationDAO allocationDAO;
 
-    public SubjectWorkloadValidation(
-            SubjectWorkloadDAO subjectWorkloadDAO,
-            FacultySubjectAllocationDAO allocationDAO) {
+	public SubjectWorkloadValidation(SubjectWorkloadDAO subjectWorkloadDAO, FacultySubjectAllocationDAO allocationDAO) {
 
-        this.subjectWorkloadDAO = subjectWorkloadDAO;
-        this.allocationDAO = allocationDAO;
-    }
+		this.subjectWorkloadDAO = subjectWorkloadDAO;
+		this.allocationDAO = allocationDAO;
+	}
 
-    /**
-     * Validate Before Create
-     */
-    public void validateForCreate(SubjectWorkloadRequest request) {
+	/**
+	 * Validate Before Create
+	 */
+	public void validateForCreate(SubjectWorkloadRequest request) {
 
-        FacultySubjectAllocation allocation =
-                validateAllocation(request.getAllocationId());
+		FacultySubjectAllocation allocation = validateAllocation(request.getAllocationId());
 
-        if (subjectWorkloadDAO.existsByAllocation(allocation)) {
+		if (subjectWorkloadDAO.existsByAllocation(allocation)) {
 
-            throw new IllegalArgumentException(
-                    "Workload already exists for this Faculty Subject Allocation.");
-        }
+			throw new IllegalArgumentException("Workload already exists for this Faculty Subject Allocation.");
+		}
 
-        validateHours(request);
-    }
+		validateHours(request);
+	}
 
-    /**
-     * Validate Before Update
-     */
-    public void validateForUpdate(
-            Long workloadId,
-            SubjectWorkloadRequest request) {
+	/**
+	 * Validate Before Update
+	 */
+	public void validateForUpdate(Long workloadId, SubjectWorkloadRequest request) {
 
-        validateWorkload(workloadId);
+		validateWorkload(workloadId);
 
-        FacultySubjectAllocation allocation =
-                validateAllocation(request.getAllocationId());
+		FacultySubjectAllocation allocation = validateAllocation(request.getAllocationId());
 
-        if (subjectWorkloadDAO.existsByAllocationAndNotWorkloadId(
-                allocation,
-                workloadId)) {
+		if (subjectWorkloadDAO.existsByAllocationAndNotWorkloadId(allocation, workloadId)) {
 
-            throw new IllegalArgumentException(
-                    "Another workload already exists for this Faculty Subject Allocation.");
-        }
+			throw new IllegalArgumentException("Another workload already exists for this Faculty Subject Allocation.");
+		}
 
-        validateHours(request);
-    }
+		validateHours(request);
+	}
 
-    /**
-     * Validate Subject Workload Exists
-     */
-    public SubjectWorkload validateWorkload(Long workloadId) {
+	/**
+	 * Validate Subject Workload Exists
+	 */
+	public SubjectWorkload validateWorkload(Long workloadId) {
 
-        SubjectWorkload workload =
-                subjectWorkloadDAO.findById(workloadId);
+		SubjectWorkload workload = subjectWorkloadDAO.findById(workloadId);
 
-        if (workload == null) {
+		if (workload == null) {
 
-            throw new ResourceNotFoundException(
-                    "Subject Workload not found with ID : "
-                            + workloadId);
-        }
+			throw new ResourceNotFoundException("Subject Workload not found with ID : " + workloadId);
+		}
 
-        return workload;
-    }
+		return workload;
+	}
 
-    /**
-     * Validate Allocation Exists
-     */
-    public FacultySubjectAllocation validateAllocation(
-            Long allocationId) {
+	/**
+	 * Validate Allocation Exists
+	 */
+	public FacultySubjectAllocation validateAllocation(Long allocationId) {
 
-        FacultySubjectAllocation allocation =
-                allocationDAO.findById(allocationId);
+		FacultySubjectAllocation allocation = allocationDAO.findById(allocationId);
 
-        if (allocation == null) {
+		if (allocation == null) {
 
-            throw new ResourceNotFoundException(
-                    "Faculty Subject Allocation not found with ID : "
-                            + allocationId);
-        }
+			throw new ResourceNotFoundException("Faculty Subject Allocation not found with ID : " + allocationId);
+		}
 
-        return allocation;
-    }
+		return allocation;
+	}
 
-    /**
-     * Validate Weekly Hours
-     */
-    public void validateHours(
-            SubjectWorkloadRequest request) {
+	/**
+	 * Validate Weekly Hours
+	 */
+	public void validateHours(SubjectWorkloadRequest request) {
 
-        int total =
-                request.getTheoryHours()
-                + request.getPracticalHours();
+		int total = request.getTheoryHours() + request.getPracticalHours();
 
-        if (!request.getWeeklyHours().equals(total)) {
+		if (!request.getWeeklyHours().equals(total)) {
 
-            throw new IllegalArgumentException(
-                    "Weekly hours must be equal to Theory hours + Practical hours.");
-        }
-    }
+			throw new IllegalArgumentException("Weekly hours must be equal to Theory hours + Practical hours.");
+		}
+	}
 }

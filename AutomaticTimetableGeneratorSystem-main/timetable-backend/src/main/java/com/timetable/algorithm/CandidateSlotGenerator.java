@@ -15,184 +15,126 @@ import com.timetable.entity.TimeSlot;
 @Component
 public class CandidateSlotGenerator {
 
-    private static final List<String> WORKING_DAYS =
-            Arrays.asList(
-                    "MONDAY",
-                    "TUESDAY",
-                    "WEDNESDAY",
-                    "THURSDAY",
-                    "FRIDAY");
+	private static final List<String> WORKING_DAYS = Arrays.asList("MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY",
+			"FRIDAY");
 
-    public List<TimetableSlotDTO> generateCandidates(
-            GenerationContext context) {
+	public List<TimetableSlotDTO> generateCandidates(GenerationContext context) {
 
-        List<TimetableSlotDTO> candidates =
-                new ArrayList<>();
+		List<TimetableSlotDTO> candidates = new ArrayList<>();
 
-        if (context.getAllocations() == null
-                || context.getAllocations().isEmpty()) {
+		if (context.getAllocations() == null || context.getAllocations().isEmpty()) {
 
-            return candidates;
-        }
+			return candidates;
+		}
 
-        for (FacultySubjectAllocation allocation
-                : context.getAllocations()) {
+		for (FacultySubjectAllocation allocation : context.getAllocations()) {
 
-            SubjectWorkload workload =
-                    getWorkload(
-                            allocation,
-                            context.getWorkloads());
+			SubjectWorkload workload = getWorkload(allocation, context.getWorkloads());
 
-            if (workload == null) {
-                continue;
-            }
+			if (workload == null) {
+				continue;
+			}
 
-            int requiredHours =
-                    workload.getWeeklyHours();
+			int requiredHours = workload.getWeeklyHours();
 
-            int allocatedHours = 0;
+			int allocatedHours = 0;
 
-            outer:
+			outer:
 
-            for (String day : WORKING_DAYS) {
+			for (String day : WORKING_DAYS) {
 
-                for (TimeSlot slot
-                        : context.getTimeSlots()) {
+				for (TimeSlot slot : context.getTimeSlots()) {
 
-                    Classroom classroom =
-                            getAvailableClassroom(
-                                    context.getClassrooms());
+					Classroom classroom = getAvailableClassroom(context.getClassrooms());
 
-                    if (classroom == null) {
-                        continue;
-                    }
+					if (classroom == null) {
+						continue;
+					}
 
-                    TimetableSlotDTO dto =
-                            new TimetableSlotDTO();
+					TimetableSlotDTO dto = new TimetableSlotDTO();
 
-                    dto.setAllocationId(
-                            allocation.getAllocationId());
+					dto.setAllocationId(allocation.getAllocationId());
 
-                    dto.setCourseId(
-                            allocation.getSemester()
-                                    .getCourse()
-                                    .getCourseId());
+					dto.setCourseId(allocation.getSemester().getCourse().getCourseId());
 
-                    dto.setSemesterId(
-                            allocation.getSemester()
-                                    .getSemesterId());
+					dto.setSemesterId(allocation.getSemester().getSemesterId());
 
-                    dto.setAcademicSectionId(
-                            allocation.getSection()
-                                    .getSectionId());
+					dto.setAcademicSectionId(allocation.getSection().getSectionId());
 
-                    dto.setFacultyId(
-                            allocation.getFaculty()
-                                    .getFacultyId());
+					dto.setFacultyId(allocation.getFaculty().getFacultyId());
 
-                    dto.setSubjectId(
-                            allocation.getSubject()
-                                    .getSubjectId());
+					dto.setSubjectId(allocation.getSubject().getSubjectId());
 
-                    dto.setClassroomId(
-                            classroom.getClassroomId());
+					dto.setClassroomId(classroom.getClassroomId());
 
-                    dto.setTimeSlotId(
-                            slot.getTimeSlotId());
+					dto.setTimeSlotId(slot.getTimeSlotId());
 
-                    dto.setDayOfWeek(day);
+					dto.setDayOfWeek(day);
 
-                    dto.setStartTime(
-                            slot.getStartTime().toString());
+					dto.setStartTime(slot.getStartTime().toString());
 
-                    dto.setEndTime(
-                            slot.getEndTime().toString());
+					dto.setEndTime(slot.getEndTime().toString());
 
-                    dto.setCourseName(
-                            allocation.getSemester()
-                                    .getCourse()
-                                    .getCourseName());
+					dto.setCourseName(allocation.getSemester().getCourse().getCourseName());
 
-                    dto.setSemesterNumber(
-                            allocation.getSemester()
-                                    .getSemesterNumber());
+					dto.setSemesterNumber(allocation.getSemester().getSemesterNumber());
 
-                    dto.setSectionName(
-                            allocation.getSection()
-                                    .getSectionName());
+					dto.setSectionName(allocation.getSection().getSectionName());
 
-                    dto.setFacultyCode(
-                            allocation.getFaculty()
-                                    .getFacultyCode());
+					dto.setFacultyCode(allocation.getFaculty().getFacultyCode());
 
-                    dto.setFacultyName(
-                            allocation.getFaculty()
-                                    .getFirstName()
-                                    + " "
-                                    + allocation.getFaculty()
-                                    .getLastName());
+					dto.setFacultyName(
+							allocation.getFaculty().getFirstName() + " " + allocation.getFaculty().getLastName());
 
-                    dto.setSubjectCode(
-                            allocation.getSubject()
-                                    .getSubjectCode());
+					dto.setSubjectCode(allocation.getSubject().getSubjectCode());
 
-                    dto.setSubjectName(
-                            allocation.getSubject()
-                                    .getSubjectName());
+					dto.setSubjectName(allocation.getSubject().getSubjectName());
 
-                    dto.setGeneratedAutomatically(true);
+					dto.setGeneratedAutomatically(true);
 
-                    candidates.add(dto);
+					candidates.add(dto);
 
-                    allocatedHours++;
+					allocatedHours++;
 
-                    if (allocatedHours >= requiredHours) {
-                        break outer;
-                    }
-                }
-            }
-        }
+					if (allocatedHours >= requiredHours) {
+						break outer;
+					}
+				}
+			}
+		}
 
-        context.getCandidateSlots().clear();
+		context.getCandidateSlots().clear();
 
-        context.getCandidateSlots().addAll(candidates);
+		context.getCandidateSlots().addAll(candidates);
 
-        return candidates;
-    }
+		return candidates;
+	}
 
-    private SubjectWorkload getWorkload(
-            FacultySubjectAllocation allocation,
-            List<SubjectWorkload> workloads) {
+	private SubjectWorkload getWorkload(FacultySubjectAllocation allocation, List<SubjectWorkload> workloads) {
 
-        if (workloads == null) {
-            return null;
-        }
+		if (workloads == null) {
+			return null;
+		}
 
-        for (SubjectWorkload workload
-                : workloads) {
+		for (SubjectWorkload workload : workloads) {
 
-            if (workload.getAllocation()
-                    .getAllocationId()
-                    .equals(
-                            allocation.getAllocationId())) {
+			if (workload.getAllocation().getAllocationId().equals(allocation.getAllocationId())) {
 
-                return workload;
-            }
-        }
+				return workload;
+			}
+		}
 
-        return null;
-    }
+		return null;
+	}
 
-    private Classroom getAvailableClassroom(
-            List<Classroom> classrooms) {
+	private Classroom getAvailableClassroom(List<Classroom> classrooms) {
 
-        if (classrooms == null
-                || classrooms.isEmpty()) {
+		if (classrooms == null || classrooms.isEmpty()) {
 
-            return null;
-        }
+			return null;
+		}
 
-        return classrooms.get(0);
-    }
+		return classrooms.get(0);
+	}
 
 }

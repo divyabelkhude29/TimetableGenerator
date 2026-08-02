@@ -20,85 +20,70 @@ import jakarta.validation.Valid;
 @CrossOrigin(origins = "*")
 public class HolidayController {
 
-    private final HolidayService holidayService;
+	private final HolidayService holidayService;
 
-    public HolidayController(HolidayService holidayService) {
-        this.holidayService = holidayService;
-    }
+	public HolidayController(HolidayService holidayService) {
+		this.holidayService = holidayService;
+	}
 
-    /**
-     * Create Holiday
-     */
-    @PostMapping
-    public ResponseEntity<HolidayResponse> saveHoliday(
-            @Valid @RequestBody HolidayRequest request) {
+	/**
+	 * Create Holiday
+	 */
+	@PostMapping
+	public ResponseEntity<HolidayResponse> saveHoliday(@Valid @RequestBody HolidayRequest request) {
 
-        HolidayResponse response =
-                holidayService.saveHoliday(request);
+		HolidayResponse response = holidayService.saveHoliday(request);
 
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .body(response);
-    }
+		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
 
-    /**
-     * Update Holiday
-     */
-    @PutMapping("/{holidayId}")
-    public ResponseEntity<HolidayResponse> updateHoliday(
-            @PathVariable Long holidayId,
-            @Valid @RequestBody HolidayRequest request) {
+	/**
+	 * Update Holiday
+	 */
+	@PutMapping("/{holidayId}")
+	public ResponseEntity<HolidayResponse> updateHoliday(@PathVariable Long holidayId,
+			@Valid @RequestBody HolidayRequest request) {
 
-        HolidayResponse response =
-                holidayService.updateHoliday(
-                        holidayId,
-                        request);
+		HolidayResponse response = holidayService.updateHoliday(holidayId, request);
 
-        return ResponseEntity.ok(response);
-    }
+		return ResponseEntity.ok(response);
+	}
 
-    /**
-     * Delete Holiday
-     */
-    @DeleteMapping("/{holidayId}")
-    public ResponseEntity<String> deleteHoliday(
-            @PathVariable Long holidayId) {
+	/**
+	 * Delete Holiday
+	 */
+	@DeleteMapping("/{holidayId}")
+	public ResponseEntity<String> deleteHoliday(@PathVariable Long holidayId) {
 
-        holidayService.deleteHoliday(holidayId);
+		holidayService.deleteHoliday(holidayId);
 
-        return ResponseEntity.ok(
-                "Holiday deleted successfully.");
-    }
+		return ResponseEntity.ok("Holiday deleted successfully.");
+	}
 
-    /**
-     * Get Holiday By ID
-     */
-    @GetMapping("/{holidayId}")
-    public ResponseEntity<HolidayResponse> getHolidayById(
-            @PathVariable Long holidayId) {
+	/**
+	 * Get Holiday By ID
+	 */
+	@GetMapping("/{holidayId}")
+	public ResponseEntity<HolidayResponse> getHolidayById(@PathVariable Long holidayId) {
 
-        return ResponseEntity.ok(
-                holidayService.getHolidayById(holidayId));
-    }
+		return ResponseEntity.ok(holidayService.getHolidayById(holidayId));
+	}
 
-    /**
-     * Get All Holidays
-     */
-    @GetMapping
-    public ResponseEntity<List<HolidayResponse>> getAllHolidays() {
+	/**
+	 * Get All Holidays
+	 */
+	@GetMapping
+	public ResponseEntity<List<HolidayResponse>> getAllHolidays() {
 
-        return ResponseEntity.ok(
-                holidayService.getAllHolidays());
-    }
+		return ResponseEntity.ok(holidayService.getAllHolidays());
+	}
 
-    /**
-     * Get Holiday By Date
-     */
-    @GetMapping("/date/{holidayDate}")
-    public ResponseEntity<HolidayResponse> getHolidayByDate(
-            @PathVariable LocalDate holidayDate) {
+	/**
+	 * Get Holiday By Date
+	 */
+	@GetMapping("/date/{holidayDate}")
+	public ResponseEntity<HolidayResponse> getHolidayByDate(@PathVariable LocalDate holidayDate) {
 
-        return ResponseEntity.ok(
-                holidayService.getHolidayByDate(holidayDate));
-    }
+		return ResponseEntity.ok(holidayService.getHolidayByDate(holidayDate));
+	}
 }

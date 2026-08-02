@@ -24,290 +24,237 @@ import com.timetable.service.FacultySubjectAllocationService;
 
 @Service
 @Transactional
-public class FacultySubjectAllocationServiceImpl
-        implements FacultySubjectAllocationService {
+public class FacultySubjectAllocationServiceImpl implements FacultySubjectAllocationService {
 
-    private final FacultySubjectAllocationDAO allocationDAO;
-    private final FacultyDAO facultyDAO;
-    private final SubjectDAO subjectDAO;
-    private final SectionDAO sectionDAO;
-    private final SemesterDAO semesterDAO;
+	private final FacultySubjectAllocationDAO allocationDAO;
+	private final FacultyDAO facultyDAO;
+	private final SubjectDAO subjectDAO;
+	private final SectionDAO sectionDAO;
+	private final SemesterDAO semesterDAO;
 
-    public FacultySubjectAllocationServiceImpl(
-            FacultySubjectAllocationDAO allocationDAO,
-            FacultyDAO facultyDAO,
-            SubjectDAO subjectDAO,
-            SectionDAO sectionDAO,
-            SemesterDAO semesterDAO) {
+	public FacultySubjectAllocationServiceImpl(FacultySubjectAllocationDAO allocationDAO, FacultyDAO facultyDAO,
+			SubjectDAO subjectDAO, SectionDAO sectionDAO, SemesterDAO semesterDAO) {
 
-        this.allocationDAO = allocationDAO;
-        this.facultyDAO = facultyDAO;
-        this.subjectDAO = subjectDAO;
-        this.sectionDAO = sectionDAO;
-        this.semesterDAO = semesterDAO;
-    }
+		this.allocationDAO = allocationDAO;
+		this.facultyDAO = facultyDAO;
+		this.subjectDAO = subjectDAO;
+		this.sectionDAO = sectionDAO;
+		this.semesterDAO = semesterDAO;
+	}
 
-    /**
-     * Save Allocation
-     */
-    @Override
-    public FacultySubjectAllocationResponse saveAllocation(
-            FacultySubjectAllocationRequest request) {
+	/**
+	 * Save Allocation
+	 */
+	@Override
+	public FacultySubjectAllocationResponse saveAllocation(FacultySubjectAllocationRequest request) {
 
-        Faculty faculty = facultyDAO.findById(request.getFacultyId());
+		Faculty faculty = facultyDAO.findById(request.getFacultyId());
 
-        if (faculty == null) {
-            throw new ResourceNotFoundException(
-                    "Faculty not found with ID : " + request.getFacultyId());
-        }
+		if (faculty == null) {
+			throw new ResourceNotFoundException("Faculty not found with ID : " + request.getFacultyId());
+		}
 
-        Subject subject = subjectDAO.findById(request.getSubjectId());
+		Subject subject = subjectDAO.findById(request.getSubjectId());
 
-        if (subject == null) {
-            throw new ResourceNotFoundException(
-                    "Subject not found with ID : " + request.getSubjectId());
-        }
+		if (subject == null) {
+			throw new ResourceNotFoundException("Subject not found with ID : " + request.getSubjectId());
+		}
 
-        Section section = sectionDAO.findById(request.getSectionId());
+		Section section = sectionDAO.findById(request.getSectionId());
 
-        if (section == null) {
-            throw new ResourceNotFoundException(
-                    "Section not found with ID : " + request.getSectionId());
-        }
+		if (section == null) {
+			throw new ResourceNotFoundException("Section not found with ID : " + request.getSectionId());
+		}
 
-        Semester semester = semesterDAO.findById(request.getSemesterId());
+		Semester semester = semesterDAO.findById(request.getSemesterId());
 
-        if (semester == null) {
-            throw new ResourceNotFoundException(
-                    "Semester not found with ID : " + request.getSemesterId());
-        }
+		if (semester == null) {
+			throw new ResourceNotFoundException("Semester not found with ID : " + request.getSemesterId());
+		}
 
-        if (allocationDAO.existsAllocation(
-                faculty,
-                subject,
-                section,
-                semester,
-                request.getAcademicYear())) {
+		if (allocationDAO.existsAllocation(faculty, subject, section, semester, request.getAcademicYear())) {
 
-            throw new IllegalArgumentException(
-                    "Faculty Subject Allocation already exists.");
-        }
+			throw new IllegalArgumentException("Faculty Subject Allocation already exists.");
+		}
 
-        FacultySubjectAllocation allocation =
-                FacultySubjectAllocationMapper.toEntity(request);
+		FacultySubjectAllocation allocation = FacultySubjectAllocationMapper.toEntity(request);
 
-        allocation.setFaculty(faculty);
-        allocation.setSubject(subject);
-        allocation.setSection(section);
-        allocation.setSemester(semester);
+		allocation.setFaculty(faculty);
+		allocation.setSubject(subject);
+		allocation.setSection(section);
+		allocation.setSemester(semester);
 
-        allocation = allocationDAO.save(allocation);
+		allocation = allocationDAO.save(allocation);
 
-        return FacultySubjectAllocationMapper.toResponse(allocation);
-    }
+		return FacultySubjectAllocationMapper.toResponse(allocation);
+	}
 
-    /**
-     * Update Allocation
-     */
-    @Override
-    public FacultySubjectAllocationResponse updateAllocation(
-            Long allocationId,
-            FacultySubjectAllocationRequest request) {
+	/**
+	 * Update Allocation
+	 */
+	@Override
+	public FacultySubjectAllocationResponse updateAllocation(Long allocationId,
+			FacultySubjectAllocationRequest request) {
 
-        FacultySubjectAllocation allocation =
-                allocationDAO.findById(allocationId);
+		FacultySubjectAllocation allocation = allocationDAO.findById(allocationId);
 
-        if (allocation == null) {
-            throw new ResourceNotFoundException(
-                    "Allocation not found with ID : " + allocationId);
-        }
+		if (allocation == null) {
+			throw new ResourceNotFoundException("Allocation not found with ID : " + allocationId);
+		}
 
-        Faculty faculty = facultyDAO.findById(request.getFacultyId());
+		Faculty faculty = facultyDAO.findById(request.getFacultyId());
 
-        if (faculty == null) {
-            throw new ResourceNotFoundException(
-                    "Faculty not found with ID : " + request.getFacultyId());
-        }
+		if (faculty == null) {
+			throw new ResourceNotFoundException("Faculty not found with ID : " + request.getFacultyId());
+		}
 
-        Subject subject = subjectDAO.findById(request.getSubjectId());
+		Subject subject = subjectDAO.findById(request.getSubjectId());
 
-        if (subject == null) {
-            throw new ResourceNotFoundException(
-                    "Subject not found with ID : " + request.getSubjectId());
-        }
+		if (subject == null) {
+			throw new ResourceNotFoundException("Subject not found with ID : " + request.getSubjectId());
+		}
 
-        Section section = sectionDAO.findById(request.getSectionId());
+		Section section = sectionDAO.findById(request.getSectionId());
 
-        if (section == null) {
-            throw new ResourceNotFoundException(
-                    "Section not found with ID : " + request.getSectionId());
-        }
+		if (section == null) {
+			throw new ResourceNotFoundException("Section not found with ID : " + request.getSectionId());
+		}
 
-        Semester semester = semesterDAO.findById(request.getSemesterId());
+		Semester semester = semesterDAO.findById(request.getSemesterId());
 
-        if (semester == null) {
-            throw new ResourceNotFoundException(
-                    "Semester not found with ID : " + request.getSemesterId());
-        }
+		if (semester == null) {
+			throw new ResourceNotFoundException("Semester not found with ID : " + request.getSemesterId());
+		}
 
-        if (allocationDAO.existsAllocation(
-                faculty,
-                subject,
-                section,
-                semester,
-                request.getAcademicYear())
-                && !(allocation.getFaculty().getFacultyId().equals(faculty.getFacultyId())
-                && allocation.getSubject().getSubjectId().equals(subject.getSubjectId())
-                && allocation.getSection().getSectionId().equals(section.getSectionId())
-                && allocation.getSemester().getSemesterId().equals(semester.getSemesterId())
-                && allocation.getAcademicYear().equals(request.getAcademicYear()))) {
+		if (allocationDAO.existsAllocation(faculty, subject, section, semester, request.getAcademicYear())
+				&& !(allocation.getFaculty().getFacultyId().equals(faculty.getFacultyId())
+						&& allocation.getSubject().getSubjectId().equals(subject.getSubjectId())
+						&& allocation.getSection().getSectionId().equals(section.getSectionId())
+						&& allocation.getSemester().getSemesterId().equals(semester.getSemesterId())
+						&& allocation.getAcademicYear().equals(request.getAcademicYear()))) {
 
-            throw new IllegalArgumentException(
-                    "Faculty Subject Allocation already exists.");
-        }
+			throw new IllegalArgumentException("Faculty Subject Allocation already exists.");
+		}
 
-        FacultySubjectAllocationMapper.updateEntity(allocation, request);
+		FacultySubjectAllocationMapper.updateEntity(allocation, request);
 
-        allocation.setFaculty(faculty);
-        allocation.setSubject(subject);
-        allocation.setSection(section);
-        allocation.setSemester(semester);
+		allocation.setFaculty(faculty);
+		allocation.setSubject(subject);
+		allocation.setSection(section);
+		allocation.setSemester(semester);
 
-        allocation = allocationDAO.update(allocation);
+		allocation = allocationDAO.update(allocation);
 
-        return FacultySubjectAllocationMapper.toResponse(allocation);
-    }
+		return FacultySubjectAllocationMapper.toResponse(allocation);
+	}
 
-    /**
-     * Delete Allocation
-     */
-    @Override
-    public void deleteAllocation(Long allocationId) {
+	/**
+	 * Delete Allocation
+	 */
+	@Override
+	public void deleteAllocation(Long allocationId) {
 
-        FacultySubjectAllocation allocation =
-                allocationDAO.findById(allocationId);
+		FacultySubjectAllocation allocation = allocationDAO.findById(allocationId);
 
-        if (allocation == null) {
-            throw new ResourceNotFoundException(
-                    "Allocation not found with ID : " + allocationId);
-        }
+		if (allocation == null) {
+			throw new ResourceNotFoundException("Allocation not found with ID : " + allocationId);
+		}
 
-        allocationDAO.delete(allocationId);
-    }
+		allocationDAO.delete(allocationId);
+	}
 
-    /**
-     * Get Allocation By ID
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public FacultySubjectAllocationResponse getAllocationById(
-            Long allocationId) {
+	/**
+	 * Get Allocation By ID
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public FacultySubjectAllocationResponse getAllocationById(Long allocationId) {
 
-        FacultySubjectAllocation allocation =
-                allocationDAO.findById(allocationId);
+		FacultySubjectAllocation allocation = allocationDAO.findById(allocationId);
 
-        if (allocation == null) {
-            throw new ResourceNotFoundException(
-                    "Allocation not found with ID : " + allocationId);
-        }
+		if (allocation == null) {
+			throw new ResourceNotFoundException("Allocation not found with ID : " + allocationId);
+		}
 
-        return FacultySubjectAllocationMapper.toResponse(allocation);
-    }
+		return FacultySubjectAllocationMapper.toResponse(allocation);
+	}
 
-    /**
-     * Get All Allocations
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<FacultySubjectAllocationResponse> getAllAllocations() {
+	/**
+	 * Get All Allocations
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<FacultySubjectAllocationResponse> getAllAllocations() {
 
-        return allocationDAO.findAll()
-                .stream()
-                .map(FacultySubjectAllocationMapper::toResponse)
-                .collect(Collectors.toList());
-    }
+		return allocationDAO.findAll().stream().map(FacultySubjectAllocationMapper::toResponse)
+				.collect(Collectors.toList());
+	}
 
-    /**
-     * Get Allocations By Faculty
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<FacultySubjectAllocationResponse> getAllocationsByFaculty(
-            Long facultyId) {
+	/**
+	 * Get Allocations By Faculty
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<FacultySubjectAllocationResponse> getAllocationsByFaculty(Long facultyId) {
 
-        Faculty faculty = facultyDAO.findById(facultyId);
+		Faculty faculty = facultyDAO.findById(facultyId);
 
-        if (faculty == null) {
-            throw new ResourceNotFoundException(
-                    "Faculty not found with ID : " + facultyId);
-        }
+		if (faculty == null) {
+			throw new ResourceNotFoundException("Faculty not found with ID : " + facultyId);
+		}
 
-        return allocationDAO.findByFaculty(faculty)
-                .stream()
-                .map(FacultySubjectAllocationMapper::toResponse)
-                .collect(Collectors.toList());
-    }
+		return allocationDAO.findByFaculty(faculty).stream().map(FacultySubjectAllocationMapper::toResponse)
+				.collect(Collectors.toList());
+	}
 
-    /**
-     * Get Allocations By Subject
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<FacultySubjectAllocationResponse> getAllocationsBySubject(
-            Long subjectId) {
+	/**
+	 * Get Allocations By Subject
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<FacultySubjectAllocationResponse> getAllocationsBySubject(Long subjectId) {
 
-        Subject subject = subjectDAO.findById(subjectId);
+		Subject subject = subjectDAO.findById(subjectId);
 
-        if (subject == null) {
-            throw new ResourceNotFoundException(
-                    "Subject not found with ID : " + subjectId);
-        }
+		if (subject == null) {
+			throw new ResourceNotFoundException("Subject not found with ID : " + subjectId);
+		}
 
-        return allocationDAO.findBySubject(subject)
-                .stream()
-                .map(FacultySubjectAllocationMapper::toResponse)
-                .collect(Collectors.toList());
-    }
+		return allocationDAO.findBySubject(subject).stream().map(FacultySubjectAllocationMapper::toResponse)
+				.collect(Collectors.toList());
+	}
 
-    /**
-     * Get Allocations By Section
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<FacultySubjectAllocationResponse> getAllocationsBySection(
-            Long sectionId) {
+	/**
+	 * Get Allocations By Section
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<FacultySubjectAllocationResponse> getAllocationsBySection(Long sectionId) {
 
-        Section section = sectionDAO.findById(sectionId);
+		Section section = sectionDAO.findById(sectionId);
 
-        if (section == null) {
-            throw new ResourceNotFoundException(
-                    "Section not found with ID : " + sectionId);
-        }
+		if (section == null) {
+			throw new ResourceNotFoundException("Section not found with ID : " + sectionId);
+		}
 
-        return allocationDAO.findBySection(section)
-                .stream()
-                .map(FacultySubjectAllocationMapper::toResponse)
-                .collect(Collectors.toList());
-    }
+		return allocationDAO.findBySection(section).stream().map(FacultySubjectAllocationMapper::toResponse)
+				.collect(Collectors.toList());
+	}
 
-    /**
-     * Get Allocations By Semester
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public List<FacultySubjectAllocationResponse> getAllocationsBySemester(
-            Long semesterId) {
+	/**
+	 * Get Allocations By Semester
+	 */
+	@Override
+	@Transactional(readOnly = true)
+	public List<FacultySubjectAllocationResponse> getAllocationsBySemester(Long semesterId) {
 
-        Semester semester = semesterDAO.findById(semesterId);
+		Semester semester = semesterDAO.findById(semesterId);
 
-        if (semester == null) {
-            throw new ResourceNotFoundException(
-                    "Semester not found with ID : " + semesterId);
-        }
+		if (semester == null) {
+			throw new ResourceNotFoundException("Semester not found with ID : " + semesterId);
+		}
 
-        return allocationDAO.findBySemester(semester)
-                .stream()
-                .map(FacultySubjectAllocationMapper::toResponse)
-                .collect(Collectors.toList());
-    }
+		return allocationDAO.findBySemester(semester).stream().map(FacultySubjectAllocationMapper::toResponse)
+				.collect(Collectors.toList());
+	}
 }
