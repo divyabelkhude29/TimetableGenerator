@@ -18,168 +18,213 @@ import com.timetable.entity.Subject;
 @Transactional
 public class FacultySubjectAllocationDAOImpl implements FacultySubjectAllocationDAO {
 
-	private final SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
-	public FacultySubjectAllocationDAOImpl(SessionFactory sessionFactory) {
-		this.sessionFactory = sessionFactory;
-	}
+    public FacultySubjectAllocationDAOImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
+    }
 
-	/**
-	 * Get Current Hibernate Session
-	 */
-	private Session getCurrentSession() {
-		return sessionFactory.getCurrentSession();
-	}
+    /**
+     * Get Current Hibernate Session
+     */
+    private Session getCurrentSession() {
+        return sessionFactory.getCurrentSession();
+    }
 
-	/**
-	 * Save Allocation
-	 */
-	@Override
-	public FacultySubjectAllocation save(FacultySubjectAllocation allocation) {
+    /**
+     * Save Allocation
+     */
+    @Override
+    public FacultySubjectAllocation save(FacultySubjectAllocation allocation) {
 
-		getCurrentSession().persist(allocation);
+        getCurrentSession().persist(allocation);
 
-		return allocation;
-	}
+        return allocation;
+    }
 
-	/**
-	 * Update Allocation
-	 */
-	@Override
-	public FacultySubjectAllocation update(FacultySubjectAllocation allocation) {
+    /**
+     * Update Allocation
+     */
+    @Override
+    public FacultySubjectAllocation update(FacultySubjectAllocation allocation) {
 
-		return (FacultySubjectAllocation) getCurrentSession().merge(allocation);
-	}
+        return (FacultySubjectAllocation) getCurrentSession().merge(allocation);
+    }
 
-	/**
-	 * Delete Allocation
-	 */
-	@Override
-	public void delete(Long allocationId) {
+    /**
+     * Delete Allocation
+     */
+    @Override
+    public void delete(Long allocationId) {
 
-		FacultySubjectAllocation allocation = findById(allocationId);
+        FacultySubjectAllocation allocation = findById(allocationId);
 
-		if (allocation != null) {
-			getCurrentSession().remove(allocation);
-		}
-	}
+        if (allocation != null) {
+            getCurrentSession().remove(allocation);
+        }
+    }
 
-	/**
-	 * Find Allocation By ID
-	 */
-	@Override
-	public FacultySubjectAllocation findById(Long allocationId) {
+    /**
+     * Find Allocation By ID
+     */
+    @Override
+    public FacultySubjectAllocation findById(Long allocationId) {
 
-		return getCurrentSession().get(FacultySubjectAllocation.class, allocationId);
-	}
+        return getCurrentSession().get(FacultySubjectAllocation.class, allocationId);
+    }
 
-	/**
-	 * Find All Allocations
-	 */
-	@Override
-	public List<FacultySubjectAllocation> findAll() {
+    /**
+     * Find All Allocations
+     */
+    @Override
+    public List<FacultySubjectAllocation> findAll() {
 
-		return getCurrentSession().createQuery("FROM FacultySubjectAllocation fsa ORDER BY fsa.allocationId",
-				FacultySubjectAllocation.class).getResultList();
-	}
+        return getCurrentSession()
+                .createQuery(
+                        "FROM FacultySubjectAllocation fsa ORDER BY fsa.allocationId",
+                        FacultySubjectAllocation.class)
+                .getResultList();
+    }
 
-	/**
-	 * Find Allocations By Faculty
-	 */
-	@Override
-	public List<FacultySubjectAllocation> findByFaculty(Faculty faculty) {
+    /**
+     * Find Allocations By Faculty
+     */
+    @Override
+    public List<FacultySubjectAllocation> findByFaculty(Faculty faculty) {
 
-		return getCurrentSession()
-				.createQuery("FROM FacultySubjectAllocation fsa WHERE fsa.faculty = :faculty ORDER BY fsa.allocationId",
-						FacultySubjectAllocation.class)
-				.setParameter("faculty", faculty).getResultList();
-	}
+        return getCurrentSession()
+                .createQuery(
+                        "FROM FacultySubjectAllocation fsa WHERE fsa.faculty = :faculty ORDER BY fsa.allocationId",
+                        FacultySubjectAllocation.class)
+                .setParameter("faculty", faculty)
+                .getResultList();
+    }
 
-	/**
-	 * Find Allocations By Subject
-	 */
-	@Override
-	public List<FacultySubjectAllocation> findBySubject(Subject subject) {
+    /**
+     * Find Allocations By Subject
+     */
+    @Override
+    public List<FacultySubjectAllocation> findBySubject(Subject subject) {
 
-		return getCurrentSession()
-				.createQuery("FROM FacultySubjectAllocation fsa WHERE fsa.subject = :subject ORDER BY fsa.allocationId",
-						FacultySubjectAllocation.class)
-				.setParameter("subject", subject).getResultList();
-	}
+        return getCurrentSession()
+                .createQuery(
+                        "FROM FacultySubjectAllocation fsa WHERE fsa.subject = :subject ORDER BY fsa.allocationId",
+                        FacultySubjectAllocation.class)
+                .setParameter("subject", subject)
+                .getResultList();
+    }
 
-	/**
-	 * Find Allocations By Section
-	 */
-	@Override
-	public List<FacultySubjectAllocation> findBySection(Section section) {
+    /**
+     * Find Allocations By Section
+     */
+    @Override
+    public List<FacultySubjectAllocation> findBySection(Section section) {
 
-		return getCurrentSession()
-				.createQuery("FROM FacultySubjectAllocation fsa WHERE fsa.section = :section ORDER BY fsa.allocationId",
-						FacultySubjectAllocation.class)
-				.setParameter("section", section).getResultList();
-	}
+        return getCurrentSession()
+                .createQuery(
+                        "FROM FacultySubjectAllocation fsa WHERE fsa.section = :section ORDER BY fsa.allocationId",
+                        FacultySubjectAllocation.class)
+                .setParameter("section", section)
+                .getResultList();
+    }
 
-	/**
-	 * Find Allocations By Semester
-	 */
-	@Override
-	public List<FacultySubjectAllocation> findBySemester(Semester semester) {
+    /**
+     * Find Allocations By Semester
+     */
+    @Override
+    public List<FacultySubjectAllocation> findBySemester(Semester semester) {
 
-		return getCurrentSession().createQuery(
-				"FROM FacultySubjectAllocation fsa WHERE fsa.semester = :semester ORDER BY fsa.allocationId",
-				FacultySubjectAllocation.class).setParameter("semester", semester).getResultList();
-	}
+        return getCurrentSession()
+                .createQuery(
+                        "FROM FacultySubjectAllocation fsa WHERE fsa.semester = :semester ORDER BY fsa.allocationId",
+                        FacultySubjectAllocation.class)
+                .setParameter("semester", semester)
+                .getResultList();
+    }
 
-	/**
-	 * Check Duplicate Allocation
-	 */
-	@Override
-	public boolean existsAllocation(Faculty faculty, Subject subject, Section section, Semester semester,
-			String academicYear) {
+    /**
+     * Check Duplicate Allocation
+     */
+    @Override
+    public boolean existsAllocation(Faculty faculty,
+                                    Subject subject,
+                                    Section section,
+                                    Semester semester,
+                                    String academicYear) {
 
-		Long count = getCurrentSession()
-				.createQuery(
-						"SELECT COUNT(fsa) " + "FROM FacultySubjectAllocation fsa " + "WHERE fsa.faculty = :faculty "
-								+ "AND fsa.subject = :subject " + "AND fsa.section = :section "
-								+ "AND fsa.semester = :semester " + "AND fsa.academicYear = :academicYear",
-						Long.class)
-				.setParameter("faculty", faculty).setParameter("subject", subject).setParameter("section", section)
-				.setParameter("semester", semester).setParameter("academicYear", academicYear).uniqueResult();
+        Long count = getCurrentSession()
+                .createQuery(
+                        "SELECT COUNT(fsa) " +
+                        "FROM FacultySubjectAllocation fsa " +
+                        "WHERE fsa.faculty = :faculty " +
+                        "AND fsa.subject = :subject " +
+                        "AND fsa.section = :section " +
+                        "AND fsa.semester = :semester " +
+                        "AND fsa.academicYear = :academicYear",
+                        Long.class)
+                .setParameter("faculty", faculty)
+                .setParameter("subject", subject)
+                .setParameter("section", section)
+                .setParameter("semester", semester)
+                .setParameter("academicYear", academicYear)
+                .uniqueResult();
 
-		return count != null && count > 0;
-	}
+        return count != null && count > 0;
+    }
+    
+    @Override
+    public List<FacultySubjectAllocation> findForGeneration(
+            String academicYear,
+            Long semesterId,
+            Long sectionId) {
 
-	@Override
-	public List<FacultySubjectAllocation> findForGeneration(String academicYear, Long semesterId, Long sectionId) {
+        return sessionFactory
+                .getCurrentSession()
+                .createQuery(
+                        """
+                        FROM FacultySubjectAllocation f
+                        WHERE f.active = true
+                        AND f.academicYear = :year
+                        AND f.semester.semesterId = :semesterId
+                        AND f.section.sectionId = :sectionId
+                        """,
+                        FacultySubjectAllocation.class)
+                .setParameter("year", academicYear)
+                .setParameter("semesterId", semesterId)
+                .setParameter("sectionId", sectionId)
+                .list();
+    }
 
-		return sessionFactory.getCurrentSession().createQuery("""
-				FROM FacultySubjectAllocation f
-				WHERE f.active = true
-				AND f.academicYear = :year
-				AND f.semester.semesterId = :semesterId
-				AND f.section.sectionId = :sectionId
-				""", FacultySubjectAllocation.class).setParameter("year", academicYear)
-				.setParameter("semesterId", semesterId).setParameter("sectionId", sectionId).list();
-	}
+    @Override
+    public List<FacultySubjectAllocation> findActiveAllocations() {
 
-	@Override
-	public List<FacultySubjectAllocation> findActiveAllocations() {
+        return sessionFactory
+                .getCurrentSession()
+                .createQuery(
+                        """
+                        FROM FacultySubjectAllocation
+                        WHERE active=true
+                        """,
+                        FacultySubjectAllocation.class)
+                .list();
+    }
+    
+   
+    @Override
+    public List<FacultySubjectAllocation> findBySemesterAndSection(
+            Long semesterId,
+            Long sectionId) {
 
-		return sessionFactory.getCurrentSession().createQuery("""
-				FROM FacultySubjectAllocation
-				WHERE active=true
-				""", FacultySubjectAllocation.class).list();
-	}
-
-	@Override
-	public List<FacultySubjectAllocation> findBySemesterAndSection(Long semesterId, Long sectionId) {
-
-		return sessionFactory.getCurrentSession().createQuery("""
-				    FROM FacultySubjectAllocation f
-				    WHERE f.semester.semesterId = :semesterId
-				    AND f.section.sectionId = :sectionId
-				    AND f.active = true
-				""", FacultySubjectAllocation.class).setParameter("semesterId", semesterId)
-				.setParameter("sectionId", sectionId).list();
-	}
+        return sessionFactory
+                .getCurrentSession()
+                .createQuery("""
+                    FROM FacultySubjectAllocation f
+                    WHERE f.semester.semesterId = :semesterId
+                    AND f.section.sectionId = :sectionId
+                    AND f.active = true
+                """, FacultySubjectAllocation.class)
+                .setParameter("semesterId", semesterId)
+                .setParameter("sectionId", sectionId)
+                .list();
+    }
 }

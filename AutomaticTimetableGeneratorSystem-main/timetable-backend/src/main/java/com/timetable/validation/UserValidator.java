@@ -15,291 +15,351 @@ import com.timetable.util.RegexValidator;
 @Component
 public class UserValidator {
 
-	private final UserDAO userDAO;
+    private final UserDAO userDAO;
 
-	public UserValidator(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
+    public UserValidator(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
-	/**
-	 * Validate User Registration
-	 */
-	public void validateRegistration(RegisterRequest request) {
+    /**
+     * Validate User Registration
+     */
+    public void validateRegistration(RegisterRequest request) {
 
-		if (request == null) {
-			throw new ValidationException("Request cannot be null.");
-		}
+        if (request == null) {
+            throw new ValidationException("Request cannot be null.");
+        }
 
-		validateUsername(request.getUsername());
+        validateUsername(request.getUsername());
 
-		validateEmail(request.getEmail());
+        validateEmail(request.getEmail());
 
-		validateMobile(request.getMobile());
+        validateMobile(request.getMobile());
 
-		validatePassword(request.getPassword());
+        validatePassword(request.getPassword());
 
-		checkDuplicateUsername(request.getUsername());
+        checkDuplicateUsername(request.getUsername());
 
-		checkDuplicateEmail(request.getEmail());
+        checkDuplicateEmail(request.getEmail());
 
-		checkDuplicateMobile(request.getMobile());
-	}
+        checkDuplicateMobile(request.getMobile());
+    }
 
-	/**
-	 * Validate Login Request
-	 */
-	public void validateLogin(LoginRequest request) {
+    /**
+     * Validate Login Request
+     */
+    public void validateLogin(LoginRequest request) {
 
-		if (request == null) {
-			throw new ValidationException("Request cannot be null.");
-		}
+        if (request == null) {
+            throw new ValidationException("Request cannot be null.");
+        }
 
-		if (request.getUsername() == null || request.getUsername().trim().isEmpty()) {
+        if (request.getUsername() == null ||
+                request.getUsername().trim().isEmpty()) {
 
-			throw new ValidationException("username", "Username is required.");
-		}
+            throw new ValidationException(
+                    "username",
+                    "Username is required.");
+        }
 
-		if (request.getPassword() == null || request.getPassword().trim().isEmpty()) {
+        if (request.getPassword() == null ||
+                request.getPassword().trim().isEmpty()) {
 
-			throw new ValidationException("password", "Password is required.");
-		}
-	}
+            throw new ValidationException(
+                    "password",
+                    "Password is required.");
+        }
+    }
 
-	/**
-	 * Validate Update Request
-	 */
-	public void validateUpdate(UpdateUserRequest request, Long userId) {
+    /**
+     * Validate Update Request
+     */
+    public void validateUpdate(UpdateUserRequest request,
+                               Long userId) {
 
-		if (request == null) {
+        if (request == null) {
 
-			throw new ValidationException("Request cannot be null.");
-		}
+            throw new ValidationException(
+                    "Request cannot be null.");
+        }
 
-		validateEmail(request.getEmail());
+        validateEmail(request.getEmail());
 
-		validateMobile(request.getMobile());
+        validateMobile(request.getMobile());
 
-		User emailUser = userDAO.findByEmail(request.getEmail());
+        User emailUser = userDAO.findByEmail(request.getEmail());
 
-		if (emailUser != null && !emailUser.getUserId().equals(userId)) {
+        if (emailUser != null &&
+                !emailUser.getUserId().equals(userId)) {
 
-			throw new DuplicateRecordException("User", "email", request.getEmail());
-		}
+            throw new DuplicateRecordException(
+                    "User",
+                    "email",
+                    request.getEmail());
+        }
 
-		User mobileUser = userDAO.findByMobile(request.getMobile());
+        User mobileUser = userDAO.findByMobile(request.getMobile());
 
-		if (mobileUser != null && !mobileUser.getUserId().equals(userId)) {
+        if (mobileUser != null &&
+                !mobileUser.getUserId().equals(userId)) {
 
-			throw new DuplicateRecordException("User", "mobile", request.getMobile());
-		}
-	}
+            throw new DuplicateRecordException(
+                    "User",
+                    "mobile",
+                    request.getMobile());
+        }
+    }
+    /**
+     * Validate Change Password Request
+     */
+    public void validateChangePassword(ChangePasswordRequest request) {
 
-	/**
-	 * Validate Change Password Request
-	 */
-	public void validateChangePassword(ChangePasswordRequest request) {
+        if (request == null) {
+            throw new ValidationException("Request cannot be null.");
+        }
+
+        if (request.getOldPassword() == null ||
+                request.getOldPassword().trim().isEmpty()) {
+
+            throw new ValidationException(
+                    "oldPassword",
+                    "Old password is required.");
+        }
+
+        if (request.getNewPassword() == null ||
+                request.getNewPassword().trim().isEmpty()) {
+
+            throw new ValidationException(
+                    "newPassword",
+                    "New password is required.");
+        }
+
+        validatePassword(request.getNewPassword());
+    }
+
+    /**
+     * Validate Username
+     */
+    public void validateUsername(String username) {
+
+        if (username == null || username.trim().isEmpty()) {
+
+            throw new ValidationException(
+                    "username",
+                    "Username is required.");
+        }
+
+        if (!RegexValidator.isValidUsername(username)) {
+
+            throw new ValidationException(
+                    "username",
+                    "Invalid username format.");
+        }
+    }
+
+    /**
+     * Validate Email
+     */
+    public void validateEmail(String email) {
+
+        if (email == null || email.trim().isEmpty()) {
+
+            throw new ValidationException(
+                    "email",
+                    "Email is required.");
+        }
+
+        if (!RegexValidator.isValidEmail(email)) {
+
+            throw new ValidationException(
+                    "email",
+                    "Invalid email address.");
+        }
+    }
+
+    /**
+     * Validate Mobile Number
+     */
+    public void validateMobile(String mobile) {
+
+        if (mobile == null || mobile.trim().isEmpty()) {
+
+            throw new ValidationException(
+                    "mobile",
+                    "Mobile number is required.");
+        }
+
+        if (!RegexValidator.isValidMobile(mobile)) {
+
+            throw new ValidationException(
+                    "mobile",
+                    "Invalid mobile number.");
+        }
+    }
+
+    /**
+     * Validate Password
+     */
+    public void validatePassword(String password) {
 
-		if (request == null) {
-			throw new ValidationException("Request cannot be null.");
-		}
+        if (password == null || password.trim().isEmpty()) {
 
-		if (request.getOldPassword() == null || request.getOldPassword().trim().isEmpty()) {
+            throw new ValidationException(
+                    "password",
+                    "Password is required.");
+        }
+
+        if (!RegexValidator.isValidPassword(password)) {
 
-			throw new ValidationException("oldPassword", "Old password is required.");
-		}
+            throw new ValidationException(
+                    "password",
+                    "Password does not satisfy security policy.");
+        }
+    }
+    /**
+     * Check Duplicate Username
+     */
+    public void checkDuplicateUsername(String username) {
+
+        if (userDAO.existsByUsername(username)) {
 
-		if (request.getNewPassword() == null || request.getNewPassword().trim().isEmpty()) {
+            throw new DuplicateRecordException(
+                    "User",
+                    "username",
+                    username);
+        }
+    }
 
-			throw new ValidationException("newPassword", "New password is required.");
-		}
+    /**
+     * Check Duplicate Email
+     */
+    public void checkDuplicateEmail(String email) {
 
-		validatePassword(request.getNewPassword());
-	}
+        if (userDAO.existsByEmail(email)) {
 
-	/**
-	 * Validate Username
-	 */
-	public void validateUsername(String username) {
+            throw new DuplicateRecordException(
+                    "User",
+                    "email",
+                    email);
+        }
+    }
 
-		if (username == null || username.trim().isEmpty()) {
+    /**
+     * Check Duplicate Mobile Number
+     */
+    public void checkDuplicateMobile(String mobile) {
 
-			throw new ValidationException("username", "Username is required.");
-		}
+        if (userDAO.existsByMobile(mobile)) {
 
-		if (!RegexValidator.isValidUsername(username)) {
+            throw new DuplicateRecordException(
+                    "User",
+                    "mobile",
+                    mobile);
+        }
+    }
 
-			throw new ValidationException("username", "Invalid username format.");
-		}
-	}
+    /**
+     * Validate User Exists
+     */
+    public User validateUserExists(Long userId) {
 
-	/**
-	 * Validate Email
-	 */
-	public void validateEmail(String email) {
+        User user = userDAO.findById(userId);
 
-		if (email == null || email.trim().isEmpty()) {
+        if (user == null) {
 
-			throw new ValidationException("email", "Email is required.");
-		}
+            throw new ValidationException(
+                    "userId",
+                    "User does not exist.");
+        }
 
-		if (!RegexValidator.isValidEmail(email)) {
+        return user;
+    }
 
-			throw new ValidationException("email", "Invalid email address.");
-		}
-	}
+    /**
+     * Validate Username Exists
+     */
+    public User validateUsernameExists(String username) {
 
-	/**
-	 * Validate Mobile Number
-	 */
-	public void validateMobile(String mobile) {
+        User user = userDAO.findByUsername(username);
 
-		if (mobile == null || mobile.trim().isEmpty()) {
+        if (user == null) {
 
-			throw new ValidationException("mobile", "Mobile number is required.");
-		}
+            throw new ValidationException(
+                    "username",
+                    "User not found.");
+        }
 
-		if (!RegexValidator.isValidMobile(mobile)) {
+        return user;
+    }
 
-			throw new ValidationException("mobile", "Invalid mobile number.");
-		}
-	}
+    /**
+     * Validate Email Exists
+     */
+    public User validateEmailExists(String email) {
 
-	/**
-	 * Validate Password
-	 */
-	public void validatePassword(String password) {
+        User user = userDAO.findByEmail(email);
 
-		if (password == null || password.trim().isEmpty()) {
+        if (user == null) {
 
-			throw new ValidationException("password", "Password is required.");
-		}
+            throw new ValidationException(
+                    "email",
+                    "Email does not exist.");
+        }
 
-		if (!RegexValidator.isValidPassword(password)) {
+        return user;
+    }
 
-			throw new ValidationException("password", "Password does not satisfy security policy.");
-		}
-	}
+    /**
+     * Validate User Status
+     */
+    public void validateUserStatus(User user) {
 
-	/**
-	 * Check Duplicate Username
-	 */
-	public void checkDuplicateUsername(String username) {
+        if (user == null) {
 
-		if (userDAO.existsByUsername(username)) {
+            throw new ValidationException(
+                    "user",
+                    "User is null.");
+        }
 
-			throw new DuplicateRecordException("User", "username", username);
-		}
-	}
+        if (Boolean.FALSE.equals(user.getEnabled())) {
 
-	/**
-	 * Check Duplicate Email
-	 */
-	public void checkDuplicateEmail(String email) {
+            throw new ValidationException(
+                    "enabled",
+                    "User account is disabled.");
+        }
 
-		if (userDAO.existsByEmail(email)) {
+        if (Boolean.TRUE.equals(user.getAccountLocked())) {
 
-			throw new DuplicateRecordException("User", "email", email);
-		}
-	}
+            throw new ValidationException(
+                    "accountLocked",
+                    "User account is locked.");
+        }
+    }
 
-	/**
-	 * Check Duplicate Mobile Number
-	 */
-	public void checkDuplicateMobile(String mobile) {
+    /**
+     * Validate User Before Login
+     */
+    public void validateLoginUser(User user) {
 
-		if (userDAO.existsByMobile(mobile)) {
+        validateUserStatus(user);
 
-			throw new DuplicateRecordException("User", "mobile", mobile);
-		}
-	}
+        if (user.getPassword() == null ||
+                user.getPassword().trim().isEmpty()) {
 
-	/**
-	 * Validate User Exists
-	 */
-	public User validateUserExists(Long userId) {
+            throw new ValidationException(
+                    "password",
+                    "Password not found.");
+        }
+    }
 
-		User user = userDAO.findById(userId);
+    /**
+     * Validate Password Reset Email
+     */
+    public void validateResetPassword(String email) {
 
-		if (user == null) {
+        validateEmail(email);
 
-			throw new ValidationException("userId", "User does not exist.");
-		}
-
-		return user;
-	}
-
-	/**
-	 * Validate Username Exists
-	 */
-	public User validateUsernameExists(String username) {
-
-		User user = userDAO.findByUsername(username);
-
-		if (user == null) {
-
-			throw new ValidationException("username", "User not found.");
-		}
-
-		return user;
-	}
-
-	/**
-	 * Validate Email Exists
-	 */
-	public User validateEmailExists(String email) {
-
-		User user = userDAO.findByEmail(email);
-
-		if (user == null) {
-
-			throw new ValidationException("email", "Email does not exist.");
-		}
-
-		return user;
-	}
-
-	/**
-	 * Validate User Status
-	 */
-	public void validateUserStatus(User user) {
-
-		if (user == null) {
-
-			throw new ValidationException("user", "User is null.");
-		}
-
-		if (Boolean.FALSE.equals(user.getEnabled())) {
-
-			throw new ValidationException("enabled", "User account is disabled.");
-		}
-
-		if (Boolean.TRUE.equals(user.getAccountLocked())) {
-
-			throw new ValidationException("accountLocked", "User account is locked.");
-		}
-	}
-
-	/**
-	 * Validate User Before Login
-	 */
-	public void validateLoginUser(User user) {
-
-		validateUserStatus(user);
-
-		if (user.getPassword() == null || user.getPassword().trim().isEmpty()) {
-
-			throw new ValidationException("password", "Password not found.");
-		}
-	}
-
-	/**
-	 * Validate Password Reset Email
-	 */
-	public void validateResetPassword(String email) {
-
-		validateEmail(email);
-
-		validateEmailExists(email);
-	}
+        validateEmailExists(email);
+    }
 
 }

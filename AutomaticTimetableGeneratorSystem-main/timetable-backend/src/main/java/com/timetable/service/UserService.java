@@ -8,8 +8,6 @@ import com.timetable.dto.auth.RegisterRequest;
 import com.timetable.dto.user.ChangePasswordRequest;
 import com.timetable.dto.user.UpdateUserRequest;
 import com.timetable.dto.user.UserResponse;
-import com.timetable.dto.profile.ProfileResponse;
-import com.timetable.dto.profile.ProfileUpdateRequest;
 
 public interface UserService {
 
@@ -34,10 +32,5 @@ public interface UserService {
     void resetPassword(String email);
     
     boolean adminExists();
-    
-    ProfileResponse getProfile(String username);
-
-    void updateProfile(String username,
-                       ProfileUpdateRequest request);
 
 }

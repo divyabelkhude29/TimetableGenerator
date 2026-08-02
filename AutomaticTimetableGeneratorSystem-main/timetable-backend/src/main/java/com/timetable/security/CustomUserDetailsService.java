@@ -13,71 +13,78 @@ import com.timetable.entity.User;
 @Transactional(readOnly = true)
 public class CustomUserDetailsService implements UserDetailsService {
 
-	private final UserDAO userDAO;
+    private final UserDAO userDAO;
 
-	public CustomUserDetailsService(UserDAO userDAO) {
-		this.userDAO = userDAO;
-	}
+    public CustomUserDetailsService(UserDAO userDAO) {
+        this.userDAO = userDAO;
+    }
 
-	/**
-	 * Load User by Username
-	 */
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    /**
+     * Load User by Username
+     */
+    @Override
+    public UserDetails loadUserByUsername(String username)
+            throws UsernameNotFoundException {
 
-		User user = userDAO.findByUsername(username);
+        User user = userDAO.findByUsername(username);
 
-		if (user == null) {
+        if (user == null) {
 
-			throw new UsernameNotFoundException("User not found with username: " + username);
-		}
+            throw new UsernameNotFoundException(
+                    "User not found with username: " + username);
+        }
 
-		return new CustomUserDetails(user);
-	}
+        return new CustomUserDetails(user);
+    }
 
-	/**
-	 * Load User by User ID Useful for JWT authentication after extracting userId.
-	 */
-	public UserDetails loadUserById(Long userId) {
+    /**
+     * Load User by User ID
+     * Useful for JWT authentication after extracting userId.
+     */
+    public UserDetails loadUserById(Long userId) {
 
-		User user = userDAO.findById(userId);
+        User user = userDAO.findById(userId);
 
-		if (user == null) {
+        if (user == null) {
 
-			throw new UsernameNotFoundException("User not found with ID: " + userId);
-		}
+            throw new UsernameNotFoundException(
+                    "User not found with ID: " + userId);
+        }
 
-		return new CustomUserDetails(user);
-	}
+        return new CustomUserDetails(user);
+    }
 
-	/**
-	 * Get User Entity by Username Useful in Service Layer if required.
-	 */
-	public User getUserByUsername(String username) {
+    /**
+     * Get User Entity by Username
+     * Useful in Service Layer if required.
+     */
+    public User getUserByUsername(String username) {
 
-		User user = userDAO.findByUsername(username);
+        User user = userDAO.findByUsername(username);
 
-		if (user == null) {
+        if (user == null) {
 
-			throw new UsernameNotFoundException("User not found with username: " + username);
-		}
+            throw new UsernameNotFoundException(
+                    "User not found with username: " + username);
+        }
 
-		return user;
-	}
+        return user;
+    }
 
-	/**
-	 * Get User Entity by User ID
-	 */
-	public User getUserById(Long userId) {
+    /**
+     * Get User Entity by User ID
+     */
+    public User getUserById(Long userId) {
 
-		User user = userDAO.findById(userId);
+        User user = userDAO.findById(userId);
 
-		if (user == null) {
+        if (user == null) {
 
-			throw new UsernameNotFoundException("User not found with ID: " + userId);
-		}
+            throw new UsernameNotFoundException(
+                    "User not found with ID: " + userId);
+        }
 
-		return user;
-	}
+        return user;
+    }
 
 }

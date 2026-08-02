@@ -7,16 +7,17 @@ import com.timetable.dto.department.DepartmentResponse;
 
 public interface DepartmentService {
 
-	DepartmentResponse createDepartment(DepartmentRequest request);
+    DepartmentResponse createDepartment(DepartmentRequest request);
 
-	DepartmentResponse getDepartmentById(Long departmentId);
+    DepartmentResponse getDepartmentById(Long departmentId);
 
-	DepartmentResponse getDepartmentByCode(String departmentCode);
+    DepartmentResponse getDepartmentByCode(String departmentCode);
 
-	List<DepartmentResponse> getAllDepartments();
+    List<DepartmentResponse> getAllDepartments();
 
-	DepartmentResponse updateDepartment(Long departmentId, DepartmentRequest request);
+    DepartmentResponse updateDepartment(Long departmentId,
+                                        DepartmentRequest request);
 
-	void deleteDepartment(Long departmentId);
+    void deleteDepartment(Long departmentId);
 
 }
